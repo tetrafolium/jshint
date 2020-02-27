@@ -1,48 +1,103 @@
 inspecode:
 
-  clang-format:
-    auto-fix: true
-    thresholds: { num-issues: 999 }
+  ##----------------------------------------------------------------------------
+  ## [on SaaS (prod)]
+  ##   Skipped ... detected no analyzable files in the repository
+  ##   + clang-format not supports JavaScript
+  ## [on SaaS (staging)]
+  ##   Succeeded ... found 157 issues.
+  ##   + clang-format supports JavaScript
+  ## [on Enterprise]
+  ##   Aborted ... ClangFormat was aborted unexpectedly. (codelift#1747)
+  ##----------------------------------------------------------------------------
+  #clang-format:         ## (only on staging)
+  #  auto-fix: true
+  #  thresholds: { num-issues: 157 }
 
   cpd:
+    options: [ --skip-lexical-errors ]
     thresholds: { num-issues: 999 }
 
   eslint:
     auto-fix: true
     thresholds: { num-issues: 999 }
+      # too many issues detected: 2785 > 1000 (in default configuration)
+      #   ----------------------------
+      #   2785 issues  (total in default config.)
+      #   1828 issues  [Error/no-undef]
+      #   ----------------------------
 
   flow:
-    thresholds: { num-issues: 999 }
+    thresholds: { num-issues: 0 }
 
   grep:
-    thresholds: { num-issues: 999 }
+    thresholds: { num-issues: 42 }
 
   jscpd:
-    thresholds: { num-issues: 999 }
+    thresholds: { num-issues: 4 }
 
   jshint:
     thresholds: { num-issues: 999 }
+      # too many issues detected: 1828 > 1000
+      #   ----------------------------
+      #   1828 issues  (total in default config.)
+      #   ----------------------------
+      #   1503 issues  "jshint.W***"
+      #    322 issues  "jshint.E***"
+      #      3 issues  "jshint.I***"
+      #   ----------------------------
+      #    433 issues  "jshint.W098"
+      #    236 issues  "jshint.E007"
+      #    217 issues  "jshint.W117"
+      #    153 issues  "jshint.W104"
+      #    140 issues  "jshint.W116"
+      #    136 issues  "jshint.W119"
+      #   ----------------------------
 
   misspell:
     auto-fix: true
-    thresholds: { num-issues: 999 }
+    thresholds: { num-issues: 45 }
 
   npm-audit:
-    thresholds: { num-issues: 999 }
+    thresholds: { num-issues: 38 }
 
+  ##----------------------------------------------------------------------------
+  ## [on SaaS (prod)]
+  ##   Succeeded ... but error detected below
+  ##     (node:478) UnhandledPromiseRejectionWarning: Error: Failed to launch chrome!
+  ##     /home/rocro/src/github.com/tetrafolium/jshint/node_modules/puppeteer/.local-chromium/linux-686378/chrome-linux/chrome: error while loading shared libraries: libX11-xcb.so.1: cannot open shared object file: No such file or directory
+  ##----------------------------------------------------------------------------
   npm-test:
-    thresholds: { num-issues: 999 }
+    thresholds: { num-issues: 0 }
 
+  ##----------------------------------------------------------------------------
+  ## [on SaaS (prod)]
+  ##   Failed ... the console log exceeds the maximum size
+  ##----------------------------------------------------------------------------
   phpcs:
     auto-fix: true
     thresholds: { num-issues: 999 }
 
+  ##----------------------------------------------------------------------------
+  ## [on SaaS (prod)]
+  ##   Failed ... reports errors 5 times.
+  ##     net.sourceforge.pmd.PMDException: Error while processing {pathname}.js
+  ##----------------------------------------------------------------------------
   pmd:
     thresholds: { num-issues: 999 }
 
+  ##----------------------------------------------------------------------------
+  ## [on SaaS (prod)]
+  ##   Succeeded ... Prettier finished successfully.
+  ##     total issues: within threshold: found 163 <= threshold 999
+  ## [on SaaS (staging)]
+  ##   Failed ... Prettier finished with errors.
+  ##     [error] tests/unit/fixtures/es5.js: TypeError: Cannot read property 'line' of undefined
+  ##     [error] tests/unit/fixtures/nestedFunctions.js: TypeError: Cannot read property 'line' of undefined
+  ##----------------------------------------------------------------------------
   prettier:
     auto-fix: true
-    thresholds: { num-issues: 999 }
+    thresholds: { num-issues: 163 }
 
   unused:
-    thresholds: { num-issues: 999 }
+    thresholds: { num-issues: 390 }
