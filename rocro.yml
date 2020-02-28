@@ -16,7 +16,7 @@ inspecode:
 
   cpd:
     options: [ --skip-lexical-errors ]
-    thresholds: { num-issues: 999 }
+    thresholds: { num-issues: 52 }
 
   eslint:
     auto-fix: true
@@ -79,11 +79,14 @@ inspecode:
     thresholds: { num-issues: 999 }
 
   ##----------------------------------------------------------------------------
-  ## [on SaaS (prod)]
-  ##   Failed ... reports errors 5 times.
-  ##     net.sourceforge.pmd.PMDException: Error while processing {pathname}.js
+  ## [on SaaS (prod & staging) and Enterprise]
+  ##   Failed ... PMD finished with errors.
+  ##     - reports errors 5 times described below.
+  ##       "PMDException: Error while processing {pathname}.js"
+  ##     - Exception in thread "main" java.lang.OutOfMemoryError: Java heap space
   ##----------------------------------------------------------------------------
   pmd:
+    machine: { cpu: 1.0 }   # (default is 0.5) try avoid OutOfMemoryError
     thresholds: { num-issues: 999 }
 
   ##----------------------------------------------------------------------------
@@ -100,4 +103,5 @@ inspecode:
     thresholds: { num-issues: 163 }
 
   unused:
-    thresholds: { num-issues: 390 }
+    options: [ --single-occurrence, --all-likelihoods ]
+    thresholds: { num-issues: 404 }
