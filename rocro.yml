@@ -86,7 +86,7 @@ inspecode:
   ##     - Exception in thread "main" java.lang.OutOfMemoryError: Java heap space
   ##----------------------------------------------------------------------------
   pmd:
-    machine: { cpu: 0.75 }      # (default is 0.5) try avoid OutOfMemoryError
+    machine: { cpu: 1.5 }       # (default is 0.5) try avoid OutOfMemoryError
     thresholds: { num-issues: 999 }
 
   ##----------------------------------------------------------------------------
