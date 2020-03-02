@@ -20,11 +20,10 @@ inspecode:
 
   cpd:
     options: [ --skip-lexical-errors ]
-    thresholds: { num-issues: 52 }
-
+    thresholds: { num-issues: 11 }
   eslint:
     auto-fix: true
-    thresholds: { num-issues: 999 }
+    thresholds: { num-issues: 339 }
       # too many issues detected: 2785 > 1000 (in default configuration)
       #   ----------------------------
       #   2785 issues  (total in default config.)
@@ -35,32 +34,17 @@ inspecode:
     thresholds: { num-issues: 0 }
 
   grep:
-    thresholds: { num-issues: 42 }
+    thresholds: { num-issues: 30 }
 
   jscpd:
-    thresholds: { num-issues: 4 }
+    thresholds: { num-issues: 2 }
 
   jshint:
-    thresholds: { num-issues: 999 }
-      # too many issues detected: 1828 > 1000
-      #   ----------------------------
-      #   1828 issues  (total in default config.)
-      #   ----------------------------
-      #   1503 issues  "jshint.W***"
-      #    322 issues  "jshint.E***"
-      #      3 issues  "jshint.I***"
-      #   ----------------------------
-      #    433 issues  "jshint.W098" unused
-      #    236 issues  "jshint.E007" strict
-      #    217 issues  "jshint.W117" undef
-      #    153 issues  "jshint.W104"
-      #    140 issues  "jshint.W116"
-      #    136 issues  "jshint.W119"
-      #   ----------------------------
+    thresholds: { num-issues: 109 }
 
   misspell:
     auto-fix: true
-    thresholds: { num-issues: 45 }
+    thresholds: { num-issues: 22 }
 
   npm-audit:
     thresholds: { num-issues: 38 }
@@ -81,23 +65,22 @@ inspecode:
   phpcs:
   - options:
       --standard: PEAR
-      #--exclude:
-      #- Generic.Commenting.DocComment
-      #- Generic.ControlStructures.InlineControlStructure
-      #- Generic.WhiteSpace.DisallowTabIndent
-      #- PEAR.ControlStructures.MultiLineCondition
-      #- PEAR.Functions.FunctionCallSignature
-      #- PEAR.Functions.FunctionDeclaration
-      #- PEAR.WhiteSpace.ScopeIndent
+      --exclude:
+      - Generic.Commenting.DocComment
+      - Generic.ControlStructures.InlineControlStructure
+      - Generic.WhiteSpace.DisallowTabIndent
+      - PEAR.ControlStructures.MultiLineCondition
+      - PEAR.Functions.FunctionCallSignature
+      - PEAR.Functions.FunctionDeclaration
+      - PEAR.WhiteSpace.ScopeIndent
     auto-fix: true
     thresholds: { num-issues: 999 }
   - options:
       --standard: PSR2
-      #--exclude:
-      #- Generic.Files.LineLength
-      #- PSR1.Files.SideEffects
-      #- PSR2.Classes.PropertyDeclaration
-      #- PSR2.Methods.MethodDeclaration
+      --exclude:
+      - Generic.WhiteSpace.DisallowTabIndent
+      - PSR2.Methods.FunctionCallSignature
+      - Squiz.Functions.MultiLineFunctionDeclaration
     auto-fix: true
     thresholds: { num-issues: 999 }
 
@@ -112,7 +95,7 @@ inspecode:
     machine: { cpu: 0.75 }      # avoid OutOfMemoryError (default is 0.5)
       # pmd: cpu resource too large: 1500m (must be <= 750m) ... on staging
       # pmd: cpu resource too large: 1500m (must be <= 1) ... on Enterprise
-    thresholds: { num-issues: 999 }
+    thresholds: { num-issues: 27 }
 
   ##----------------------------------------------------------------------------
   ## [on SaaS (prod)]
@@ -125,8 +108,8 @@ inspecode:
   ##----------------------------------------------------------------------------
   prettier:
     auto-fix: true
-    thresholds: { num-issues: 163 }
+    thresholds: { num-issues: 31 }
 
   unused:
     options: [ --single-occurrence, --all-likelihoods ]
-    thresholds: { num-issues: 404 }
+    thresholds: { num-issues: 0 }
