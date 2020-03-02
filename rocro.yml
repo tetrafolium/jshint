@@ -78,9 +78,7 @@ inspecode:
   - options:
       --standard: PSR2
       --exclude:
-      - Generic.WhiteSpace.DisallowTabIndent
-      - PSR2.Methods.FunctionCallSignature
-      - Squiz.Functions.MultiLineFunctionDeclaration
+      - Generic.WhiteSpace.ScopeIndent
     auto-fix: true
     thresholds: { num-issues: 999 }
 
