@@ -33,6 +33,9 @@ inspecode:
   flow:
     thresholds: { num-issues: 0 }
 
+  fossology:
+    thresholds: { num-issues: 999 }
+
   grep:
     thresholds: { num-issues: 30 }
 
