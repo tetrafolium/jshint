@@ -82,7 +82,9 @@ inspecode:
       - PEAR.Functions.FunctionCallSignature
       - PEAR.Functions.FunctionDeclaration
       - PEAR.WhiteSpace.ScopeIndent
-    machine: { cpu: 1.5 }
+    machine: { cpu: 0.75 }
+      # pmd: cpu resource too large: 1500m (must be <= 750m) ... on staging
+      # pmd: cpu resource too large: 1500m (must be <= 1) ... on Enterprise
     auto-fix: true
     thresholds: { num-issues: 999 }
 
