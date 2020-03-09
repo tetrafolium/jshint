@@ -1,89 +1,5 @@
 inspecode:
 
-  experimental:
-    ignore:
-    - 'tests/'
-
-  ##----------------------------------------------------------------------------
-  ## [on SaaS (prod)]
-  ##   Skipped ... detected no analyzable files in the repository
-  ##   + clang-format not supports JavaScript
-  ## [on SaaS (staging)]
-  ##   Succeeded ... found 157 issues.
-  ##   + clang-format supports JavaScript
-  ## [on Enterprise]
-  ##   Aborted ... ClangFormat was aborted unexpectedly. (codelift#1747)
-  ##----------------------------------------------------------------------------
-  #clang-format:         ## (only on staging)
-  #  auto-fix: true
-  #  thresholds: { num-issues: 157 }
-
-  cpd:
-    options: [ --skip-lexical-errors ]
-    thresholds: { num-issues: 11 }
-  eslint:
-    auto-fix: true
-    thresholds: { num-issues: 339 }
-      # too many issues detected: 2785 > 1000 (in default configuration)
-      #   ----------------------------
-      #   2785 issues  (total in default config.)
-      #   1828 issues  [Error/no-undef]
-      #   ----------------------------
-
-  flow:
-    thresholds: { num-issues: 0 }
-
-  fossology:
-    thresholds: { num-issues: 999 }
-
-  grep:
-    thresholds: { num-issues: 30 }
-
-  jscpd:
-    thresholds: { num-issues: 2 }
-
-  jshint:
-    thresholds: { num-issues: 109 }
-
-  misspell:
-    auto-fix: true
-    thresholds: { num-issues: 22 }
-
-  npm-audit:
-    thresholds: { num-issues: 38 }
-
-  ##----------------------------------------------------------------------------
-  ## [on SaaS (prod)]
-  ##   Succeeded ... but error detected below
-  ##     (node:478) UnhandledPromiseRejectionWarning: Error: Failed to launch chrome!
-  ##     /home/rocro/src/github.com/tetrafolium/jshint/node_modules/puppeteer/.local-chromium/linux-686378/chrome-linux/chrome: error while loading shared libraries: libX11-xcb.so.1: cannot open shared object file: No such file or directory
-  ##----------------------------------------------------------------------------
-  npm-test:
-    thresholds: { num-issues: 0 }
-
-  phpcs:
-    options:
-      --standard: PSR2
-      --exclude:
-      - Generic.WhiteSpace.ScopeIndent
-      - PSR2.Methods.FunctionCallSignature
-      - Squiz.Functions.MultiLineFunctionDeclaration
-    auto-fix: true
-    thresholds: { num-issues: 464 }
-
-  ##----------------------------------------------------------------------------
-  ## [on SaaS (prod & staging) and Enterprise]
-  ##   Failed ... PMD finished with errors.
-  ##     - reports errors 5 times described below.
-  ##       "PMDException: Error while processing {pathname}.js"
-  ##     - Exception in thread "main" java.lang.OutOfMemoryError: Java heap space
-  ##----------------------------------------------------------------------------
-  pmd:
-    machine: { cpu: 0.75 }      # avoid OutOfMemoryError (default is 0.5)
-      # pmd: cpu resource too large: 1500m (must be <= 750m) ... on staging
-      # pmd: cpu resource too large: 1500m (must be <= 1) ... on Enterprise
-    thresholds: { num-issues: 27 }
-
   ##----------------------------------------------------------------------------
   ## [on SaaS (prod)]
   ##   Succeeded ... Prettier finished successfully.
@@ -94,9 +10,12 @@ inspecode:
   ##     [error] tests/unit/fixtures/nestedFunctions.js: TypeError: Cannot read property 'line' of undefined
   ##----------------------------------------------------------------------------
   prettier:
+  - auto-fix: true
+    thresholds: { num-issues: 163 }
+      # Succeeded on Prod service.
+      # Failed on Staging service. (see above comments)
+  - ignore:
+    - 'tests/'
     auto-fix: true
     thresholds: { num-issues: 31 }
-
-  unused:
-    options: [ --single-occurrence, --all-likelihoods ]
-    thresholds: { num-issues: 0 }
+      # Succeeded on both Prod and Staging.
