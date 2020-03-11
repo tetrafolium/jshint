@@ -1,6 +1,8 @@
 inspecode:
 
   experimental:
+    runtime:
+      nodejs: 11
     ignore:
     - 'tests/'
 
