@@ -1230,7 +1230,6 @@ Lexer.prototype = {
 
     while (this.peek() !== quote) {
       if (this.peek() === "") { // End Of Line
-
         // If an EOL is not preceded by a backslash, show a warning
         // and proceed like it was a legit multi-line string where
         // author simply forgot to escape the newline symbol.
@@ -1278,9 +1277,7 @@ Lexer.prototype = {
             quote: quote
           };
         }
-
       } else { // Any character other than End Of Line
-
         allowNewLine = false;
         var char = this.peek();
         var jump = 1; // A length of a jump, after we're done
@@ -2010,7 +2007,9 @@ Lexer.prototype = {
       obj.line = this.line;
       obj.character = this.char;
       obj.from = this.from;
-      if (obj.identifier && token) obj.raw_text = token.text || token.value;
+      if (obj.identifier && token) {
+obj.raw_text = token.text || token.value;
+      }
       if (token && token.startLine && token.startLine !== this.line) {
         obj.startLine = token.startLine;
       }

@@ -734,7 +734,7 @@ exports.prototypejs = {
   Selector          : false,
   Template          : false,
   Toggle            : false,
-  Try               : false,
+  Try : false,
   Autocompleter     : false,
   Builder           : false,
   Control           : false,
