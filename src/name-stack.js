@@ -80,7 +80,12 @@ NameStack.prototype.infer = function() {
 
   type = nameToken.type;
 
-  if (type !== "(string)" && type !== "(number)" && type !== "(identifier)" && type !== "default") {
+  if (
+    type !== "(string)" &&
+    type !== "(number)" &&
+    type !== "(identifier)" &&
+    type !== "default"
+  ) {
     return "(expression)";
   }
 

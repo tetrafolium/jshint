@@ -10,8 +10,12 @@ var state = {
    * @returns {boolean}
    */
   isStrict: function() {
-    return this.directive["use strict"] || this.inClassBody ||
-      this.option.module || this.option.strict === "implied";
+    return (
+      this.directive["use strict"] ||
+      this.inClassBody ||
+      this.option.module ||
+      this.option.strict === "implied"
+    );
   },
 
   /**
@@ -45,8 +49,12 @@ var state = {
   },
 
   allowsGlobalUsd: function() {
-    return this.option.strict === "global" || this.option.globalstrict ||
-      this.option.module || this.impliedClosure();
+    return (
+      this.option.strict === "global" ||
+      this.option.globalstrict ||
+      this.option.module ||
+      this.impliedClosure()
+    );
   },
 
   /**

@@ -31,17 +31,17 @@
 /*jshint quotmark:double */
 /*exported console */
 
-var _            = require("lodash");
-var events       = require("events");
-var vars         = require("./vars.js");
-var messages     = require("./messages.js");
-var Lexer        = require("./lex.js").Lexer;
-var reg          = require("./reg.js");
-var state        = require("./state.js").state;
-var style        = require("./style.js");
-var options      = require("./options.js");
+var _ = require("lodash");
+var events = require("events");
+var vars = require("./vars.js");
+var messages = require("./messages.js");
+var Lexer = require("./lex.js").Lexer;
+var reg = require("./reg.js");
+var state = require("./state.js").state;
+var style = require("./style.js");
+var options = require("./options.js");
 var scopeManager = require("./scope-manager.js");
-var prodParams   = require("./prod-params.js");
+var prodParams = require("./prod-params.js");
 
 // We need this module here because environments such as IE and Rhino
 // don't necessarily expose the 'console' API and browserify uses
@@ -56,36 +56,31 @@ var JSHINT = (function() {
   "use strict";
 
   var api, // Extension API
-
     // These are operators that should not be used with the ! operator.
     bang = {
-      "<"  : true,
-      "<=" : true,
-      "==" : true,
+      "<": true,
+      "<=": true,
+      "==": true,
       "===": true,
       "!==": true,
-      "!=" : true,
-      ">"  : true,
-      ">=" : true,
-      "+"  : true,
-      "-"  : true,
-      "*"  : true,
-      "/"  : true,
-      "%"  : true
+      "!=": true,
+      ">": true,
+      ">=": true,
+      "+": true,
+      "-": true,
+      "*": true,
+      "/": true,
+      "%": true
     },
-
     declared, // Globals that were declared using /*global ... */ syntax.
-
     functions, // All of the functions
-
     inblock,
     indent,
     lookahead,
     lex,
     member,
     membersOnly,
-    predefined,    // Global variables defined by option
-
+    predefined, // Global variables defined by option
     extraModules = [],
     emitter = new events.EventEmitter();
 
@@ -177,11 +172,14 @@ var JSHINT = (function() {
       }
     }
 
-    if (token.id === "await" && (!(context & prodParams.async) && !state.option.module)) {
+    if (
+      token.id === "await" &&
+      (!(context & prodParams.async) && !state.option.module)
+    ) {
       return false;
     }
 
-    if (token.id === "yield" && (!(context & prodParams.yield))) {
+    if (token.id === "yield" && !(context & prodParams.yield)) {
       return state.isStrict();
     }
 
@@ -198,7 +196,7 @@ var JSHINT = (function() {
   function combine(dest, src) {
     Object.keys(src).forEach(function(name) {
       if (_.has(JSHINT.blacklist, name)) {
-return;
+        return;
       }
       dest[name] = src[name];
     });
@@ -207,8 +205,10 @@ return;
   function processenforceall() {
     if (state.option.enforceall) {
       for (var enforceopt in options.bool.enforcing) {
-        if (state.option[enforceopt] === undefined &&
-            !options.noenforceall[enforceopt]) {
+        if (
+          state.option[enforceopt] === undefined &&
+          !options.noenforceall[enforceopt]
+        ) {
           state.option[enforceopt] = true;
         }
       }
@@ -374,8 +374,8 @@ return;
       b: b
     };
 
-    exception.reason = supplant(message, exception) + " (" + percentage +
-      "% scanned).";
+    exception.reason =
+      supplant(message, exception) + " (" + percentage + "% scanned).";
 
     throw exception;
   }
@@ -384,9 +384,11 @@ return;
     var ignored = state.ignoredLines;
 
     if (_.isEmpty(ignored)) {
-return;
+      return;
     }
-    JSHINT.errors = _.reject(JSHINT.errors, function(err) { return ignored[err.line] });
+    JSHINT.errors = _.reject(JSHINT.errors, function(err) {
+      return ignored[err.line];
+    });
   }
 
   function warning(code, t, a, b, c, d) {
@@ -405,7 +407,8 @@ return;
     }
 
     t = t || state.tokens.next || {};
-    if (t.id === "(end)") {  // `~
+    if (t.id === "(end)") {
+      // `~
       t = state.tokens.curr;
     }
 
@@ -439,10 +442,17 @@ return;
   }
 
   function warningAt(m, l, ch, a, b, c, d) {
-    return warning(m, {
-      line: l,
-      from: ch
-    }, a, b, c, d);
+    return warning(
+      m,
+      {
+        line: l,
+        from: ch
+      },
+      a,
+      b,
+      c,
+      d
+    );
   }
 
   function error(m, t, a, b, c, d) {
@@ -450,10 +460,17 @@ return;
   }
 
   function errorAt(m, l, ch, a, b, c, d) {
-    return error(m, {
-      line: l,
-      from: ch
-    }, a, b, c, d);
+    return error(
+      m,
+      {
+        line: l,
+        from: ch
+      },
+      a,
+      b,
+      c,
+      d
+    );
   }
 
   // Tracking of "internal" scripts, like eval containing a static string
@@ -473,8 +490,9 @@ return;
    * @param {Token} previous - the token that precedes the directive
    */
   function lintingDirective(directiveToken, previous) {
-    var body = directiveToken.body.split(",")
-      .map(function(s) { return s.trim(); });
+    var body = directiveToken.body.split(",").map(function(s) {
+      return s.trim();
+    });
     var predef = {};
 
     if (directiveToken.type === "falls through") {
@@ -537,10 +555,8 @@ return;
         var ch1 = m.charAt(0);
         var ch2 = m.charAt(m.length - 1);
 
-        if (ch1 === ch2 && (ch1 === "\"" || ch1 === "'")) {
-          m = m
-            .substr(1, m.length - 2)
-            .replace("\\\"", "\"");
+        if (ch1 === ch2 && (ch1 === '"' || ch1 === "'")) {
+          m = m.substr(1, m.length - 2).replace('\\"', '"');
         }
 
         membersOnly[m] = false;
@@ -557,15 +573,24 @@ return;
       "indent"
     ];
 
-    if (directiveToken.type === "jshint" || directiveToken.type === "jslint" ||
-      directiveToken.type === "jshint.unstable") {
+    if (
+      directiveToken.type === "jshint" ||
+      directiveToken.type === "jslint" ||
+      directiveToken.type === "jshint.unstable"
+    ) {
       body.forEach(function(item) {
         var parts = item.split(":");
         var key = parts[0].trim();
         var val = parts.length > 1 ? parts[1].trim() : "";
         var numberVal;
 
-        if (!checkOption(key, directiveToken.type !== "jshint.unstable", directiveToken)) {
+        if (
+          !checkOption(
+            key,
+            directiveToken.type !== "jshint.unstable",
+            directiveToken
+          )
+        ) {
           return;
         }
 
@@ -574,8 +599,12 @@ return;
           if (val !== "false") {
             numberVal = +val;
 
-            if (typeof numberVal !== "number" || !isFinite(numberVal) ||
-              numberVal <= 0 || Math.floor(numberVal) !== numberVal) {
+            if (
+              typeof numberVal !== "number" ||
+              !isFinite(numberVal) ||
+              numberVal <= 0 ||
+              Math.floor(numberVal) !== numberVal
+            ) {
               error("E032", directiveToken, val);
               return;
             }
@@ -599,105 +628,105 @@ return;
             return void error("E002", directiveToken);
           }
 
-          state.option.validthis = (val === "true");
+          state.option.validthis = val === "true";
           return;
         }
 
         if (key === "quotmark") {
           switch (val) {
-          case "true":
-          case "false":
-            state.option.quotmark = (val === "true");
-            break;
-          case "double":
-          case "single":
-            state.option.quotmark = val;
-            break;
-          default:
-            error("E002", directiveToken);
+            case "true":
+            case "false":
+              state.option.quotmark = val === "true";
+              break;
+            case "double":
+            case "single":
+              state.option.quotmark = val;
+              break;
+            default:
+              error("E002", directiveToken);
           }
           return;
         }
 
         if (key === "shadow") {
           switch (val) {
-          case "true":
-            state.option.shadow = true;
-            break;
-          case "outer":
-            state.option.shadow = "outer";
-            break;
-          case "false":
-          case "inner":
-            state.option.shadow = "inner";
-            break;
-          default:
-            error("E002", directiveToken);
+            case "true":
+              state.option.shadow = true;
+              break;
+            case "outer":
+              state.option.shadow = "outer";
+              break;
+            case "false":
+            case "inner":
+              state.option.shadow = "inner";
+              break;
+            default:
+              error("E002", directiveToken);
           }
           return;
         }
 
         if (key === "unused") {
           switch (val) {
-          case "true":
-            state.option.unused = true;
-            break;
-          case "false":
-            state.option.unused = false;
-            break;
-          case "vars":
-          case "strict":
-            state.option.unused = val;
-            break;
-          default:
-            error("E002", directiveToken);
+            case "true":
+              state.option.unused = true;
+              break;
+            case "false":
+              state.option.unused = false;
+              break;
+            case "vars":
+            case "strict":
+              state.option.unused = val;
+              break;
+            default:
+              error("E002", directiveToken);
           }
           return;
         }
 
         if (key === "latedef") {
           switch (val) {
-          case "true":
-            state.option.latedef = true;
-            break;
-          case "false":
-            state.option.latedef = false;
-            break;
-          case "nofunc":
-            state.option.latedef = "nofunc";
-            break;
-          default:
-            error("E002", directiveToken);
+            case "true":
+              state.option.latedef = true;
+              break;
+            case "false":
+              state.option.latedef = false;
+              break;
+            case "nofunc":
+              state.option.latedef = "nofunc";
+              break;
+            default:
+              error("E002", directiveToken);
           }
           return;
         }
 
         if (key === "ignore") {
           switch (val) {
-          case "line":
-            state.ignoredLines[directiveToken.line] = true;
-            removeIgnoredMessages();
-            break;
-          default:
-            error("E002", directiveToken);
+            case "line":
+              state.ignoredLines[directiveToken.line] = true;
+              removeIgnoredMessages();
+              break;
+            default:
+              error("E002", directiveToken);
           }
           return;
         }
 
         if (key === "strict") {
           switch (val) {
-          case "true":
-            state.option.strict = true;
-            break;
-          case "false":
-            state.option.strict = false;
-            break;
-          case "global":
-          case "implied":
-            state.option.strict = val;
-            break;
-          default:
-            error("E002", directiveToken);
+            case "true":
+              state.option.strict = true;
+              break;
+            case "false":
+              state.option.strict = false;
+              break;
+            case "global":
+            case "implied":
+              state.option.strict = val;
+              break;
+            default:
+              error("E002", directiveToken);
           }
           return;
         }
@@ -713,27 +742,27 @@ return;
 
         if (key === "esversion") {
           switch (val) {
-          case "3":
-          case "5":
-          case "6":
-          case "7":
-          case "8":
-          case "9":
-          case "10":
-            state.option.moz = false;
-            state.option.esversion = +val;
-            break;
-          case "2015":
-          case "2016":
-          case "2017":
-          case "2018":
-          case "2019":
-            state.option.moz = false;
-            // Translate specification publication year to version number.
-            state.option.esversion = +val - 2009;
-            break;
-          default:
-            error("E002", directiveToken);
+            case "3":
+            case "5":
+            case "6":
+            case "7":
+            case "8":
+            case "9":
+            case "10":
+              state.option.moz = false;
+              state.option.esversion = +val;
+              break;
+            case "2015":
+            case "2016":
+            case "2017":
+            case "2018":
+            case "2019":
+              state.option.moz = false;
+              // Translate specification publication year to version number.
+              state.option.esversion = +val - 2009;
+              break;
+            default:
+              error("E002", directiveToken);
           }
           if (!hasParsedCode(state.funct)) {
             error("E055", directiveToken, "esversion");
@@ -744,7 +773,7 @@ return;
         var match = /^([+-])(W\d{3})$/g.exec(key);
         if (match) {
           // ignore for -W..., unignore for +W...
-          state.ignored[match[2]] = (match[1] === "-");
+          state.ignored[match[2]] = match[1] === "-";
           return;
         }
 
@@ -752,15 +781,15 @@ return;
         if (val === "true" || val === "false") {
           if (directiveToken.type === "jslint") {
             tn = options.renamed[key] || key;
-            state.option[tn] = (val === "true");
+            state.option[tn] = val === "true";
 
             if (options.inverted[tn] !== undefined) {
               state.option[tn] = !state.option[tn];
             }
           } else if (directiveToken.type === "jshint.unstable") {
-            state.option.unstable[key] = (val === "true");
+            state.option.unstable[key] = val === "true";
           } else {
-            state.option[key] = (val === "true");
+            state.option[key] = val === "true";
           }
 
           return;
@@ -791,7 +820,9 @@ return;
    * @returns {token}
    */
   function peek(p) {
-    var i = p || 0, j = lookahead.length, t;
+    var i = p || 0,
+      j = lookahead.length,
+      t;
 
     if (i < j) {
       return lookahead[i];
@@ -851,10 +882,19 @@ return;
         if (nextToken.id === "(end)") {
           error("E019", relatedToken, relatedToken.id);
         } else {
-          error("E020", nextToken, expected, relatedToken.id,
-            relatedToken.line, nextToken.value);
+          error(
+            "E020",
+            nextToken,
+            expected,
+            relatedToken.id,
+            relatedToken.line,
+            nextToken.value
+          );
         }
-      } else if (nextToken.type !== "(identifier)" || nextToken.value !== expected) {
+      } else if (
+        nextToken.type !== "(identifier)" ||
+        nextToken.value !== expected
+      ) {
         error("E021", nextToken, expected, nextToken.value);
       }
     }
@@ -864,11 +904,15 @@ return;
     for (;;) {
       state.tokens.next = lookahead.shift() || lex.token();
 
-      if (!state.tokens.next) { // No more tokens left, give up
+      if (!state.tokens.next) {
+        // No more tokens left, give up
         quit("E041", state.tokens.curr);
       }
 
-      if (state.tokens.next.id === "(end)" || state.tokens.next.id === "(error)") {
+      if (
+        state.tokens.next.id === "(end)" ||
+        state.tokens.next.id === "(error)"
+      ) {
         return;
       }
 
@@ -894,7 +938,13 @@ return;
    * @returns {boolean}
    */
   function isOperator(token) {
-    return token.first || token.right || token.left || token.id === "yield" || token.id === "await";
+    return (
+      token.first ||
+      token.right ||
+      token.left ||
+      token.id === "yield" ||
+      token.id === "await"
+    );
   }
 
   function isEndOfExpr(context, curr, next) {
@@ -911,13 +961,15 @@ return;
       return true;
     }
 
-    if (next.infix === curr.infix ||
+    if (
+      next.infix === curr.infix ||
       // Infix operators which follow `yield` should only be consumed as part
       // of the current expression if allowed by the syntactic grammar. In
       // effect, this prevents automatic semicolon insertion when `yield` is
       // followed by a newline and a comma operator (without enabling it when
       // `yield` is followed by a newline and a `[` token).
-      (curr.id === "yield" && curr.rbp < next.rbp)) {
+      (curr.id === "yield" && curr.rbp < next.rbp)
+    ) {
       return !sameLine(curr, next);
     }
 
@@ -950,7 +1002,9 @@ return;
    * @param {number} rbp - the right-binding power of the token to be consumed
    */
   function expression(context, rbp) {
-    var left, isArray = false, isObject = false;
+    var left,
+      isArray = false,
+      isObject = false;
     var initial = context & prodParams.initial;
     var curr;
 
@@ -991,8 +1045,10 @@ return;
           // If the left.value is not "new", or the left.first.value is a "."
           // then safely assume that this is not "new Array()" and possibly
           // not "new Object()"...
-          if (left.value !== "new" ||
-            (left.first && left.first.value && left.first.value === ".")) {
+          if (
+            left.value !== "new" ||
+            (left.first && left.first.value && left.first.value === ".")
+          ) {
             isArray = false;
             // ...In the case of Object, if the left.value and state.tokens.curr.value
             // are not equal, then safely assume that this not "new Object()"
@@ -1004,11 +1060,19 @@ return;
 
         advance();
 
-        if (isArray && state.tokens.curr.id === "(" && state.tokens.next.id === ")") {
+        if (
+          isArray &&
+          state.tokens.curr.id === "(" &&
+          state.tokens.next.id === ")"
+        ) {
           warning("W009", state.tokens.curr);
         }
 
-        if (isObject && state.tokens.curr.id === "(" && state.tokens.next.id === ")") {
+        if (
+          isObject &&
+          state.tokens.curr.id === "(" &&
+          state.tokens.next.id === ")"
+        ) {
           warning("W010", state.tokens.curr);
         }
 
@@ -1024,7 +1088,6 @@ return;
 
     return left;
   }
-
 
   // Functions for conformance of style.
 
@@ -1078,43 +1141,43 @@ return;
     if (state.tokens.next.identifier && !(opts.property && state.inES5())) {
       // Keywords that cannot follow a comma operator.
       switch (state.tokens.next.value) {
-      case "break":
-      case "case":
-      case "catch":
-      case "continue":
-      case "default":
-      case "do":
-      case "else":
-      case "finally":
-      case "for":
-      case "if":
-      case "in":
-      case "instanceof":
-      case "return":
-      case "switch":
-      case "throw":
-      case "try":
-      case "var":
-      case "let":
-      case "while":
-      case "with":
-        error("E024", state.tokens.next, state.tokens.next.value);
-        return false;
+        case "break":
+        case "case":
+        case "catch":
+        case "continue":
+        case "default":
+        case "do":
+        case "else":
+        case "finally":
+        case "for":
+        case "if":
+        case "in":
+        case "instanceof":
+        case "return":
+        case "switch":
+        case "throw":
+        case "try":
+        case "var":
+        case "let":
+        case "while":
+        case "with":
+          error("E024", state.tokens.next, state.tokens.next.value);
+          return false;
       }
     }
 
     if (state.tokens.next.type === "(punctuator)") {
       switch (state.tokens.next.value) {
-      case "}":
-      case "]":
-      case ",":
-      case ")":
-        if (opts.allowTrailing) {
-          return true;
-        }
+        case "}":
+        case "]":
+        case ",":
+        case ")":
+          if (opts.allowTrailing) {
+            return true;
+          }
 
-        error("E024", state.tokens.next, state.tokens.next.value);
-        return false;
+          error("E024", state.tokens.next, state.tokens.next.value);
+          return false;
       }
     }
     return true;
@@ -1238,22 +1301,25 @@ return;
     var x = symbol(s, 150);
     reserveName(x);
 
-    x.nud = (typeof f === "function") ? f : function(context) {
-      this.arity = "unary";
-      this.right = expression(context, 150);
+    x.nud =
+      typeof f === "function"
+        ? f
+        : function(context) {
+            this.arity = "unary";
+            this.right = expression(context, 150);
 
-      if (this.id === "++" || this.id === "--") {
-        if (state.option.plusplus) {
-          warning("W016", this, this.id);
-        }
+            if (this.id === "++" || this.id === "--") {
+              if (state.option.plusplus) {
+                warning("W016", this, this.id);
+              }
 
-        if (this.right) {
-          checkLeftSideAssign(context, this.right, this);
-        }
-      }
+              if (this.right) {
+                checkLeftSideAssign(context, this.right, this);
+              }
+            }
 
-      return this;
-    };
+            return this;
+          };
 
     return x;
   }
@@ -1402,7 +1468,7 @@ return;
     x.led = function(context, left) {
       nobreaknonadjacent(state.tokens.prev, state.tokens.curr);
       this.left = left;
-      var right = this.right = expression(context, 100);
+      var right = (this.right = expression(context, 100));
 
       if (isIdentifier(left, "NaN") || isIdentifier(right, "NaN")) {
         warning("W019", this);
@@ -1452,7 +1518,12 @@ return;
     "unknown"
   ];
   typeofValues.es3 = [
-    "undefined", "boolean", "number", "string", "function", "object",
+    "undefined",
+    "boolean",
+    "number",
+    "string",
+    "function",
+    "object"
   ];
   typeofValues.es3 = typeofValues.es3.concat(typeofValues.legacy);
   typeofValues.es6 = typeofValues.es3.concat("symbol", "bigint");
@@ -1483,7 +1554,11 @@ return;
 
     values = state.inES6() ? typeofValues.es6 : typeofValues.es3;
 
-    if (right.type === "(identifier)" && right.value === "typeof" && left.type === "(string)") {
+    if (
+      right.type === "(identifier)" &&
+      right.value === "typeof" &&
+      left.type === "(string)"
+    ) {
       if (left.value === "bigint") {
         if (!state.option.unstable.bigint) {
           warning("W144", left, "BigInt", "bigint");
@@ -1517,7 +1592,10 @@ return;
     else if (left.type === "(identifier)") {
       if (state.option.node && left.value === "global") {
         isGlobal = true;
-      } else if (state.option.browser && (left.value === "window" || left.value === "document")) {
+      } else if (
+        state.option.browser &&
+        (left.value === "window" || left.value === "document")
+      ) {
         isGlobal = true;
       }
     }
@@ -1534,36 +1612,65 @@ return;
    */
   function findNativePrototype(left) {
     var natives = [
-      "Array", "ArrayBuffer", "Boolean", "Collator", "DataView", "Date",
-      "DateTimeFormat", "Error", "EvalError", "Float32Array", "Float64Array",
-      "Function", "Infinity", "Intl", "Int16Array", "Int32Array", "Int8Array",
-      "Iterator", "Number", "NumberFormat", "Object", "RangeError",
-      "ReferenceError", "RegExp", "StopIteration", "String", "SyntaxError",
-      "TypeError", "Uint16Array", "Uint32Array", "Uint8Array", "Uint8ClampedArray",
+      "Array",
+      "ArrayBuffer",
+      "Boolean",
+      "Collator",
+      "DataView",
+      "Date",
+      "DateTimeFormat",
+      "Error",
+      "EvalError",
+      "Float32Array",
+      "Float64Array",
+      "Function",
+      "Infinity",
+      "Intl",
+      "Int16Array",
+      "Int32Array",
+      "Int8Array",
+      "Iterator",
+      "Number",
+      "NumberFormat",
+      "Object",
+      "RangeError",
+      "ReferenceError",
+      "RegExp",
+      "StopIteration",
+      "String",
+      "SyntaxError",
+      "TypeError",
+      "Uint16Array",
+      "Uint32Array",
+      "Uint8Array",
+      "Uint8ClampedArray",
       "URIError"
     ];
 
     function walkPrototype(obj) {
       if (typeof obj !== "object") {
-return;
+        return;
       }
       return obj.right === "prototype" ? obj : walkPrototype(obj.left);
     }
 
     function walkNative(obj) {
       while (!obj.identifier && typeof obj.left === "object") {
-obj = obj.left;
+        obj = obj.left;
       }
 
-      if (obj.identifier && natives.indexOf(obj.value) >= 0 &&
-          state.funct["(scope)"].isPredefined(obj.value)) {
+      if (
+        obj.identifier &&
+        natives.indexOf(obj.value) >= 0 &&
+        state.funct["(scope)"].isPredefined(obj.value)
+      ) {
         return obj.value;
       }
     }
 
     var prototype = walkPrototype(left);
     if (prototype) {
-return walkNative(prototype);
+      return walkNative(prototype);
     }
   }
 
@@ -1583,7 +1690,6 @@ return walkNative(prototype);
    * @returns {boolean} Whether the left hand side is OK
    */
   function checkLeftSideAssign(context, left, assignToken, options) {
-
     var allowDestructuring = options && options.allowDestructuring;
 
     assignToken = assignToken || left;
@@ -1602,7 +1708,10 @@ return walkNative(prototype);
     }
 
     if (left.id === ".") {
-      if (!left.left || left.left.value === "arguments" && !state.isStrict()) {
+      if (
+        !left.left ||
+        (left.left.value === "arguments" && !state.isStrict())
+      ) {
         warning("W143", assignToken);
       }
 
@@ -1622,7 +1731,11 @@ return walkNative(prototype);
       }
 
       return true;
-    } else if (left.identifier && !isReserved(context, left) && !left.isMetaProperty) {
+    } else if (
+      left.identifier &&
+      !isReserved(context, left) &&
+      !left.isMetaProperty
+    ) {
       if (state.funct["(scope)"].bindingtype(left.value) === "exception") {
         warning("W022", left);
       }
@@ -1659,15 +1772,23 @@ return walkNative(prototype);
    *                     support cases where further refinement is necessary)
    */
   function assignop(s, f) {
-    var x = infix(s, typeof f === "function" ? f : function(context, left, that) {
-      that.left = left;
+    var x = infix(
+      s,
+      typeof f === "function"
+        ? f
+        : function(context, left, that) {
+            that.left = left;
 
-      checkLeftSideAssign(context, left, that, { allowDestructuring: true });
+            checkLeftSideAssign(context, left, that, {
+              allowDestructuring: true
+            });
 
-      that.right = expression(context, 10);
+            that.right = expression(context, 10);
 
-      return that;
-    }, 20);
+            return that;
+          },
+      20
+    );
 
     x.exps = true;
     x.assign = true;
@@ -1691,14 +1812,17 @@ return walkNative(prototype);
     var x = symbol(s, p);
     reserveName(x);
     x.infix = true;
-    x.led = (typeof f === "function") ? f : function(context, left) {
-      if (state.option.bitwise) {
-        warning("W016", this, this.id);
-      }
-      this.left = left;
-      this.right = expression(context, p);
-      return this;
-    };
+    x.led =
+      typeof f === "function"
+        ? f
+        : function(context, left) {
+            if (state.option.bitwise) {
+              warning("W016", this, this.id);
+            }
+            this.left = left;
+            this.right = expression(context, p);
+            return this;
+          };
     return x;
   }
 
@@ -1713,17 +1837,21 @@ return walkNative(prototype);
    */
   function bitwiseassignop(s) {
     symbol(s, 20).exps = true;
-    return infix(s, function(context, left, that) {
-      if (state.option.bitwise) {
-        warning("W016", that, that.id);
-      }
+    return infix(
+      s,
+      function(context, left, that) {
+        if (state.option.bitwise) {
+          warning("W016", that, that.id);
+        }
 
-      checkLeftSideAssign(context, left, that);
+        checkLeftSideAssign(context, left, that);
 
-      that.right = expression(context, 10);
+        that.right = expression(context, 10);
 
-      return that;
-    }, 20);
+        return that;
+      },
+      20
+    );
   }
 
   /**
@@ -1775,7 +1903,7 @@ return walkNative(prototype);
     }
 
     var curr = state.tokens.curr;
-    var val  = state.tokens.curr.value;
+    var val = state.tokens.curr.value;
 
     if (!isReserved(context, curr)) {
       return val;
@@ -1848,7 +1976,6 @@ return walkNative(prototype);
     }
   }
 
-
   /**
    * Determine if the provided token may be evaluated and emit a linting
    * warning if this is note the case.
@@ -1856,7 +1983,8 @@ return walkNative(prototype);
    * @param {token} controlToken
    */
   function reachable(controlToken) {
-    var i = 0, t;
+    var i = 0,
+      t;
     if (state.tokens.next.id !== ";" || controlToken.inBracelessBlock) {
       return;
     }
@@ -1893,11 +2021,12 @@ return walkNative(prototype);
     if (state.tokens.next.id !== ";") {
       // don't complain about unclosed templates / strings
       if (state.tokens.next.isUnclosed) {
-return advance();
+        return advance();
       }
 
-      var isSameLine = sameLine(state.tokens.curr, state.tokens.next) &&
-                       state.tokens.next.id !== "(end)";
+      var isSameLine =
+        sameLine(state.tokens.curr, state.tokens.next) &&
+        state.tokens.next.id !== "(end)";
       var blockEnd = checkPunctuator(state.tokens.next, "}");
 
       if (isSameLine && !blockEnd && !(stmt.id === "do" && state.inES6(true))) {
@@ -1907,7 +2036,11 @@ return advance();
         // *and* option lastsemic is on, ignore the warning.  Otherwise, issue
         // a warning about missing semicolon.
         if (!(blockEnd && isSameLine && state.option.lastsemic)) {
-          warningAt("W033", state.tokens.curr.line, state.tokens.curr.character);
+          warningAt(
+            "W033",
+            state.tokens.curr.line,
+            state.tokens.curr.character
+          );
         }
       }
     } else {
@@ -1924,7 +2057,10 @@ return advance();
    * @returns {token} - the token describing the statement
    */
   function statement(context) {
-    var i = indent, r, t = state.tokens.next, hasOwnScope = false;
+    var i = indent,
+      r,
+      t = state.tokens.next,
+      hasOwnScope = false;
 
     context |= prodParams.initial;
 
@@ -1951,7 +2087,9 @@ return advance();
 
       hasOwnScope = true;
       state.funct["(scope)"].stack();
-      state.funct["(scope)"].block.addLabel(t.value, { token: state.tokens.curr });
+      state.funct["(scope)"].block.addLabel(t.value, {
+        token: state.tokens.curr
+      });
 
       if (!state.tokens.next.labelled && state.tokens.next.value !== "{") {
         warning("W028", state.tokens.next, t.value, state.tokens.next.value);
@@ -1970,7 +2108,8 @@ return advance();
       //      ...
       //    }
       //  }
-      var iscase = (state.funct["(verb)"] === "case" && state.tokens.curr.value === ":");
+      var iscase =
+        state.funct["(verb)"] === "case" && state.tokens.curr.value === ":";
       block(context, true, true, false, false, iscase);
 
       if (hasOwnScope) {
@@ -1984,9 +2123,16 @@ return advance();
 
     r = expression(context, 0);
 
-    if (r && !(r.identifier && r.value === "function") &&
-        !(r.type === "(punctuator)" && r.left &&
-          r.left.identifier && r.left.value === "function")) {
+    if (
+      r &&
+      !(r.identifier && r.value === "function") &&
+      !(
+        r.type === "(punctuator)" &&
+        r.left &&
+        r.left.identifier &&
+        r.left.value === "function"
+      )
+    ) {
       if (!state.isStrict() && state.stmtMissingStrict()) {
         warning("E007");
       }
@@ -1997,13 +2143,18 @@ return advance();
     if (!t.block) {
       if (!state.option.expr && (!r || !r.exps)) {
         warning("W030", state.tokens.curr);
-      } else if (state.option.nonew && r && r.left && r.id === "(" && r.left.id === "new") {
+      } else if (
+        state.option.nonew &&
+        r &&
+        r.left &&
+        r.id === "(" &&
+        r.left.id === "new"
+      ) {
         warning("W031", t);
       }
 
       parseFinalSemicolon(t);
     }
-
 
     // Restore the indentation.
 
@@ -2024,7 +2175,8 @@ return advance();
    * @returns {Array<token>} - the tokens consumed
    */
   function statements(context) {
-    var a = [], p;
+    var a = [],
+      p;
 
     while (!state.tokens.next.reach && state.tokens.next.id !== "(end)") {
       if (state.tokens.next.id === ";") {
@@ -2042,7 +2194,6 @@ return advance();
     return a;
   }
 
-
   /**
    * Parse any directives in a directive prologue.
    */
@@ -2057,8 +2208,10 @@ return advance();
 
       advance();
       var directive = state.tokens.curr.value;
-      if (state.directive[directive] ||
-          (directive === "use strict" && state.option.strict === "implied")) {
+      if (
+        state.directive[directive] ||
+        (directive === "use strict" && state.option.strict === "implied")
+      ) {
         warning("W034", state.tokens.curr, directive);
       }
 
@@ -2069,8 +2222,12 @@ return advance();
       // > [...]
       // > - It is a Syntax Error if ContainsUseStrict of FunctionBody is true
       // >   and IsSimpleParameterList of FormalParameters is false.
-      if (directive === "use strict" && state.inES7() &&
-        !state.funct["(global)"] && state.funct["(hasSimpleParams)"] === false) {
+      if (
+        directive === "use strict" &&
+        state.inES7() &&
+        !state.funct["(global)"] &&
+        state.funct["(hasSimpleParams)"] === false
+      ) {
         error("E065", state.tokens.curr);
       }
 
@@ -2181,8 +2338,12 @@ return advance();
 
         var expr = expression(context, 10);
 
-        if (state.option.noreturnawait && context & prodParams.async &&
-            expr.identifier && expr.value === "await") {
+        if (
+          state.option.noreturnawait &&
+          context & prodParams.async &&
+          expr.identifier &&
+          expr.value === "await"
+        ) {
           warning("W146", expr);
         }
 
@@ -2206,8 +2367,8 @@ return advance();
       // JSHint observes Annex B of the ECMAScript specification by default,
       // where function declarations are permitted in the statement positions
       // of IfStatements.
-      var supportsFnDecl = state.funct["(verb)"] === "if" ||
-        state.tokens.curr.id === "else";
+      var supportsFnDecl =
+        state.funct["(verb)"] === "if" || state.tokens.curr.id === "else";
 
       state.tokens.next.inBracelessBlock = true;
       indent += state.option.indent;
@@ -2215,8 +2376,11 @@ return advance();
       a = [statement(context)];
       indent -= state.option.indent;
 
-      if (a[0] && a[0].declaration &&
-        !(supportsFnDecl && a[0].id === "function")) {
+      if (
+        a[0] &&
+        a[0].declaration &&
+        !(supportsFnDecl && a[0].id === "function")
+      ) {
         error("E048", a[0], a[0].id[0].toUpperCase() + a[0].id.slice(1));
       }
 
@@ -2226,17 +2390,17 @@ return advance();
     // Don't clear and let it propagate out if it is "break", "return" or
     // similar in switch case
     switch (state.funct["(verb)"]) {
-    case "break":
-    case "continue":
-    case "return":
-    case "throw":
-      if (iscase) {
-        break;
-      }
+      case "break":
+      case "continue":
+      case "return":
+      case "throw":
+        if (iscase) {
+          break;
+        }
 
       /* falls through */
-    default:
-      state.funct["(verb)"] = null;
+      default:
+        state.funct["(verb)"] = null;
     }
 
     inblock = b;
@@ -2246,7 +2410,6 @@ return advance();
     metrics.nestedBlockDepth -= 1;
     return a;
   }
-
 
   /**
    * Update the global state which tracks all statically-identifiable property
@@ -2314,37 +2477,49 @@ return advance();
 
   var baseTemplateSyntax = {
     identifier: false,
-    template: true,
+    template: true
   };
-  state.syntax["(template)"] = _.extend({
-    lbp: 155,
-    type: "(template)",
-    nud: doTemplateLiteral,
-    led: doTemplateLiteral,
-    noSubst: false
-  }, baseTemplateSyntax);
+  state.syntax["(template)"] = _.extend(
+    {
+      lbp: 155,
+      type: "(template)",
+      nud: doTemplateLiteral,
+      led: doTemplateLiteral,
+      noSubst: false
+    },
+    baseTemplateSyntax
+  );
 
-  state.syntax["(template middle)"] = _.extend({
-    lbp: 0,
-    type: "(template middle)",
-    noSubst: false
-  }, baseTemplateSyntax);
+  state.syntax["(template middle)"] = _.extend(
+    {
+      lbp: 0,
+      type: "(template middle)",
+      noSubst: false
+    },
+    baseTemplateSyntax
+  );
 
-  state.syntax["(template tail)"] = _.extend({
-    lbp: 0,
-    type: "(template tail)",
-    tail: true,
-    noSubst: false
-  }, baseTemplateSyntax);
+  state.syntax["(template tail)"] = _.extend(
+    {
+      lbp: 0,
+      type: "(template tail)",
+      tail: true,
+      noSubst: false
+    },
+    baseTemplateSyntax
+  );
 
-  state.syntax["(no subst template)"] = _.extend({
-    lbp: 155,
-    type: "(template)",
-    nud: doTemplateLiteral,
-    led: doTemplateLiteral,
-    noSubst: true,
-    tail: true // mark as tail, since it's always the last component
-  }, baseTemplateSyntax);
+  state.syntax["(no subst template)"] = _.extend(
+    {
+      lbp: 155,
+      type: "(template)",
+      nud: doTemplateLiteral,
+      led: doTemplateLiteral,
+      noSubst: true,
+      tail: true // mark as tail, since it's always the last component
+    },
+    baseTemplateSyntax
+  );
 
   type("(regexp)", function() {
     return this;
@@ -2361,7 +2536,7 @@ return advance();
   delim("}").reach = true;
   delim(")");
   delim("]");
-  delim("\"").reach = true;
+  delim('"').reach = true;
   delim("'").reach = true;
   delim(";");
   delim(":").reach = true;
@@ -2372,13 +2547,23 @@ return advance();
   reserve("catch");
   reserve("default").reach = true;
   reserve("finally");
-  reserve("true", function() { return this; });
-  reserve("false", function() { return this; });
-  reserve("null", function() { return this; });
+  reserve("true", function() {
+    return this;
+  });
+  reserve("false", function() {
+    return this;
+  });
+  reserve("null", function() {
+    return this;
+  });
   reserve("this", function() {
-    if (state.isStrict() && !isMethod() &&
-        !state.option.validthis && ((state.funct["(statement)"] &&
-        state.funct["(name)"].charAt(0) > "Z") || state.funct["(global)"])) {
+    if (
+      state.isStrict() &&
+      !isMethod() &&
+      !state.option.validthis &&
+      ((state.funct["(statement)"] && state.funct["(name)"].charAt(0) > "Z") ||
+        state.funct["(global)"])
+    ) {
       warning("W040", this);
     }
 
@@ -2419,64 +2604,82 @@ return advance();
   bitwiseassignop("<<=");
   bitwiseassignop(">>=");
   bitwiseassignop(">>>=");
-  infix(",", function(context, left, that) {
-    if (state.option.nocomma) {
-      warning("W127", that);
-    }
+  infix(
+    ",",
+    function(context, left, that) {
+      if (state.option.nocomma) {
+        warning("W127", that);
+      }
 
-    that.left = left;
+      that.left = left;
 
-    if (checkComma()) {
-      that.right = expression(context, 10);
-    } else {
-      that.right = null;
-    }
+      if (checkComma()) {
+        that.right = expression(context, 10);
+      } else {
+        that.right = null;
+      }
 
-    return that;
-  }, 10, true);
+      return that;
+    },
+    10,
+    true
+  );
 
-  infix("?", function(context, left, that) {
-    increaseComplexityCount();
-    that.left = left;
-    that.right = expression(context & ~prodParams.noin, 10);
-    advance(":");
-    expression(context, 10);
-    return that;
-  }, 30);
+  infix(
+    "?",
+    function(context, left, that) {
+      increaseComplexityCount();
+      that.left = left;
+      that.right = expression(context & ~prodParams.noin, 10);
+      advance(":");
+      expression(context, 10);
+      return that;
+    },
+    30
+  );
 
   var orPrecendence = 40;
-  infix("||", function(context, left, that) {
-    increaseComplexityCount();
-    that.left = left;
-    that.right = expression(context, orPrecendence);
-    return that;
-  }, orPrecendence);
+  infix(
+    "||",
+    function(context, left, that) {
+      increaseComplexityCount();
+      that.left = left;
+      that.right = expression(context, orPrecendence);
+      return that;
+    },
+    orPrecendence
+  );
   infix("&&", "and", 50);
   // The Exponentiation operator, introduced in ECMAScript 2016
   //
   // ExponentiationExpression[Yield] :
   //   UnaryExpression[?Yield]
   //   UpdateExpression[?Yield] ** ExponentiationExpression[?Yield]
-  infix("**", function(context, left, that) {
-    if (!state.inES7()) {
-      warning("W119", that, "Exponentiation operator", "7");
-    }
+  infix(
+    "**",
+    function(context, left, that) {
+      if (!state.inES7()) {
+        warning("W119", that, "Exponentiation operator", "7");
+      }
 
-    // Disallow UnaryExpressions which are not wrapped in parenthesis
-    if (!left.paren && beginsUnaryExpression(left)) {
-      error("E024", that, "**");
-    }
+      // Disallow UnaryExpressions which are not wrapped in parenthesis
+      if (!left.paren && beginsUnaryExpression(left)) {
+        error("E024", that, "**");
+      }
 
-    that.left = left;
-    that.right = expression(context, that.rbp);
-    return that;
-  }, 150);
+      that.left = left;
+      that.right = expression(context, that.rbp);
+      return that;
+    },
+    150
+  );
   state.syntax["**"].rbp = 140;
   bitwise("|", "bitor", 70);
   bitwise("^", "bitxor", 80);
   bitwise("&", "bitand", 90);
   relation("==", function(context, left, right) {
-    var eqnull = state.option.eqnull &&
+    var eqnull =
+      state.option.eqnull &&
       ((left && left.value) === "null" || (right && right.value) === "null");
 
     switch (true) {
@@ -2505,8 +2708,9 @@ return advance();
     return this;
   });
   relation("!=", function(context, left, right) {
-    var eqnull = state.option.eqnull &&
-        ((left && left.value) === "null" || (right && right.value) === "null");
+    var eqnull =
+      state.option.eqnull &&
+      ((left && left.value) === "null" || (right && right.value) === "null");
 
     if (!eqnull && state.option.eqeqeq) {
       this.from = this.character;
@@ -2536,19 +2740,22 @@ return advance();
   bitwise(">>", "shiftright", 120);
   bitwise(">>>", "shiftrightunsigned", 120);
   infix("in", "in", 120);
-  infix("instanceof", function(context, left, token) {
-    var right;
-    var scope = state.funct["(scope)"];
-    token.left = left;
-    token.right = right = expression(context, 120);
+  infix(
+    "instanceof",
+    function(context, left, token) {
+      var right;
+      var scope = state.funct["(scope)"];
+      token.left = left;
+      token.right = right = expression(context, 120);
 
-    // This condition reflects a syntax error which will be reported by the
-    // `expression` function.
-    if (!right) {
-      return token;
-    }
+      // This condition reflects a syntax error which will be reported by the
+      // `expression` function.
+      if (!right) {
+        return token;
+      }
 
-    if (right.id === "(number)" ||
+      if (
+        right.id === "(number)" ||
         right.id === "(string)" ||
         right.value === "null" ||
         (right.value === "undefined" && !scope.has("undefined")) ||
@@ -2556,37 +2763,44 @@ return advance();
         right.id === "{" ||
         (right.id === "[" && !right.right) ||
         right.id === "(regexp)" ||
-        (right.id === "(template)" && !right.tag)) {
-      error("E060");
-    }
-
-    if (right.id === "function") {
-      warning("W139");
-    }
-
-    return token;
-  }, 120);
-  infix("+", function(context, left, that) {
-    var next = state.tokens.next;
-    var right;
-    that.left = left;
-    that.right = right = expression(context, 130);
-
-    if (left && right && left.id === "(string)" && right.id === "(string)") {
-      left.value += right.value;
-      left.character = right.character;
-      if (!state.option.scripturl && reg.javascriptURL.test(left.value)) {
-        warning("W050", left);
+        (right.id === "(template)" && !right.tag)
+      ) {
+        error("E060");
       }
-      return left;
-    }
 
-    if (next.id === "+" || next.id === "++") {
-      warning("W007", that.right);
-    }
+      if (right.id === "function") {
+        warning("W139");
+      }
 
-    return that;
-  }, 130);
+      return token;
+    },
+    120
+  );
+  infix(
+    "+",
+    function(context, left, that) {
+      var next = state.tokens.next;
+      var right;
+      that.left = left;
+      that.right = right = expression(context, 130);
+
+      if (left && right && left.id === "(string)" && right.id === "(string)") {
+        left.value += right.value;
+        left.character = right.character;
+        if (!state.option.scripturl && reg.javascriptURL.test(left.value)) {
+          warning("W050", left);
+        }
+        return left;
+      }
+
+      if (next.id === "+" || next.id === "++") {
+        warning("W007", that.right);
+      }
+
+      return that;
+    },
+    130
+  );
   prefix("+", function(context) {
     var next = state.tokens.next;
     this.arity = "unary";
@@ -2598,17 +2812,21 @@ return advance();
 
     return this;
   });
-  infix("-", function(context, left, that) {
-    var next = state.tokens.next;
-    that.left = left;
-    that.right = expression(context, 130);
+  infix(
+    "-",
+    function(context, left, that) {
+      var next = state.tokens.next;
+      that.left = left;
+      that.right = expression(context, 130);
 
-    if (next.id === "-" || next.id === "--") {
-      warning("W006", that.right);
-    }
+      if (next.id === "-" || next.id === "--") {
+        warning("W006", that.right);
+      }
 
-    return that;
-  }, 130);
+      return that;
+    },
+    130
+  );
   prefix("-", function(context) {
     var next = state.tokens.next;
     this.arity = "unary";
@@ -2667,7 +2885,8 @@ return advance();
     this.arity = "unary";
     this.right = expression(context, 150);
 
-    if (!this.right) { // '!' followed by nothing? Give up.
+    if (!this.right) {
+      // '!' followed by nothing? Give up.
       quit("E041", this);
     }
 
@@ -2682,7 +2901,8 @@ return advance();
     var p = expression(context, 150);
     this.first = this.right = p;
 
-    if (!p) { // 'typeof' followed by nothing? Give up.
+    if (!p) {
+      // 'typeof' followed by nothing? Give up.
       quit("E041", this);
     }
 
@@ -2698,11 +2918,13 @@ return advance();
       if (!state.inES6(true)) {
         warning("W119", state.tokens.prev, "new.target", "6");
       }
-      var inFunction, c = state.funct;
+      var inFunction,
+        c = state.funct;
       while (c) {
         inFunction = !c["(global)"];
         if (!c["(arrow)"]) {
-break; }
+          break;
+        }
         c = c["(context)"];
       }
       if (!inFunction) {
@@ -2710,39 +2932,44 @@ break; }
       }
     });
     if (mp) {
-return mp; }
+      return mp;
+    }
 
-    var c = expression(context, 155), i;
+    var c = expression(context, 155),
+      i;
     if (c && c.id !== "function") {
       if (c.identifier) {
         switch (c.value) {
-        case "Number":
-        case "String":
-        case "Boolean":
-        case "Math":
-        case "JSON":
-          warning("W053", state.tokens.prev, c.value);
-          break;
-        case "Symbol":
-          if (state.inES6()) {
+          case "Number":
+          case "String":
+          case "Boolean":
+          case "Math":
+          case "JSON":
             warning("W053", state.tokens.prev, c.value);
-          }
-          break;
-        case "Function":
-          if (!state.option.evil) {
-            warning("W054");
-          }
-          break;
-        case "Date":
-        case "RegExp":
-        case "this":
-          break;
-        default:
-          i = c.value.substr(0, 1);
-          if (state.option.newcap && (i < "A" || i > "Z") &&
-            !state.funct["(scope)"].isPredefined(c.value)) {
-            warning("W055", state.tokens.curr);
-          }
+            break;
+          case "Symbol":
+            if (state.inES6()) {
+              warning("W053", state.tokens.prev, c.value);
+            }
+            break;
+          case "Function":
+            if (!state.option.evil) {
+              warning("W054");
+            }
+            break;
+          case "Date":
+          case "RegExp":
+          case "this":
+            break;
+          default:
+            i = c.value.substr(0, 1);
+            if (
+              state.option.newcap &&
+              (i < "A" || i > "Z") &&
+              !state.funct["(scope)"].isPredefined(c.value)
+            ) {
+              warning("W055", state.tokens.curr);
+            }
         }
       } else {
         if (c.id !== "." && c.id !== "[" && c.id !== "(") {
@@ -2762,7 +2989,6 @@ return mp; }
     return this;
   });
   state.syntax["new"].exps = true;
-
 
   // Class statement
   blockstmt("class", function(context) {
@@ -2864,8 +3090,10 @@ return mp; }
       inGenerator = false;
       context &= ~prodParams.preAsync;
 
-      if (state.tokens.next.value === "static" &&
-        !checkPunctuator(peek(), "(")) {
+      if (
+        state.tokens.next.value === "static" &&
+        !checkPunctuator(peek(), "(")
+      ) {
         isStatic = true;
         advance();
       }
@@ -2899,7 +3127,10 @@ return mp; }
 
       token = state.tokens.next;
 
-      if ((token.value === "set" || token.value === "get") && !checkPunctuator(peek(), "(")) {
+      if (
+        (token.value === "set" || token.value === "get") &&
+        !checkPunctuator(peek(), "(")
+      ) {
         if (inGenerator) {
           /* istanbul ignore next */
           error("E024", token, token.value);
@@ -2909,9 +3140,19 @@ return mp; }
         token = state.tokens.next;
 
         if (!isStatic && token.value === "constructor") {
-          error("E049", token, "class " + accessorType + "ter method", token.value);
+          error(
+            "E049",
+            token,
+            "class " + accessorType + "ter method",
+            token.value
+          );
         } else if (isStatic && token.value === "prototype") {
-          error("E049", token, "static class " + accessorType + "ter method", token.value);
+          error(
+            "E049",
+            token,
+            "static class " + accessorType + "ter method",
+            token.value
+          );
         }
       } else {
         accessorType = null;
@@ -3004,145 +3245,193 @@ return mp; }
       }
     }
 
-    doFunction(context, { name: name,
-        type: generator ? "generator" : null,
-        isMethod: true,
-        statement: classToken });
+    doFunction(context, {
+      name: name,
+      type: generator ? "generator" : null,
+      isMethod: true,
+      statement: classToken
+    });
   }
 
   prefix("void").exps = true;
 
-  infix(".", function(context, left, that) {
-    var m = identifier(context, true);
+  infix(
+    ".",
+    function(context, left, that) {
+      var m = identifier(context, true);
 
-    if (typeof m === "string") {
-      countMember(m);
-    }
-
-    that.left = left;
-    that.right = m;
-
-    if (m && m === "hasOwnProperty" && state.tokens.next.value === "=") {
-      warning("W001");
-    }
-
-    if (left && left.value === "arguments" && (m === "callee" || m === "caller")) {
-      if (state.option.noarg) {
-        warning("W059", left, m);
-      } else if (state.isStrict()) {
-        error("E008");
+      if (typeof m === "string") {
+        countMember(m);
       }
-    } else if (!state.option.evil && left && left.value === "document" &&
-        (m === "write" || m === "writeln")) {
-      warning("W060", left);
-    }
 
-    if (!state.option.evil && (m === "eval" || m === "execScript")) {
-      if (isGlobalEval(left, state)) {
-        warning("W061");
+      that.left = left;
+      that.right = m;
+
+      if (m && m === "hasOwnProperty" && state.tokens.next.value === "=") {
+        warning("W001");
       }
-    }
 
-    return that;
-  }, 160, true);
+      if (
+        left &&
+        left.value === "arguments" &&
+        (m === "callee" || m === "caller")
+      ) {
+        if (state.option.noarg) {
+          warning("W059", left, m);
+        } else if (state.isStrict()) {
+          error("E008");
+        }
+      } else if (
+        !state.option.evil &&
+        left &&
+        left.value === "document" &&
+        (m === "write" || m === "writeln")
+      ) {
+        warning("W060", left);
+      }
 
-  infix("(", function(context, left, that) {
-    if (state.option.immed && left && !left.immed && left.id === "function") {
-      warning("W062");
-    }
+      if (!state.option.evil && (m === "eval" || m === "execScript")) {
+        if (isGlobalEval(left, state)) {
+          warning("W061");
+        }
+      }
 
-    if (state.option.asi && checkPunctuators(state.tokens.prev, [")", "]"]) &&
-      !sameLine(state.tokens.prev, state.tokens.curr)) {
-      warning("W014", state.tokens.curr, state.tokens.curr.id);
-    }
+      return that;
+    },
+    160,
+    true
+  );
 
-    var n = 0;
-    var p = [];
+  infix(
+    "(",
+    function(context, left, that) {
+      if (state.option.immed && left && !left.immed && left.id === "function") {
+        warning("W062");
+      }
 
-    if (left) {
-      if (left.type === "(identifier)") {
-        if (left.value.match(/^[A-Z]([A-Z0-9_$]*[a-z][A-Za-z0-9_$]*)?$/)) {
-          if ("Array Number String Boolean Date Object Error Symbol".indexOf(left.value) === -1) {
-            if (left.value === "Math") {
-              /* istanbul ignore next */
-              warning("W063", left);
-            } else if (state.option.newcap) {
-              warning("W064", left);
+      if (
+        state.option.asi &&
+        checkPunctuators(state.tokens.prev, [")", "]"]) &&
+        !sameLine(state.tokens.prev, state.tokens.curr)
+      ) {
+        warning("W014", state.tokens.curr, state.tokens.curr.id);
+      }
+
+      var n = 0;
+      var p = [];
+
+      if (left) {
+        if (left.type === "(identifier)") {
+          if (left.value.match(/^[A-Z]([A-Z0-9_$]*[a-z][A-Za-z0-9_$]*)?$/)) {
+            if (
+              "Array Number String Boolean Date Object Error Symbol".indexOf(
+                left.value
+              ) === -1
+            ) {
+              if (left.value === "Math") {
+                /* istanbul ignore next */
+                warning("W063", left);
+              } else if (state.option.newcap) {
+                warning("W064", left);
+              }
             }
           }
         }
       }
-    }
 
-    if (state.tokens.next.id !== ")") {
-      for (;;) {
-        spreadrest("spread");
+      if (state.tokens.next.id !== ")") {
+        for (;;) {
+          spreadrest("spread");
 
-        p[p.length] = expression(context, 10);
-        n += 1;
-        if (state.tokens.next.id !== ",") {
-          break;
-        }
-        advance(",");
-        checkComma({ allowTrailing: true });
-
-        if (state.tokens.next.id === ")") {
-          if (!state.inES8()) {
-            warning("W119", state.tokens.curr, "Trailing comma in arguments lists", "8");
+          p[p.length] = expression(context, 10);
+          n += 1;
+          if (state.tokens.next.id !== ",") {
+            break;
           }
+          advance(",");
+          checkComma({ allowTrailing: true });
 
-          break;
+          if (state.tokens.next.id === ")") {
+            if (!state.inES8()) {
+              warning(
+                "W119",
+                state.tokens.curr,
+                "Trailing comma in arguments lists",
+                "8"
+              );
+            }
+
+            break;
+          }
         }
       }
-    }
 
-    advance(")");
+      advance(")");
 
-    if (typeof left === "object") {
-      if (!state.inES5() && left.value === "parseInt" && n === 1) {
-        warning("W065", state.tokens.curr);
-      }
-      if (!state.option.evil) {
-        if (left.value === "eval" || left.value === "Function" ||
-            left.value === "execScript") {
-          warning("W061", left);
+      if (typeof left === "object") {
+        if (!state.inES5() && left.value === "parseInt" && n === 1) {
+          warning("W065", state.tokens.curr);
+        }
+        if (!state.option.evil) {
+          if (
+            left.value === "eval" ||
+            left.value === "Function" ||
+            left.value === "execScript"
+          ) {
+            warning("W061", left);
 
-          // This conditional expression was initially implemented with a typo
-          // which prevented the branch's execution in all cases. While
-          // enabling the code will produce behavior that is consistent with
-          // the other forms of code evaluation that follow, such a change is
-          // also technically incompatible with prior versions of JSHint (due
-          // to the fact that the behavior was never formally documented). This
-          // branch should be enabled as part of a major release.
-          //if (p[0] && p[0].id === "(string)") {
-          //  addEvalCode(left, p[0]);
-          //}
-        } else if (p[0] && p[0].id === "(string)" &&
-             (left.value === "setTimeout" ||
-            left.value === "setInterval")) {
-          warning("W066", left);
-          addEvalCode(left, p[0]);
+            // This conditional expression was initially implemented with a typo
+            // which prevented the branch's execution in all cases. While
+            // enabling the code will produce behavior that is consistent with
+            // the other forms of code evaluation that follow, such a change is
+            // also technically incompatible with prior versions of JSHint (due
+            // to the fact that the behavior was never formally documented). This
+            // branch should be enabled as part of a major release.
+            //if (p[0] && p[0].id === "(string)") {
+            //  addEvalCode(left, p[0]);
+            //}
+          } else if (
+            p[0] &&
+            p[0].id === "(string)" &&
+            (left.value === "setTimeout" || left.value === "setInterval")
+          ) {
+            warning("W066", left);
+            addEvalCode(left, p[0]);
 
-        // window.setTimeout/setInterval
-        } else if (p[0] && p[0].id === "(string)" &&
-             left.value === "." &&
-             left.left.value === "window" &&
-             (left.right === "setTimeout" ||
-            left.right === "setInterval")) {
-          warning("W066", left);
-          addEvalCode(left, p[0]);
+            // window.setTimeout/setInterval
+          } else if (
+            p[0] &&
+            p[0].id === "(string)" &&
+            left.value === "." &&
+            left.left.value === "window" &&
+            (left.right === "setTimeout" || left.right === "setInterval")
+          ) {
+            warning("W066", left);
+            addEvalCode(left, p[0]);
+          }
+        }
+        if (
+          !left.identifier &&
+          left.id !== "." &&
+          left.id !== "[" &&
+          left.id !== "=>" &&
+          left.id !== "(" &&
+          left.id !== "&&" &&
+          left.id !== "||" &&
+          left.id !== "?" &&
+          left.id !== "async" &&
+          !(state.inES6() && left["(name)"])
+        ) {
+          warning("W067", that);
         }
       }
-      if (!left.identifier && left.id !== "." && left.id !== "[" && left.id !== "=>" &&
-          left.id !== "(" && left.id !== "&&" && left.id !== "||" && left.id !== "?" &&
-          left.id !== "async" && !(state.inES6() && left["(name)"])) {
-        warning("W067", that);
-      }
-    }
 
-    that.left = left;
-    return that;
-  }, 155, true).exps = true;
+      that.left = left;
+      return that;
+    },
+    155,
+    true
+  ).exps = true;
 
   function peekThroughParens(parens) {
     var pn = state.tokens.next;
@@ -3212,8 +3501,11 @@ return mp; }
     ret.paren = true;
 
     if (state.option.immed && ret && ret.id === "function") {
-      if (state.tokens.next.id !== "(" &&
-        state.tokens.next.id !== "." && state.tokens.next.id !== "[") {
+      if (
+        state.tokens.next.id !== "(" &&
+        state.tokens.next.id !== "." &&
+        state.tokens.next.id !== "["
+      ) {
         warning("W068", this);
       }
     }
@@ -3258,7 +3550,8 @@ return mp; }
           // Used to delineate an integer number literal from a dereferencing
           // punctuator (otherwise interpreted as a decimal point)
           (ret.type === "(number)" &&
-            checkPunctuator(pn, ".") && /^\d+$/.test(ret.value)) ||
+            checkPunctuator(pn, ".") &&
+            /^\d+$/.test(ret.value)) ||
           // Used to wrap object destructuring assignment
           (opening.beginsStmt && ret.id === "=" && ret.left.id === "{");
       }
@@ -3269,7 +3562,7 @@ return mp; }
     // first expression *or* the current group contains multiple expressions)
     if (!isNecessary && (isOperator(first) || first !== last)) {
       isNecessary =
-        (rbp > first.lbp) ||
+        rbp > first.lbp ||
         (rbp > 0 && rbp === first.lbp) ||
         (!isEndOfExpr() && last.rbp < state.tokens.next.lbp);
     }
@@ -3283,54 +3576,69 @@ return mp; }
 
   application("=>");
 
-  infix("[", function(context, left, that) {
-    var e, s, canUseDot;
+  infix(
+    "[",
+    function(context, left, that) {
+      var e, s, canUseDot;
 
-    if (state.option.asi && checkPunctuators(state.tokens.prev, [")", "]"]) &&
-      !sameLine(state.tokens.prev, state.tokens.curr)) {
-      warning("W014", state.tokens.curr, state.tokens.curr.id);
-    }
-
-    e = expression(context & ~prodParams.noin, 10);
-
-    if (e && e.type === "(string)") {
-      if (!state.option.evil && (e.value === "eval" || e.value === "execScript")) {
-        if (isGlobalEval(left, state)) {
-          warning("W061");
-        }
+      if (
+        state.option.asi &&
+        checkPunctuators(state.tokens.prev, [")", "]"]) &&
+        !sameLine(state.tokens.prev, state.tokens.curr)
+      ) {
+        warning("W014", state.tokens.curr, state.tokens.curr.id);
       }
 
-      countMember(e.value);
-      if (!state.option.sub && reg.identifier.test(e.value)) {
-        s = state.syntax[e.value];
+      e = expression(context & ~prodParams.noin, 10);
 
-        if (s) {
-          canUseDot = !isReserved(context, s);
-        } else {
-          // This branch exists to preserve legacy behavior with version 2.9.5
-          // and earlier. In those releases, `eval` and `arguments` were
-          // incorrectly interpreted as reserved keywords, so Member
-          // Expressions such as `object["eval"]` did not trigger warning W069.
-          //
-          // TODO: Remove in JSHint 3
-          canUseDot = e.value !== "eval" && e.value !== "arguments";
+      if (e && e.type === "(string)") {
+        if (
+          !state.option.evil &&
+          (e.value === "eval" || e.value === "execScript")
+        ) {
+          if (isGlobalEval(left, state)) {
+            warning("W061");
+          }
         }
 
-        if (canUseDot) {
-          warning("W069", state.tokens.prev, e.value);
+        countMember(e.value);
+        if (!state.option.sub && reg.identifier.test(e.value)) {
+          s = state.syntax[e.value];
+
+          if (s) {
+            canUseDot = !isReserved(context, s);
+          } else {
+            // This branch exists to preserve legacy behavior with version 2.9.5
+            // and earlier. In those releases, `eval` and `arguments` were
+            // incorrectly interpreted as reserved keywords, so Member
+            // Expressions such as `object["eval"]` did not trigger warning W069.
+            //
+            // TODO: Remove in JSHint 3
+            canUseDot = e.value !== "eval" && e.value !== "arguments";
+          }
+
+          if (canUseDot) {
+            warning("W069", state.tokens.prev, e.value);
+          }
         }
       }
-    }
-    advance("]", that);
+      advance("]", that);
 
-    if (e && e.value === "hasOwnProperty" && state.tokens.next.value === "=") {
-      warning("W001");
-    }
+      if (
+        e &&
+        e.value === "hasOwnProperty" &&
+        state.tokens.next.value === "="
+      ) {
+        warning("W001");
+      }
 
-    that.left = left;
-    that.right = e;
-    return that;
-  }, 160, true);
+      that.left = left;
+      that.right = e;
+      return that;
+    },
+    160,
+    true
+  );
 
   function comprehensiveArrayExpression(context) {
     var res = {};
@@ -3395,9 +3703,9 @@ return mp; }
       return comprehensiveArrayExpression(context);
     } else if (blocktype.isDestAssign) {
       this.destructAssign = destructuringPattern(context, {
-          openingParsed: true,
-          assignment: true
-        });
+        openingParsed: true,
+        assignment: true
+      });
       return this;
     }
     var b = !sameLine(state.tokens.curr, state.tokens.next);
@@ -3443,7 +3751,11 @@ return mp; }
         }
       } else {
         if (state.option.trailingcomma && state.inES5()) {
-          warningAt("W140", state.tokens.curr.line, state.tokens.curr.character);
+          warningAt(
+            "W140",
+            state.tokens.curr.line,
+            state.tokens.curr.character
+          );
         }
         break;
       }
@@ -3454,7 +3766,6 @@ return mp; }
     advance("]", this);
     return this;
   });
-
 
   function isMethod() {
     return !!state.funct["(method)"];
@@ -3483,12 +3794,12 @@ return mp; }
           advance();
         }
       }
-    /* istanbul ignore next */
+      /* istanbul ignore next */
     } else if (typeof id === "object") {
       if (id.id === "(string)" || id.id === "(identifier)") {
-id = id.value;
+        id = id.value;
       } else if (id.id === "(number)") {
-id = id.value.toString();
+        id = id.value.toString();
       }
     }
 
@@ -3524,7 +3835,7 @@ id = id.value.toString();
 
     if (loneArg && loneArg.identifier === true) {
       state.funct["(scope)"].addParam(loneArg.value, loneArg);
-      return { arity: 1, params: [ loneArg.value ], isSimple: true };
+      return { arity: 1, params: [loneArg.value], isSimple: true };
     }
 
     next = state.tokens.next;
@@ -3539,7 +3850,10 @@ id = id.value.toString();
     }
 
     function addParam(addParamArgs) {
-      state.funct["(scope)"].addParam.apply(state.funct["(scope)"], addParamArgs);
+      state.funct["(scope)"].addParam.apply(
+        state.funct["(scope)"],
+        addParamArgs
+      );
     }
 
     for (;;) {
@@ -3567,7 +3881,7 @@ id = id.value.toString();
         } else {
           // Skip invalid parameter.
           while (!checkPunctuators(state.tokens.next, [",", ")"])) {
-advance();
+            advance();
           }
         }
       }
@@ -3606,7 +3920,12 @@ advance();
 
       if (state.tokens.next.id === ")") {
         if (state.tokens.curr.id === "," && !state.inES8()) {
-          warning("W119", state.tokens.curr, "Trailing comma in function parameters", "8");
+          warning(
+            "W119",
+            state.tokens.curr,
+            "Trailing comma in function parameters",
+            "8"
+          );
         }
 
         advance(")", next);
@@ -3632,36 +3951,36 @@ advance();
    */
   function functor(name, token, overwrites) {
     var funct = {
-      "(name)"      : name,
-      "(breakage)"  : 0,
-      "(loopage)"   : 0,
+      "(name)": name,
+      "(breakage)": 0,
+      "(loopage)": 0,
       // The strictness of the function body is tracked via a dedicated
       // property (as opposed to via the global `state` object) so that the
       // value can be referenced after the body has been fully parsed (i.e.
       // when validating the identifier used in function declarations and
       // function expressions).
-      "(isStrict)"  : "unknown",
+      "(isStrict)": "unknown",
 
-      "(global)"    : false,
+      "(global)": false,
 
-      "(line)"      : null,
-      "(character)" : null,
-      "(metrics)"   : null,
-      "(statement)" : null,
-      "(context)"   : null,
-      "(scope)"     : null,
-      "(comparray)" : null,
-      "(yielded)"   : null,
-      "(arrow)"     : null,
-      "(async)"     : null,
-      "(params)"    : null
+      "(line)": null,
+      "(character)": null,
+      "(metrics)": null,
+      "(statement)": null,
+      "(context)": null,
+      "(scope)": null,
+      "(comparray)": null,
+      "(yielded)": null,
+      "(arrow)": null,
+      "(async)": null,
+      "(params)": null
     };
 
     if (token) {
       _.extend(funct, {
-        "(line)"     : token.line,
+        "(line)": token.line,
         "(character)": token.character,
-        "(metrics)"  : createMetrics(token)
+        "(metrics)": createMetrics(token)
       });
     }
 
@@ -3669,7 +3988,7 @@ advance();
 
     if (funct["(context)"]) {
       funct["(scope)"] = funct["(context)"]["(scope)"];
-      funct["(comparray)"]  = funct["(context)"]["(comparray)"];
+      funct["(comparray)"] = funct["(context)"]["(comparray)"];
     }
 
     return funct;
@@ -3716,15 +4035,20 @@ advance();
     };
 
     function end() {
-      if (state.tokens.curr.template && state.tokens.curr.tail &&
-          state.tokens.curr.context === ctx) {
+      if (
+        state.tokens.curr.template &&
+        state.tokens.curr.tail &&
+        state.tokens.curr.context === ctx
+      ) {
         /* istanbul ignore next */
         return true;
       }
-      var complete = (state.tokens.next.template && state.tokens.next.tail &&
-                      state.tokens.next.context === ctx);
+      var complete =
+        state.tokens.next.template &&
+        state.tokens.next.tail &&
+        state.tokens.next.context === ctx;
       if (complete) {
-advance();
+        advance();
       }
       return complete || state.tokens.next.isUnclosed;
     }
@@ -3752,8 +4076,15 @@ advance();
    *                                            the body of member functions.
    */
   function doFunction(context, options) {
-    var f, token, name, statement, classExprBinding, isGenerator, isArrow,
-      isMethod, ignoreLoopFunc;
+    var f,
+      token,
+      name,
+      statement,
+      classExprBinding,
+      isGenerator,
+      isArrow,
+      isMethod,
+      ignoreLoopFunc;
     var oldOption = state.option;
     var oldIgnored = state.ignored;
     var isAsync = context & prodParams.preAsync;
@@ -3789,10 +4120,10 @@ advance();
 
     state.funct = functor(name || state.nameStack.infer(), state.tokens.next, {
       "(statement)": statement,
-      "(context)":   state.funct,
-      "(arrow)":     isArrow,
-      "(method)":    isMethod,
-      "(async)":     isAsync
+      "(context)": state.funct,
+      "(arrow)": isArrow,
+      "(method)": isMethod,
+      "(async)": isAsync
     });
 
     f = state.funct;
@@ -3808,8 +4139,12 @@ advance();
     state.funct["(scope)"].stack("functionouter");
     var internallyAccessibleName = !isMethod && (name || classExprBinding);
     if (internallyAccessibleName) {
-      state.funct["(scope)"].block.add(internallyAccessibleName,
-        classExprBinding ? "class" : "function", state.tokens.curr, false);
+      state.funct["(scope)"].block.add(
+        internallyAccessibleName,
+        classExprBinding ? "class" : "function",
+        state.tokens.curr,
+        false
+      );
     }
 
     if (!isArrow) {
@@ -3886,23 +4221,29 @@ advance();
       arity: 0,
 
       verifyMaxStatementsPerFunction: function() {
-        if (state.option.maxstatements &&
-          this.statementCount > state.option.maxstatements) {
+        if (
+          state.option.maxstatements &&
+          this.statementCount > state.option.maxstatements
+        ) {
           warning("W071", functionStartToken, this.statementCount);
         }
       },
 
       verifyMaxParametersPerFunction: function() {
-        if (_.isNumber(state.option.maxparams) &&
-          this.arity > state.option.maxparams) {
+        if (
+          _.isNumber(state.option.maxparams) &&
+          this.arity > state.option.maxparams
+        ) {
           warning("W072", functionStartToken, this.arity);
         }
       },
 
       verifyMaxNestedBlockDepthPerFunction: function() {
-        if (state.option.maxdepth &&
+        if (
+          state.option.maxdepth &&
           this.nestedBlockDepth > 0 &&
-          this.nestedBlockDepth === state.option.maxdepth + 1) {
+          this.nestedBlockDepth === state.option.maxdepth + 1
+        ) {
           warning("W073", null, this.nestedBlockDepth);
         }
       },
@@ -3935,18 +4276,18 @@ advance();
     }
 
     switch (token.id) {
-    case "=":
-    case "+=":
-    case "-=":
-    case "*=":
-    case "%=":
-    case "&=":
-    case "|=":
-    case "^=":
-    case "/=":
-      if (!state.option.boss) {
-        warning("W084", token);
-      }
+      case "=":
+      case "+=":
+      case "-=":
+      case "*=":
+      case "%=":
+      case "&=":
+      case "|=":
+      case "^=":
+      case "/=":
+        if (!state.option.boss) {
+          warning("W084", token);
+        }
     }
   }
 
@@ -3961,8 +4302,12 @@ advance();
     // Check for lonely setters if in the ES5 mode.
     if (state.inES5()) {
       for (var name in props) {
-        if (props[name] && props[name].setterToken && !props[name].getterToken &&
-          !props[name].static) {
+        if (
+          props[name] &&
+          props[name].setterToken &&
+          !props[name].getterToken &&
+          !props[name].static
+        ) {
           warning("W078", props[name].setterToken);
         }
       }
@@ -3984,10 +4329,16 @@ advance();
     }
   }
 
-//object literals
+  //object literals
   (function(x) {
     x.nud = function(context) {
-      var b, f, i, params, t, isGeneratorMethod = false, nextVal;
+      var b,
+        f,
+        i,
+        params,
+        t,
+        isGeneratorMethod = false,
+        nextVal;
       var props = Object.create(null); // All properties, including accessors
       var isAsyncMethod = false;
 
@@ -4003,9 +4354,9 @@ advance();
       var blocktype = lookupBlockType();
       if (blocktype.isDestAssign) {
         this.destructAssign = destructuringPattern(context, {
-            openingParsed: true,
-            assignment: true
-          });
+          openingParsed: true,
+          assignment: true
+        });
         return this;
       }
       state.inObjectBody = true;
@@ -4015,8 +4366,10 @@ advance();
         }
 
         nextVal = state.tokens.next.value;
-        if (state.tokens.next.identifier &&
-            (peekIgnoreEOL().id === "," || peekIgnoreEOL().id === "}")) {
+        if (
+          state.tokens.next.identifier &&
+          (peekIgnoreEOL().id === "," || peekIgnoreEOL().id === "}")
+        ) {
           if (!state.inES6()) {
             warning("W104", state.tokens.next, "object short notation", "6");
           }
@@ -4024,7 +4377,10 @@ advance();
           saveProperty(props, i, state.tokens.next);
 
           expression(context, 10);
-        } else if (peek().id !== ":" && (nextVal === "get" || nextVal === "set")) {
+        } else if (
+          peek().id !== ":" &&
+          (nextVal === "get" || nextVal === "set")
+        ) {
           advance(nextVal);
 
           if (!state.inES5()) {
@@ -4067,7 +4423,10 @@ advance();
 
           expression(context, 10);
         } else {
-          if (state.tokens.next.id === "async" && !checkPunctuators(peek(), ["(", ":"])) {
+          if (
+            state.tokens.next.id === "async" &&
+            !checkPunctuators(peek(), ["(", ":"])
+          ) {
             if (!state.inES8()) {
               warning("W119", state.tokens.next, "async functions", "8");
             }
@@ -4080,7 +4439,10 @@ advance();
             isAsyncMethod = false;
           }
 
-          if (state.tokens.next.value === "*" && state.tokens.next.type === "(punctuator)") {
+          if (
+            state.tokens.next.value === "*" &&
+            state.tokens.next.type === "(punctuator)"
+          ) {
             if (isAsyncMethod && !state.inES9()) {
               warning("W119", state.tokens.next, "async generators", "9");
             } else if (!state.inES6()) {
@@ -4111,10 +4473,13 @@ advance();
               warning("W104", state.tokens.curr, "concise methods", "6");
             }
 
-            doFunction(isAsyncMethod ? context | prodParams.preAsync : context, {
-              isMethod: true,
-              type: isGeneratorMethod ? "generator" : null
-            });
+            doFunction(
+              isAsyncMethod ? context | prodParams.preAsync : context,
+              {
+                isMethod: true,
+                type: isGeneratorMethod ? "generator" : null
+              }
+            );
           } else {
             advance(":");
             expression(context, 10);
@@ -4134,7 +4499,11 @@ advance();
           }
         } else {
           if (state.option.trailingcomma && state.inES5()) {
-            warningAt("W140", state.tokens.curr.line, state.tokens.curr.character);
+            warningAt(
+              "W140",
+              state.tokens.curr.line,
+              state.tokens.curr.character
+            );
           }
           break;
         }
@@ -4153,7 +4522,7 @@ advance();
       /* istanbul ignore next */
       error("E036", state.tokens.curr);
     };
-  }(delim("{")));
+  })(delim("{"));
 
   function destructuringPattern(context, options) {
     var isAssignment = options && options.assignment;
@@ -4161,8 +4530,12 @@ advance();
     context &= ~prodParams.noin;
 
     if (!state.inES6()) {
-      warning("W104", state.tokens.curr,
-        isAssignment ? "destructuring assignment" : "destructuring binding", "6");
+      warning(
+        "W104",
+        state.tokens.curr,
+        isAssignment ? "destructuring assignment" : "destructuring binding",
+        "6"
+      );
     }
 
     return destructuringPatternRecursive(context, options);
@@ -4218,8 +4591,10 @@ advance();
         advance("]");
         advance(":");
         nextInnerDE();
-      } else if (state.tokens.next.id === "(string)" ||
-                 state.tokens.next.id === "(number)") {
+      } else if (
+        state.tokens.next.id === "(string)" ||
+        state.tokens.next.id === "(number)"
+      ) {
         advance();
         advance(":");
         nextInnerDE();
@@ -4278,8 +4653,11 @@ advance();
 
         nextInnerDE();
 
-        if (isRest && !element_after_rest &&
-            checkPunctuator(state.tokens.next, ",")) {
+        if (
+          isRest &&
+          !element_after_rest &&
+          checkPunctuator(state.tokens.next, ",")
+        ) {
           warning("W130", state.tokens.next);
           element_after_rest = true;
         }
@@ -4339,7 +4717,9 @@ advance();
       return;
     }
 
-    _.zip(tokens, Array.isArray(first) ? first : [ first ]).forEach(function(val) {
+    _.zip(tokens, Array.isArray(first) ? first : [first]).forEach(function(
+      val
+    ) {
       var token = val[0];
       var value = val[1];
 
@@ -4379,7 +4759,7 @@ advance();
         tokens = destructuringPattern(context);
         lone = false;
       } else {
-        tokens = [ { id: identifier(context), token: state.tokens.curr } ];
+        tokens = [{ id: identifier(context), token: state.tokens.curr }];
         lone = true;
       }
 
@@ -4413,7 +4793,8 @@ advance();
           if (t.id) {
             state.funct["(scope)"].addbinding(t.id, {
               type: type,
-              token: t.token });
+              token: t.token
+            });
             names.push(t.token);
           }
         }
@@ -4441,7 +4822,10 @@ advance();
       // Bindings are not immediately initialized in for-in and for-of
       // statements. As with `const` initializers (described above), the `for`
       // statement parsing logic includes
-      if (state.tokens.next.value !== "in" && state.tokens.next.value !== "of") {
+      if (
+        state.tokens.next.value !== "in" &&
+        state.tokens.next.value !== "of"
+      ) {
         for (t in tokens) {
           if (tokens.hasOwnProperty(t)) {
             t = tokens[t];
@@ -4479,7 +4863,6 @@ advance();
   });
   conststatement.exps = true;
   conststatement.declaration = true;
-
 
   /**
    * Determine if the current `let` token designates the beginning of a "let
@@ -4521,7 +4904,11 @@ advance();
       return state.syntax["(identifier)"].nud.apply(this, arguments);
     }
   };
-  letstatement.meta = { es5: true, isFutureReservedWord: false, strictOnly: true };
+  letstatement.meta = {
+    es5: true,
+    isFutureReservedWord: false,
+    strictOnly: true
+  };
   letstatement.exps = true;
   letstatement.declaration = true;
   letstatement.useFud = function(context) {
@@ -4542,11 +4929,12 @@ advance();
     // is correctly interpreted as an invalid LexicalBinding. (Without this
     // consideration, the code above would be parsed as two
     // IdentifierReferences.)
-    nextIsBindingName = next.identifier && (!isReserved(context, next) ||
-      next.id === "let");
+    nextIsBindingName =
+      next.identifier && (!isReserved(context, next) || next.id === "let");
 
-    return nextIsBindingName || checkPunctuators(next, ["{", "["]) ||
-      isMozillaLet();
+    return (
+      nextIsBindingName || checkPunctuators(next, ["{", "["]) || isMozillaLet()
+    );
   };
 
   var varstatement = stmt("var", function(context) {
@@ -4575,7 +4963,6 @@ advance();
         warning("W132", this);
       }
 
-
       for (var t in tokens) {
         if (tokens.hasOwnProperty(t)) {
           t = tokens[t];
@@ -4583,8 +4970,10 @@ advance();
             if (predefined[t.id] === false) {
               warning("W079", t.token, t.id);
             } else if (state.option.futurehostile === false) {
-              if ((!state.inES5() && vars.ecmaIdentifiers[5][t.id] === false) ||
-                (!state.inES6() && vars.ecmaIdentifiers[6][t.id] === false)) {
+              if (
+                (!state.inES5() && vars.ecmaIdentifiers[5][t.id] === false) ||
+                (!state.inES6() && vars.ecmaIdentifiers[6][t.id] === false)
+              ) {
                 warning("W129", t.token, t.id);
               }
             }
@@ -4592,7 +4981,8 @@ advance();
           if (t.id) {
             state.funct["(scope)"].addbinding(t.id, {
               type: "var",
-              token: t.token });
+              token: t.token
+            });
 
             if (lone && inexport) {
               state.funct["(scope)"].setExported(t.id, t.token);
@@ -4609,17 +4999,21 @@ advance();
 
         advance("=");
         if (peek(0).id === "=" && state.tokens.next.identifier) {
-          if (!noin &&
-              !state.funct["(params)"] ||
-              state.funct["(params)"].indexOf(state.tokens.next.value) === -1) {
+          if (
+            (!noin && !state.funct["(params)"]) ||
+            state.funct["(params)"].indexOf(state.tokens.next.value) === -1
+          ) {
             warning("W120", state.tokens.next, state.tokens.next.value);
           }
         }
         id = state.tokens.prev;
         value = expression(context, 10);
         if (value) {
-          if (!state.funct["(loopage)"] && value.identifier &&
-            value.value === "undefined") {
+          if (
+            !state.funct["(loopage)"] &&
+            value.identifier &&
+            value.value === "undefined"
+          ) {
             warning("W080", id, id.value);
           }
           if (!lone) {
@@ -4679,7 +5073,8 @@ advance();
       state.funct["(scope)"].addbinding(nameToken.value, {
         type: labelType,
         token: state.tokens.curr,
-        initialized: true });
+        initialized: true
+      });
 
       if (inexport) {
         state.funct["(scope)"].setExported(nameToken.value, state.tokens.prev);
@@ -4700,12 +5095,18 @@ advance();
     // mode (the scope manager will not report an error because a declaration
     // does not introduce a binding into the function's environment record).
     var enablesStrictMode = f["(isStrict)"] && !state.isStrict();
-    if (nameToken && (f["(name)"] === "arguments" || f["(name)"] === "eval") &&
-      enablesStrictMode) {
+    if (
+      nameToken &&
+      (f["(name)"] === "arguments" || f["(name)"] === "eval") &&
+      enablesStrictMode
+    ) {
       error("E008", nameToken);
     }
 
-    if (state.tokens.next.id === "(" && state.tokens.next.line === state.tokens.curr.line) {
+    if (
+      state.tokens.next.id === "(" &&
+      state.tokens.next.line === state.tokens.curr.line
+    ) {
       /* istanbul ignore next */
       error("E039");
     }
@@ -4729,8 +5130,11 @@ advance();
 
     // This context modification restricts the use of `await` as the optional
     // BindingIdentifier in async function expressions.
-    var nameToken = optionalidentifier(isAsync ? context | prodParams.async : context) ?
-      state.tokens.curr : null;
+    var nameToken = optionalidentifier(
+      isAsync ? context | prodParams.async : context
+    )
+      ? state.tokens.curr
+      : null;
 
     var f = doFunction(context, {
       name: nameToken && nameToken.value,
@@ -4741,8 +5145,11 @@ advance();
       error("E024", nameToken, "yield");
     }
 
-    if (nameToken && (f["(name)"] === "arguments" || f["(name)"] === "eval") &&
-      f["(isStrict)"]) {
+    if (
+      nameToken &&
+      (f["(name)"] === "arguments" || f["(name)"] === "eval") &&
+      f["(isStrict)"]
+    ) {
       error("E008", nameToken);
     }
 
@@ -4780,7 +5187,12 @@ advance();
     // When the if is within a for-in loop and the condition has a negative form,
     // check if the body contains nothing but a continue statement
     if (forinifcheck && forinifcheck.type === "(negative)") {
-      if (s && s[0] && s[0].type === "(identifier)" && s[0].value === "continue") {
+      if (
+        s &&
+        s[0] &&
+        s[0].type === "(identifier)" &&
+        s[0].value === "continue"
+      ) {
         forinifcheck.type = "(negative-with-continue)";
       }
     }
@@ -4815,7 +5227,11 @@ advance();
       } else {
         // only advance if an identifier is present. This allows JSHint to
         // recover from the case where no value is specified.
-        state.funct["(scope)"].addParam(identifier(context), state.tokens.curr, "exception");
+        state.funct["(scope)"].addParam(
+          identifier(context),
+          state.tokens.curr,
+          "exception"
+        );
       }
 
       if (state.tokens.next.value === "if") {
@@ -4833,7 +5249,7 @@ advance();
 
     while (state.tokens.next.id === "catch") {
       increaseComplexityCount();
-      if (b && (!state.inMoz())) {
+      if (b && !state.inMoz()) {
         warning("W118", state.tokens.next, "multiple catch blocks");
       }
       advance("catch");
@@ -4920,109 +5336,109 @@ advance();
 
     for (;;) {
       switch (state.tokens.next.id) {
-      case "case":
-        switch (state.funct["(verb)"]) {
-        case "yield":
-        case "break":
         case "case":
-        case "continue":
-        case "return":
-        case "switch":
-        case "throw":
+          switch (state.funct["(verb)"]) {
+            case "yield":
+            case "break":
+            case "case":
+            case "continue":
+            case "return":
+            case "switch":
+            case "throw":
+              break;
+            case "default":
+              if (state.option.leanswitch) {
+                warning("W145", state.tokens.next);
+              }
+
+              break;
+            default:
+              // You can tell JSHint that you don't use break intentionally by
+              // adding a comment /* falls through */ on a line just before
+              // the next `case`.
+              if (!state.tokens.curr.caseFallsThrough) {
+                warning("W086", state.tokens.curr, "case");
+              }
+          }
+
+          advance("case");
+          expression(context, 0);
+          seenCase = true;
+          increaseComplexityCount();
+          g = true;
+          advance(":");
+          state.funct["(verb)"] = "case";
           break;
         case "default":
-          if (state.option.leanswitch) {
-            warning("W145", state.tokens.next);
+          switch (state.funct["(verb)"]) {
+            case "yield":
+            case "break":
+            case "continue":
+            case "return":
+            case "throw":
+              break;
+            case "case":
+              if (state.option.leanswitch) {
+                warning("W145", state.tokens.curr);
+              }
+
+              break;
+            default:
+              // Do not display a warning if 'default' is the first statement or if
+              // there is a special /* falls through */ comment.
+              if (seenCase && !state.tokens.curr.caseFallsThrough) {
+                warning("W086", state.tokens.curr, "default");
+              }
           }
 
+          advance("default");
+          g = true;
+          advance(":");
+          state.funct["(verb)"] = "default";
           break;
+        case "}":
+          if (!noindent) {
+            indent -= state.option.indent;
+          }
+
+          advance("}", t);
+          state.funct["(scope)"].unstack();
+          state.funct["(breakage)"] -= 1;
+          state.funct["(verb)"] = undefined;
+          return;
+        /* istanbul ignore next */
+        case "(end)":
+          error("E023", state.tokens.next, "}");
+          return;
         default:
-          // You can tell JSHint that you don't use break intentionally by
-          // adding a comment /* falls through */ on a line just before
-          // the next `case`.
-          if (!state.tokens.curr.caseFallsThrough) {
-            warning("W086", state.tokens.curr, "case");
-          }
-        }
-
-        advance("case");
-        expression(context, 0);
-        seenCase = true;
-        increaseComplexityCount();
-        g = true;
-        advance(":");
-        state.funct["(verb)"] = "case";
-        break;
-      case "default":
-        switch (state.funct["(verb)"]) {
-        case "yield":
-        case "break":
-        case "continue":
-        case "return":
-        case "throw":
-          break;
-        case "case":
-          if (state.option.leanswitch) {
-            warning("W145", state.tokens.curr);
-          }
-
-          break;
-        default:
-          // Do not display a warning if 'default' is the first statement or if
-          // there is a special /* falls through */ comment.
-          if (seenCase && !state.tokens.curr.caseFallsThrough) {
-            warning("W086", state.tokens.curr, "default");
-          }
-        }
-
-        advance("default");
-        g = true;
-        advance(":");
-        state.funct["(verb)"] = "default";
-        break;
-      case "}":
-        if (!noindent) {
-          indent -= state.option.indent;
-        }
-
-        advance("}", t);
-        state.funct["(scope)"].unstack();
-        state.funct["(breakage)"] -= 1;
-        state.funct["(verb)"] = undefined;
-        return;
-      /* istanbul ignore next */
-      case "(end)":
-        error("E023", state.tokens.next, "}");
-        return;
-      default:
-        indent += state.option.indent;
-        if (g) {
-          switch (state.tokens.curr.id) {
-          /* istanbul ignore next */
-          case ",":
-            error("E040");
-            return;
-          case ":":
-            g = false;
-            statements(context);
-            break;
-          /* istanbul ignore next */
-          default:
-            error("E025", state.tokens.curr);
-            return;
-          }
-        } else {
-          /* istanbul ignore else */
-          if (state.tokens.curr.id === ":") {
-            advance(":");
-            error("E024", state.tokens.curr, ":");
-            statements(context);
+          indent += state.option.indent;
+          if (g) {
+            switch (state.tokens.curr.id) {
+              /* istanbul ignore next */
+              case ",":
+                error("E040");
+                return;
+              case ":":
+                g = false;
+                statements(context);
+                break;
+              /* istanbul ignore next */
+              default:
+                error("E025", state.tokens.curr);
+                return;
+            }
           } else {
-            error("E021", state.tokens.next, "case", state.tokens.next.value);
-            return;
+            /* istanbul ignore else */
+            if (state.tokens.curr.id === ":") {
+              advance(":");
+              error("E024", state.tokens.curr, ":");
+              statements(context);
+            } else {
+              error("E021", state.tokens.next, "case", state.tokens.next.value);
+              return;
+            }
           }
-        }
-        indent -= state.option.indent;
+          indent -= state.option.indent;
       }
     }
   }).labelled = true;
@@ -5052,10 +5468,11 @@ advance();
     });
     x.labelled = true;
     x.exps = true;
-  }());
+  })();
 
   blockstmt("for", function(context) {
-    var s, t = state.tokens.next;
+    var s,
+      t = state.tokens.next;
     var letscope = false;
     var isAsync = false;
     var foreachtok = null;
@@ -5099,13 +5516,15 @@ advance();
       decl = state.tokens.curr.fud(headContext);
       comma = decl.hasComma ? decl : null;
       initializer = decl.hasInitializer ? decl : null;
-    } else if (state.tokens.next.id === "const" ||
+    } else if (
+      state.tokens.next.id === "const" ||
       // The "let" keyword only signals a lexical binding if it is followed by
       // an identifier, `{`, or `[`. Otherwise, it should be parsed as an
       // IdentifierReference (i.e. in a subsequent branch).
       (state.tokens.next.id === "let" &&
         ((afterNext.identifier && afterNext.id !== "in") ||
-         checkPunctuators(afterNext, ["{", "["])))) {
+          checkPunctuators(afterNext, ["{", "["])))
+    ) {
       advance(state.tokens.next.id);
       // create a new block scope
       letscope = true;
@@ -5116,14 +5535,18 @@ advance();
     } else if (!checkPunctuator(state.tokens.next, ";")) {
       targets = [];
 
-      while (state.tokens.next.value !== "in" &&
+      while (
+        state.tokens.next.value !== "in" &&
         state.tokens.next.value !== "of" &&
-        !checkPunctuator(state.tokens.next, ";")) {
+        !checkPunctuator(state.tokens.next, ";")
+      ) {
         if (checkPunctuators(state.tokens.next, ["{", "["])) {
-          destructuringPattern(headContext, { assignment: true })
-            .forEach(function(elem) {
+          destructuringPattern(headContext, { assignment: true }).forEach(
+            function(elem) {
               this.push(elem.token);
-            }, targets);
+            },
+            targets
+          );
           if (checkPunctuator(state.tokens.next, "=")) {
             advance("=");
             initializer = state.tokens.curr;
@@ -5225,12 +5648,16 @@ advance();
         if (state.forinifchecks && state.forinifchecks.length > 0) {
           var check = state.forinifchecks.pop();
 
-          if (// No if statement or not the first statement in loop body
-              s && s.length > 0 && (typeof s[0] !== "object" || s[0].value !== "if") ||
-              // Positive if statement is not the only one in loop body
-              check.type === "(positive)" && s.length > 1 ||
-              // Negative if statement but no continue
-              check.type === "(negative)") {
+          if (
+            // No if statement or not the first statement in loop body
+            (s &&
+              s.length > 0 &&
+              (typeof s[0] !== "object" || s[0].value !== "if")) ||
+            // Positive if statement is not the only one in loop body
+            (check.type === "(positive)" && s.length > 1) ||
+            // Negative if statement but no continue
+            check.type === "(negative)"
+          ) {
             warning("W089", this);
           }
         }
@@ -5248,7 +5675,7 @@ advance();
       nolinebreak(state.tokens.curr);
       advance(";");
       if (decl) {
-        if (decl.value === "const"  && !decl.hasInitializer) {
+        if (decl.value === "const" && !decl.hasInitializer) {
           warning("E012", decl, decl.first[0].value);
         }
 
@@ -5292,7 +5719,6 @@ advance();
     return this;
   }).labelled = true;
 
-
   stmt("break", function() {
     var v = state.tokens.next.value;
 
@@ -5300,8 +5726,10 @@ advance();
       nolinebreak(this);
     }
 
-    if (state.tokens.next.identifier &&
-        sameLine(state.tokens.curr, state.tokens.next)) {
+    if (
+      state.tokens.next.identifier &&
+      sameLine(state.tokens.curr, state.tokens.next)
+    ) {
       if (!state.funct["(scope)"].funct.hasLabel(v)) {
         warning("W090", state.tokens.next, v);
       }
@@ -5317,7 +5745,6 @@ advance();
 
     return this;
   }).exps = true;
-
 
   stmt("continue", function() {
     var v = state.tokens.next.value;
@@ -5345,27 +5772,36 @@ advance();
     return this;
   }).exps = true;
 
-
   stmt("return", function(context) {
     if (sameLine(this, state.tokens.next)) {
       if (state.tokens.next.id !== ";" && !state.tokens.next.reach) {
         this.first = expression(context, 0);
 
-        if (this.first &&
-            this.first.type === "(punctuator)" && this.first.value === "=" &&
-            !this.first.paren && !state.option.boss) {
+        if (
+          this.first &&
+          this.first.type === "(punctuator)" &&
+          this.first.value === "=" &&
+          !this.first.paren &&
+          !state.option.boss
+        ) {
           warning("W093", this.first);
         }
 
-        if (state.option.noreturnawait && context & prodParams.async &&
-            !(context & prodParams.tryClause) &&
-            this.first.identifier && this.first.value === "await") {
+        if (
+          state.option.noreturnawait &&
+          context & prodParams.async &&
+          !(context & prodParams.tryClause) &&
+          this.first.identifier &&
+          this.first.value === "await"
+        ) {
           warning("W146", this.first);
         }
       }
     } else {
-      if (state.tokens.next.type === "(punctuator)" &&
-        ["[", "{", "+", "-"].indexOf(state.tokens.next.value) > -1) {
+      if (
+        state.tokens.next.type === "(punctuator)" &&
+        ["[", "{", "+", "-"].indexOf(state.tokens.next.value) > -1
+      ) {
         nolinebreak(this); // always warn (Line breaking error)
       }
     }
@@ -5393,7 +5829,11 @@ advance();
   }).exps = true;
 
   (function(asyncSymbol) {
-    asyncSymbol.meta = { es5: true, isFutureReservedWord: true, strictOnly: true };
+    asyncSymbol.meta = {
+      es5: true,
+      isFutureReservedWord: true,
+      strictOnly: true
+    };
     asyncSymbol.isFunc = function() {
       var next = state.tokens.next;
       var afterParens;
@@ -5433,76 +5873,87 @@ advance();
     };
     asyncSymbol.exps = true;
     delete asyncSymbol.reserved;
-  }(prefix("async", function(context, rbp) {
-    if (this.isFunc(context)) {
-      if (!state.inES8()) {
-        warning("W119", this, "async functions", "8");
+  })(
+    prefix("async", function(context, rbp) {
+      if (this.isFunc(context)) {
+        if (!state.inES8()) {
+          warning("W119", this, "async functions", "8");
+        }
+
+        context |= prodParams.preAsync;
+        this.func = expression(context, rbp);
+        this.identifier = false;
+        return this;
       }
 
-      context |= prodParams.preAsync;
-      this.func = expression(context, rbp);
-      this.identifier = false;
-      return this;
-    }
-
-    this.exps = false;
-    return state.syntax["(identifier)"].nud.apply(this, arguments);
-  })));
+      this.exps = false;
+      return state.syntax["(identifier)"].nud.apply(this, arguments);
+    })
+  );
 
   (function(yieldSymbol) {
     yieldSymbol.rbp = yieldSymbol.lbp = 25;
     yieldSymbol.exps = true;
-  })(prefix("yield", function(context) {
-    if (state.inMoz()) {
-      return mozYield.call(this, context);
-    }
+  })(
+    prefix("yield", function(context) {
+      if (state.inMoz()) {
+        return mozYield.call(this, context);
+      }
 
-    if (!(context & prodParams.yield)) {
-      this.exps = false;
-      return state.syntax["(identifier)"].nud.apply(this, arguments);
-    }
+      if (!(context & prodParams.yield)) {
+        this.exps = false;
+        return state.syntax["(identifier)"].nud.apply(this, arguments);
+      }
 
-    var prev = state.tokens.prev;
+      var prev = state.tokens.prev;
 
-    // If the parameters of the current function scope have not been defined,
-    // it is because the current expression is contained within the parameter
-    // list.
-    if (!state.funct["(params)"]) {
-      error("E024", this, "yield");
-    }
+      // If the parameters of the current function scope have not been defined,
+      // it is because the current expression is contained within the parameter
+      // list.
+      if (!state.funct["(params)"]) {
+        error("E024", this, "yield");
+      }
 
-    if (!this.beginsStmt && prev.lbp > 30 && !checkPunctuators(prev, ["("])) {
-      error("E061", this);
-    }
+      if (!this.beginsStmt && prev.lbp > 30 && !checkPunctuators(prev, ["("])) {
+        error("E061", this);
+      }
 
-    if (!state.inES6()) {
-      warning("W104", state.tokens.curr, "yield", "6");
-    }
-    state.funct["(yielded)"] = true;
+      if (!state.inES6()) {
+        warning("W104", state.tokens.curr, "yield", "6");
+      }
+      state.funct["(yielded)"] = true;
 
-    if (state.tokens.next.value === "*") {
-      advance("*");
-    }
+      if (state.tokens.next.value === "*") {
+        advance("*");
+      }
 
-    // Parse operand
-    if (state.tokens.curr.value === "*" || sameLine(state.tokens.curr, state.tokens.next)) {
-      if (state.tokens.next.nud) {
-        nobreaknonadjacent(state.tokens.curr, state.tokens.next);
-        this.first = expression(context, 10);
+      // Parse operand
+      if (
+        state.tokens.curr.value === "*" ||
+        sameLine(state.tokens.curr, state.tokens.next)
+      ) {
+        if (state.tokens.next.nud) {
+          nobreaknonadjacent(state.tokens.curr, state.tokens.next);
+          this.first = expression(context, 10);
 
-        if (this.first.type === "(punctuator)" && this.first.value === "=" &&
-            !this.first.paren && !state.option.boss) {
-          warning("W093", this.first);
-        }
-      } else if (state.tokens.next.led) {
-        if (state.tokens.next.id !== ",") {
-          error("W017", state.tokens.next);
+          if (
+            this.first.type === "(punctuator)" &&
+            this.first.value === "=" &&
+            !this.first.paren &&
+            !state.option.boss
+          ) {
+            warning("W093", this.first);
+          }
+        } else if (state.tokens.next.led) {
+          if (state.tokens.next.id !== ",") {
+            error("W017", state.tokens.next);
+          }
         }
       }
-    }
 
-    return this;
-  }));
+      return this;
+    })
+  );
 
   /**
    * Parsing logic for non-standard Mozilla implementation of `yield`
@@ -5522,19 +5973,29 @@ advance();
     }
 
     if (sameLine(this, state.tokens.next)) {
-      if (delegatingYield ||
-          (state.tokens.next.id !== ";" && !state.option.asi &&
-           !state.tokens.next.reach && state.tokens.next.nud)) {
+      if (
+        delegatingYield ||
+        (state.tokens.next.id !== ";" &&
+          !state.option.asi &&
+          !state.tokens.next.reach &&
+          state.tokens.next.nud)
+      ) {
         nobreaknonadjacent(state.tokens.curr, state.tokens.next);
         this.first = expression(context, 10);
 
-        if (this.first.type === "(punctuator)" && this.first.value === "=" &&
-            !this.first.paren && !state.option.boss) {
+        if (
+          this.first.type === "(punctuator)" &&
+          this.first.value === "=" &&
+          !this.first.paren &&
+          !state.option.boss
+        ) {
           warning("W093", this.first);
         }
       }
-      if (state.tokens.next.id !== ")" &&
-          (prev.lbp > 30 || (!prev.assign && !isEndOfExpr()))) {
+      if (
+        state.tokens.next.id !== ")" &&
+        (prev.lbp > 30 || (!prev.assign && !isEndOfExpr()))
+      ) {
         error("E050", this);
       }
     } else if (!state.option.asi) {
@@ -5574,7 +6035,8 @@ advance();
       state.funct["(scope)"].addbinding(this.name, {
         type: "import",
         initialized: true,
-        token: state.tokens.curr });
+        token: state.tokens.curr
+      });
 
       if (state.tokens.next.value === ",") {
         // ImportClause :: ImportedDefaultBinding , NameSpaceImport
@@ -5601,7 +6063,8 @@ advance();
         state.funct["(scope)"].addbinding(this.name, {
           type: "import",
           initialized: true,
-          token: state.tokens.curr });
+          token: state.tokens.curr
+        });
       }
     } else {
       // ImportClause :: NamedImports
@@ -5627,7 +6090,8 @@ advance();
         state.funct["(scope)"].addbinding(importName, {
           type: "import",
           initialized: true,
-          token: state.tokens.curr });
+          token: state.tokens.curr
+        });
 
         if (state.tokens.next.value === ",") {
           advance(",");
@@ -5817,8 +6281,11 @@ advance();
       return true;
     }
 
-    if (type === "call" && funct["(statement)"] &&
-      funct["(statement)"].id === "class") {
+    if (
+      type === "call" &&
+      funct["(statement)"] &&
+      funct["(statement)"].id === "class"
+    ) {
       return true;
     }
 
@@ -5897,8 +6364,12 @@ advance();
       } else if (checkPunctuators(pn, ["]", "}"])) {
         bracketStack -= 1;
       }
-      if (bracketStack === 1 && pn.identifier && pn.value === "for" &&
-          !checkPunctuator(prev, ".")) {
+      if (
+        bracketStack === 1 &&
+        pn.identifier &&
+        pn.value === "for" &&
+        !checkPunctuator(prev, ".")
+      ) {
         ret.isCompArray = true;
         ret.notJson = true;
         break;
@@ -6075,7 +6546,7 @@ advance();
         warning("W104", state.tokens.curr, "destructuring assignment", "6");
       }
       statements(context);
-    // otherwise parse json value
+      // otherwise parse json value
     } else {
       state.option.laxbreak = true;
       state.jsonMode = true;
@@ -6122,76 +6593,76 @@ advance();
         }
       }).length;
       // otherwise we warn about it
-      return (l === 0);
+      return l === 0;
     }
-    return { stack: function() {
-          _current = new CompArray();
-          _carrays.push(_current);
-        },
-        unstack: function() {
-          _current.variables.filter(function(v) {
-            if (v.unused) {
-              warning("W098", v.token, v.token.raw_text || v.value);
-            }
-            if (v.undef) {
-              state.funct["(scope)"].block.use(v.value, v.token);
-            }
-          });
-          _carrays.splice(-1, 1);
-          _current = _carrays[_carrays.length - 1];
-        },
-        setState: function(s) {
-          if (_.includes(["use", "define", "generate", "filter"], s)) {
-            _current.mode = s;
+    return {
+      stack: function() {
+        _current = new CompArray();
+        _carrays.push(_current);
+      },
+      unstack: function() {
+        _current.variables.filter(function(v) {
+          if (v.unused) {
+            warning("W098", v.token, v.token.raw_text || v.value);
           }
-        },
-        check: function(v) {
-          if (!_current) {
-            return;
+          if (v.undef) {
+            state.funct["(scope)"].block.use(v.value, v.token);
           }
-          // When we are in "use" state of the list comp, we enqueue that var
-          if (_current && _current.mode === "use") {
-            if (use(v)) {
-              _current.variables.push({
-                token: state.tokens.curr,
-                value: v,
-                undef: true,
-                unused: false
-              });
-            }
-            return true;
-          // When we are in "define" state of the list comp,
-          } else if (_current && _current.mode === "define") {
-            // check if the variable has been used previously
-            if (!declare(v)) {
-              _current.variables.push({
-                token: state.tokens.curr,
-                value: v,
-                undef: false,
-                unused: true
-              });
-            }
-            return true;
-          // When we are in the "generate" state of the list comp,
-          } else if (_current && _current.mode === "generate") {
-            state.funct["(scope)"].block.use(v, state.tokens.curr);
-            return true;
-          // When we are in "filter" state,
-          } else if (_current && _current.mode === "filter") {
-            // we check whether current variable has been declared
-            if (use(v)) {
-              // if not we warn about it
-              /* istanbul ignore next */
-              state.funct["(scope)"].block.use(v, state.tokens.curr);
-            }
-            return true;
-          }
-          /* istanbul ignore next */
-          return false;
+        });
+        _carrays.splice(-1, 1);
+        _current = _carrays[_carrays.length - 1];
+      },
+      setState: function(s) {
+        if (_.includes(["use", "define", "generate", "filter"], s)) {
+          _current.mode = s;
         }
-        };
+      },
+      check: function(v) {
+        if (!_current) {
+          return;
+        }
+        // When we are in "use" state of the list comp, we enqueue that var
+        if (_current && _current.mode === "use") {
+          if (use(v)) {
+            _current.variables.push({
+              token: state.tokens.curr,
+              value: v,
+              undef: true,
+              unused: false
+            });
+          }
+          return true;
+          // When we are in "define" state of the list comp,
+        } else if (_current && _current.mode === "define") {
+          // check if the variable has been used previously
+          if (!declare(v)) {
+            _current.variables.push({
+              token: state.tokens.curr,
+              value: v,
+              undef: false,
+              unused: true
+            });
+          }
+          return true;
+          // When we are in the "generate" state of the list comp,
+        } else if (_current && _current.mode === "generate") {
+          state.funct["(scope)"].block.use(v, state.tokens.curr);
+          return true;
+          // When we are in "filter" state,
+        } else if (_current && _current.mode === "filter") {
+          // we check whether current variable has been declared
+          if (use(v)) {
+            // if not we warn about it
+            /* istanbul ignore next */
+            state.funct["(scope)"].block.use(v, state.tokens.curr);
+          }
+          return true;
+        }
+        /* istanbul ignore next */
+        return false;
+      }
+    };
   };
-
 
   /**
    * Parse input according to the JSON format.
@@ -6200,7 +6671,8 @@ advance();
    */
   function jsonValue() {
     function jsonObject() {
-      var o = {}, t = state.tokens.next;
+      var o = {},
+        t = state.tokens.next;
       advance("{");
       if (state.tokens.next.id !== "}") {
         for (;;) {
@@ -6216,9 +6688,11 @@ advance();
           }
           if (o[state.tokens.next.value] === true) {
             warning("W075", state.tokens.next, "key", state.tokens.next.value);
-          } else if ((state.tokens.next.value === "__proto__" &&
-            !state.option.proto) || (state.tokens.next.value === "__iterator__" &&
-            !state.option.iterator)) {
+          } else if (
+            (state.tokens.next.value === "__proto__" && !state.option.proto) ||
+            (state.tokens.next.value === "__iterator__" &&
+              !state.option.iterator)
+          ) {
             warning("W096", state.tokens.next, state.tokens.next.value);
           } else {
             o[state.tokens.next.value] = true;
@@ -6259,25 +6733,25 @@ advance();
     }
 
     switch (state.tokens.next.id) {
-    case "{":
-      jsonObject();
-      break;
-    case "[":
-      jsonArray();
-      break;
-    case "true":
-    case "false":
-    case "null":
-    case "(number)":
-    case "(string)":
-      advance();
-      break;
-    case "-":
-      advance("-");
-      advance("(number)");
-      break;
-    default:
-      error("E003", state.tokens.next);
+      case "{":
+        jsonObject();
+        break;
+      case "[":
+        jsonArray();
+        break;
+      case "true":
+      case "false":
+      case "null":
+      case "(number)":
+      case "(string)":
+        advance();
+        break;
+      case "-":
+        advance("-");
+        advance("(number)");
+        break;
+      default:
+        error("E003", state.tokens.next);
     }
   }
 
@@ -6393,19 +6867,19 @@ advance();
 
     var scopeManagerInst = scopeManager(state, predefined, exported, declared);
     scopeManagerInst.on("warning", function(ev) {
-      warning.apply(null, [ ev.code, ev.token].concat(ev.data));
+      warning.apply(null, [ev.code, ev.token].concat(ev.data));
     });
 
     scopeManagerInst.on("error", function(ev) {
       /* istanbul ignore next */
-      error.apply(null, [ ev.code, ev.token ].concat(ev.data));
+      error.apply(null, [ev.code, ev.token].concat(ev.data));
     });
 
     state.funct = functor("(global)", null, {
-      "(global)"    : true,
-      "(scope)"     : scopeManagerInst,
-      "(comparray)" : arrayComprehension(),
-      "(metrics)"   : createMetrics(state.tokens.next)
+      "(global)": true,
+      "(scope)": scopeManagerInst,
+      "(comparray)": arrayComprehension(),
+      "(metrics)": createMetrics(state.tokens.next)
     });
 
     functions = [state.funct];
@@ -6438,13 +6912,15 @@ advance();
       },
 
       warn: function(code, data) {
-        warningAt.apply(null, [ code, data.line, data.char ].concat(data.data));
+        warningAt.apply(null, [code, data.line, data.char].concat(data.data));
       },
 
       on: function(names, listener) {
-        names.split(" ").forEach(function(name) {
-          emitter.on(name, listener);
-        }.bind(this));
+        names.split(" ").forEach(
+          function(name) {
+            emitter.on(name, listener);
+          }.bind(this)
+        );
       }
     };
 
@@ -6453,7 +6929,8 @@ advance();
       func(api);
     });
 
-    state.tokens.prev = state.tokens.curr = state.tokens.next = state.syntax["(begin)"];
+    state.tokens.prev = state.tokens.curr = state.tokens.next =
+      state.syntax["(begin)"];
     if (o && o.ignoreDelimiters) {
       if (!Array.isArray(o.ignoreDelimiters)) {
         /* istanbul ignore next */
@@ -6462,12 +6939,13 @@ advance();
 
       o.ignoreDelimiters.forEach(function(delimiterPair) {
         if (!delimiterPair.start || !delimiterPair.end) {
-            return;
+          return;
         }
 
-        reIgnoreStr = escapeRegex(delimiterPair.start) +
-                      "[\\s\\S]*?" +
-                      escapeRegex(delimiterPair.end);
+        reIgnoreStr =
+          escapeRegex(delimiterPair.start) +
+          "[\\s\\S]*?" +
+          escapeRegex(delimiterPair.end);
 
         reIgnore = new RegExp(reIgnoreStr, "ig");
 
@@ -6480,11 +6958,11 @@ advance();
     lex = new Lexer(s);
 
     lex.on("warning", function(ev) {
-      warningAt.apply(null, [ ev.code, ev.line, ev.character].concat(ev.data));
+      warningAt.apply(null, [ev.code, ev.line, ev.character].concat(ev.data));
     });
 
     lex.on("error", function(ev) {
-      errorAt.apply(null, [ ev.code, ev.line, ev.character ].concat(ev.data));
+      errorAt.apply(null, [ev.code, ev.line, ev.character].concat(ev.data));
     });
 
     lex.on("fatal", function(ev) {
@@ -6529,20 +7007,20 @@ advance();
 
       advance();
       switch (state.tokens.next.id) {
-      case "{":
-      case "[":
-        destructuringAssignOrJsonValue(0);
-        break;
-      default:
-        directives();
+        case "{":
+        case "[":
+          destructuringAssignOrJsonValue(0);
+          break;
+        default:
+          directives();
 
-        if (state.directive["use strict"]) {
-          if (!state.allowsGlobalUsd()) {
-            warning("W097", state.tokens.prev);
+          if (state.directive["use strict"]) {
+            if (!state.allowsGlobalUsd()) {
+              warning("W097", state.tokens.prev);
+            }
           }
-        }
 
-        statements(0);
+          statements(0);
       }
 
       if (state.tokens.next.id !== "(end)") {
@@ -6554,12 +7032,12 @@ advance();
       if (err && err.name === "JSHintError") {
         var nt = state.tokens.next || {};
         JSHINT.errors.push({
-          scope     : "(main)",
-          raw       : err.raw,
-          code      : err.code,
-          reason    : err.reason,
-          line      : err.line || nt.line,
-          character : err.character || nt.from
+          scope: "(main)",
+          raw: err.raw,
+          code: err.code,
+          reason: err.reason,
+          line: err.line || nt.line,
+          character: err.character || nt.from
         });
       } else {
         /* istanbul ignore next */
@@ -6648,7 +7126,7 @@ advance();
   itself.jshint = itself;
 
   return itself;
-}());
+})();
 
 // Make JSHINT a Node module, if possible.
 if (typeof exports === "object" && exports) {

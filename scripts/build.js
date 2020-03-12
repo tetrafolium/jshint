@@ -1,10 +1,10 @@
 "use strict";
 
 var browserify = require("browserify");
-var path       = require("path");
-var version    = require("../package.json").version;
+var path = require("path");
+var version = require("../package.json").version;
 
-var srcDir     = path.join(__dirname, "../src");
+var srcDir = path.join(__dirname, "../src");
 
 var targets = ["web", "rhino"];
 
@@ -28,14 +28,15 @@ module.exports = function(target, done) {
       return;
     }
 
-    wrapped = [ "/*! " + version + " */",
+    wrapped = [
+      "/*! " + version + " */",
       "var JSHINT;",
       "if (typeof window === 'undefined') window = {};",
       "(function () {",
-        "var require;",
-        src,
-        "JSHINT = require('jshint').JSHINT;",
-        "if (typeof exports === 'object' && exports) exports.JSHINT = JSHINT;",
+      "var require;",
+      src,
+      "JSHINT = require('jshint').JSHINT;",
+      "if (typeof exports === 'object' && exports) exports.JSHINT = JSHINT;",
       "}());"
     ];
 

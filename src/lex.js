@@ -4,10 +4,10 @@
 
 "use strict";
 
-var _      = require("lodash");
+var _ = require("lodash");
 var events = require("events");
-var reg    = require("./reg.js");
-var state  = require("./state.js").state;
+var reg = require("./reg.js");
+var state = require("./state.js").state;
 
 var unicodeData = require("../data/ascii-identifier-data.js");
 var asciiIdentifierStartTable = unicodeData.asciiIdentifierStartTable;
@@ -137,7 +137,10 @@ Lexer.prototype = {
   _lines: [],
 
   inContext: function(ctxType) {
-    return this.context.length > 0 && this.context[this.context.length - 1].type === ctxType;
+    return (
+      this.context.length > 0 &&
+      this.context[this.context.length - 1].type === ctxType
+    );
   },
 
   pushContext: function(ctxType) {
@@ -189,9 +192,11 @@ Lexer.prototype = {
    *   });
    */
   on: function(names, listener) {
-    names.split(" ").forEach(function(name) {
-      this.emitter.on(name, listener);
-    }.bind(this));
+    names.split(" ").forEach(
+      function(name) {
+        this.emitter.on(name, listener);
+      }.bind(this)
+    );
   },
 
   /*
@@ -199,7 +204,10 @@ Lexer.prototype = {
    * listener.
    */
   trigger: function() {
-    this.emitter.emit.apply(this.emitter, Array.prototype.slice.call(arguments));
+    this.emitter.emit.apply(
+      this.emitter,
+      Array.prototype.slice.call(arguments)
+    );
   },
 
   /*
@@ -210,11 +218,13 @@ Lexer.prototype = {
    * a false context.
    */
   triggerAsync: function(type, args, checks, fn) {
-    checks.push(function() {
-      if (fn()) {
-        this.trigger(type, args);
-      }
-    }.bind(this));
+    checks.push(
+      function() {
+        if (fn()) {
+          this.trigger(type, args);
+        }
+      }.bind(this)
+    );
   },
 
   /*
@@ -229,60 +239,60 @@ Lexer.prototype = {
     var ch2, ch3, ch4;
 
     switch (ch1) {
-    // Most common single-character punctuators
-    case ".":
-      if ((/^[0-9]$/).test(this.peek(1))) {
-        return null;
-      }
-      if (this.peek(1) === "." && this.peek(2) === ".") {
+      // Most common single-character punctuators
+      case ".":
+        if (/^[0-9]$/.test(this.peek(1))) {
+          return null;
+        }
+        if (this.peek(1) === "." && this.peek(2) === ".") {
+          return {
+            type: Token.Punctuator,
+            value: "..."
+          };
+        }
+      /* falls through */
+      case "(":
+      case ")":
+      case ";":
+      case ",":
+      case "[":
+      case "]":
+      case ":":
+      case "~":
+      case "?":
         return {
           type: Token.Punctuator,
-          value: "..."
+          value: ch1
         };
-      }
-      /* falls through */
-    case "(":
-    case ")":
-    case ";":
-    case ",":
-    case "[":
-    case "]":
-    case ":":
-    case "~":
-    case "?":
-      return {
-        type: Token.Punctuator,
-        value: ch1
-      };
 
-    // A block/object opener
-    case "{":
-      this.pushContext(Context.Block);
-      return {
-        type: Token.Punctuator,
-        value: ch1
-      };
+      // A block/object opener
+      case "{":
+        this.pushContext(Context.Block);
+        return {
+          type: Token.Punctuator,
+          value: ch1
+        };
 
-    // A block/object closer
-    case "}":
-      if (this.inContext(Context.Block)) {
-        this.popContext();
-      }
-      return {
-        type: Token.Punctuator,
-        value: ch1
-      };
+      // A block/object closer
+      case "}":
+        if (this.inContext(Context.Block)) {
+          this.popContext();
+        }
+        return {
+          type: Token.Punctuator,
+          value: ch1
+        };
 
-    // A pound sign (for Node shebangs)
-    case "#":
-      return {
-        type: Token.Punctuator,
-        value: ch1
-      };
+      // A pound sign (for Node shebangs)
+      case "#":
+        return {
+          type: Token.Punctuator,
+          value: ch1
+        };
 
-    // We're at the end of input
-    case "":
-      return null;
+      // We're at the end of input
+      case "":
+        return null;
     }
 
     // Peek more characters
@@ -346,7 +356,7 @@ Lexer.prototype = {
     }
 
     // 2-character punctuators: ++ -- << >> && || **
-    if (ch1 === ch2 && ("+-<>&|*".indexOf(ch1) >= 0)) {
+    if (ch1 === ch2 && "+-<>&|*".indexOf(ch1) >= 0) {
       if (ch1 === "*" && ch3 === "=") {
         return {
           type: Token.Punctuator,
@@ -402,8 +412,14 @@ Lexer.prototype = {
 
     function commentToken(label, body, opt) {
       var special = [
-        "jshint", "jshint.unstable", "jslint", "members", "member", "globals",
-        "global", "exported"
+        "jshint",
+        "jshint.unstable",
+        "jslint",
+        "members",
+        "member",
+        "globals",
+        "global",
+        "exported"
       ];
       var isSpecial = false;
       var value = label + body;
@@ -432,14 +448,21 @@ Lexer.prototype = {
           return;
         }
 
-        if (body.charAt(str.length) === " " && body.substr(0, str.length) === str) {
+        if (
+          body.charAt(str.length) === " " &&
+          body.substr(0, str.length) === str
+        ) {
           isSpecial = true;
           label = label + str;
           body = body.substr(str.length);
         }
 
-        if (!isSpecial && body.charAt(0) === " " && body.charAt(str.length + 1) === " " &&
-          body.substr(1, str.length) === str) {
+        if (
+          !isSpecial &&
+          body.charAt(0) === " " &&
+          body.charAt(str.length + 1) === " " &&
+          body.substr(1, str.length) === str
+        ) {
           isSpecial = true;
           label = label + " " + str;
           body = body.substr(str.length + 1);
@@ -448,7 +471,11 @@ Lexer.prototype = {
         // To handle rarer case when special word is separated from label by
         // multiple spaces or tabs
         var strIndex = body.indexOf(str);
-        if (!isSpecial && strIndex >= 0 && body.charAt(strIndex + str.length) === " ") {
+        if (
+          !isSpecial &&
+          strIndex >= 0 &&
+          body.charAt(strIndex + str.length) === " "
+        ) {
           var isAllWhitespace = body.substr(0, strIndex).trim().length === 0;
           if (isAllWhitespace) {
             isSpecial = true;
@@ -461,34 +488,34 @@ Lexer.prototype = {
         }
 
         switch (str) {
-        case "member":
-          commentType = "members";
-          break;
-        case "global":
-          commentType = "globals";
-          break;
-        default:
-          var options = body.split(":").map(function(v) {
-            return v.replace(/^\s+/, "").replace(/\s+$/, "");
-          });
+          case "member":
+            commentType = "members";
+            break;
+          case "global":
+            commentType = "globals";
+            break;
+          default:
+            var options = body.split(":").map(function(v) {
+              return v.replace(/^\s+/, "").replace(/\s+$/, "");
+            });
 
-          if (options.length === 2) {
-            switch (options[0]) {
-            case "ignore":
-              switch (options[1]) {
-              case "start":
-                self.ignoringLinterErrors = true;
-                isSpecial = false;
-                break;
-              case "end":
-                self.ignoringLinterErrors = false;
-                isSpecial = false;
-                break;
+            if (options.length === 2) {
+              switch (options[0]) {
+                case "ignore":
+                  switch (options[1]) {
+                    case "start":
+                      self.ignoringLinterErrors = true;
+                      isSpecial = false;
+                      break;
+                    case "end":
+                      self.ignoringLinterErrors = false;
+                      isSpecial = false;
+                      break;
+                  }
               }
             }
-          }
 
-          commentType = str;
+            commentType = str;
         }
       });
 
@@ -533,7 +560,8 @@ Lexer.prototype = {
       this.skip(2);
 
       while (this.peek() !== "*" || this.peek(1) !== "/") {
-        if (this.peek() === "") { // End of Line
+        if (this.peek() === "") {
+          // End of Line
           body += "\n";
 
           // If we hit EOF and our comment is still unclosed,
@@ -570,14 +598,46 @@ Lexer.prototype = {
   scanKeyword: function() {
     var result = /^[a-zA-Z_$][a-zA-Z0-9_$]*/.exec(this.input);
     var keywords = [
-      "if", "in", "do", "var", "for", "new",
-      "try", "let", "this", "else", "case",
-      "void", "with", "enum", "while", "break",
-      "catch", "throw", "const", "yield", "class",
-      "super", "return", "typeof", "delete",
-      "switch", "export", "import", "default",
-      "finally", "extends", "function", "continue",
-      "debugger", "instanceof", "true", "false", "null", "async", "await"
+      "if",
+      "in",
+      "do",
+      "var",
+      "for",
+      "new",
+      "try",
+      "let",
+      "this",
+      "else",
+      "case",
+      "void",
+      "with",
+      "enum",
+      "while",
+      "break",
+      "catch",
+      "throw",
+      "const",
+      "yield",
+      "class",
+      "super",
+      "return",
+      "typeof",
+      "delete",
+      "switch",
+      "export",
+      "import",
+      "default",
+      "finally",
+      "extends",
+      "function",
+      "continue",
+      "debugger",
+      "instanceof",
+      "true",
+      "false",
+      "null",
+      "async",
+      "await"
     ];
 
     if (result && keywords.indexOf(result[0]) >= 0) {
@@ -604,7 +664,10 @@ Lexer.prototype = {
     }
 
     function isNonAsciiIdentifierPart(code) {
-      return isNonAsciiIdentifierStart(code) || nonAsciiIdentifierPartTable.indexOf(code) > -1;
+      return (
+        isNonAsciiIdentifierStart(code) ||
+        nonAsciiIdentifierPartTable.indexOf(code) > -1
+      );
     }
 
     var readUnicodeEscapeSequence = function() {
@@ -615,8 +678,11 @@ Lexer.prototype = {
         return null;
       }
 
-      var sequence = this.peek(index + 1) + this.peek(index + 2) +
-        this.peek(index + 3) + this.peek(index + 4);
+      var sequence =
+        this.peek(index + 1) +
+        this.peek(index + 2) +
+        this.peek(index + 3) +
+        this.peek(index + 4);
       var code;
 
       if (isHex(sequence)) {
@@ -722,7 +788,9 @@ Lexer.prototype = {
             data: ["unicode 8", "6"]
           },
           checks,
-          function() { return true; }
+          function() {
+            return true;
+          }
         );
       }
     }
@@ -754,20 +822,25 @@ Lexer.prototype = {
     var isLegacy = false;
 
     function isDecimalDigit(str) {
-      return (/^[0-9]$/).test(str);
+      return /^[0-9]$/.test(str);
     }
 
     function isOctalDigit(str) {
-      return (/^[0-7]$/).test(str);
+      return /^[0-7]$/.test(str);
     }
 
     function isBinaryDigit(str) {
-      return (/^[01]$/).test(str);
+      return /^[01]$/.test(str);
     }
 
     function isIdentifierStart(ch) {
-      return (ch === "$") || (ch === "_") || (ch === "\\") ||
-        (ch >= "a" && ch <= "z") || (ch >= "A" && ch <= "Z");
+      return (
+        ch === "$" ||
+        ch === "_" ||
+        ch === "\\" ||
+        (ch >= "a" && ch <= "z") ||
+        (ch >= "A" && ch <= "Z")
+      );
     }
 
     // Numbers must start either with a decimal digit or a point.
@@ -803,10 +876,12 @@ Lexer.prototype = {
                 code: "W119",
                 line: this.line,
                 character: this.char,
-                data: [ "Octal integer literal", "6" ]
+                data: ["Octal integer literal", "6"]
               },
               checks,
-              function() { return true; }
+              function() {
+                return true;
+              }
             );
           }
 
@@ -826,10 +901,12 @@ Lexer.prototype = {
                 code: "W119",
                 line: this.line,
                 character: this.char,
-                data: [ "Binary integer literal", "6" ]
+                data: ["Binary integer literal", "6"]
               },
               checks,
-              function() { return true; }
+              function() {
+                return true;
+              }
             );
           }
 
@@ -868,7 +945,7 @@ Lexer.prototype = {
         index += 1;
       }
 
-      var isBigInt = this.peek(index) === 'n';
+      var isBigInt = this.peek(index) === "n";
 
       if (isAllowedDigit !== isDecimalDigit || isBigInt) {
         if (isBigInt) {
@@ -879,16 +956,19 @@ Lexer.prototype = {
                 code: "W144",
                 line: this.line,
                 character: this.char,
-                data: [ "BigInt", "bigint" ]
+                data: ["BigInt", "bigint"]
               },
               checks,
-              function() { return true; }
+              function() {
+                return true;
+              }
             );
           }
 
           value += char;
           index += 1;
-        } else if (!isLegacy && value.length <= 2) { // 0x
+        } else if (!isLegacy && value.length <= 2) {
+          // 0x
           return {
             type: Token.NumericLiteral,
             value: value,
@@ -974,7 +1054,6 @@ Lexer.prototype = {
     };
   },
 
-
   // Assumes previously parsed character was \ (=== '\\') and was not skipped.
   scanEscapeSequence: function(checks) {
     var allowNewLine = false;
@@ -983,108 +1062,141 @@ Lexer.prototype = {
     var char = this.peek();
 
     switch (char) {
-    case "'":
-      this.triggerAsync("warning", {
-        code: "W114",
-        line: this.line,
-        character: this.char,
-        data: [ "\\'" ]
-      }, checks, function() {return state.jsonMode; });
-      break;
-    case "b":
-      char = "\\b";
-      break;
-    case "f":
-      char = "\\f";
-      break;
-    case "n":
-      char = "\\n";
-      break;
-    case "r":
-      char = "\\r";
-      break;
-    case "t":
-      char = "\\t";
-      break;
-    case "0":
-      char = "\\0";
+      case "'":
+        this.triggerAsync(
+          "warning",
+          {
+            code: "W114",
+            line: this.line,
+            character: this.char,
+            data: ["\\'"]
+          },
+          checks,
+          function() {
+            return state.jsonMode;
+          }
+        );
+        break;
+      case "b":
+        char = "\\b";
+        break;
+      case "f":
+        char = "\\f";
+        break;
+      case "n":
+        char = "\\n";
+        break;
+      case "r":
+        char = "\\r";
+        break;
+      case "t":
+        char = "\\t";
+        break;
+      case "0":
+        char = "\\0";
 
-      // Octal literals fail in strict mode.
-      // Check if the number is between 00 and 07.
-      var n = parseInt(this.peek(1), 10);
-      this.triggerAsync("warning", {
-        code: "W115",
-        line: this.line,
-        character: this.char
-      }, checks,
-      function() { return n >= 0 && n <= 7 && state.isStrict(); });
-      break;
-    case "1":
-    case "2":
-    case "3":
-    case "4":
-    case "5":
-    case "6":
-    case "7":
-      char = "\\" + char;
-      this.triggerAsync("warning", {
-        code: "W115",
-        line: this.line,
-        character: this.char
-      }, checks,
-      function() { return state.isStrict(); });
-      break;
-    case "u":
-      var sequence = this.input.substr(1, 4);
-      var code = parseInt(sequence, 16);
-      if (!isHex(sequence)) {
-        // This condition unequivocally describes a syntax error.
-        // TODO: Re-factor as an "error" (not a "warning").
-        this.trigger("warning", {
-          code: "W052",
-          line: this.line,
-          character: this.char,
-          data: [ "u" + sequence ]
-        });
-      }
-      char = String.fromCharCode(code);
-      jump = 5;
-      break;
-    case "v":
-      this.triggerAsync("warning", {
-        code: "W114",
-        line: this.line,
-        character: this.char,
-        data: [ "\\v" ]
-      }, checks, function() { return state.jsonMode; });
+        // Octal literals fail in strict mode.
+        // Check if the number is between 00 and 07.
+        var n = parseInt(this.peek(1), 10);
+        this.triggerAsync(
+          "warning",
+          {
+            code: "W115",
+            line: this.line,
+            character: this.char
+          },
+          checks,
+          function() {
+            return n >= 0 && n <= 7 && state.isStrict();
+          }
+        );
+        break;
+      case "1":
+      case "2":
+      case "3":
+      case "4":
+      case "5":
+      case "6":
+      case "7":
+        char = "\\" + char;
+        this.triggerAsync(
+          "warning",
+          {
+            code: "W115",
+            line: this.line,
+            character: this.char
+          },
+          checks,
+          function() {
+            return state.isStrict();
+          }
+        );
+        break;
+      case "u":
+        var sequence = this.input.substr(1, 4);
+        var code = parseInt(sequence, 16);
+        if (!isHex(sequence)) {
+          // This condition unequivocally describes a syntax error.
+          // TODO: Re-factor as an "error" (not a "warning").
+          this.trigger("warning", {
+            code: "W052",
+            line: this.line,
+            character: this.char,
+            data: ["u" + sequence]
+          });
+        }
+        char = String.fromCharCode(code);
+        jump = 5;
+        break;
+      case "v":
+        this.triggerAsync(
+          "warning",
+          {
+            code: "W114",
+            line: this.line,
+            character: this.char,
+            data: ["\\v"]
+          },
+          checks,
+          function() {
+            return state.jsonMode;
+          }
+        );
 
-      char = "\v";
-      break;
-    case "x":
-      var  x = parseInt(this.input.substr(1, 2), 16);
+        char = "\v";
+        break;
+      case "x":
+        var x = parseInt(this.input.substr(1, 2), 16);
 
-      this.triggerAsync("warning", {
-        code: "W114",
-        line: this.line,
-        character: this.char,
-        data: [ "\\x-" ]
-      }, checks, function() { return state.jsonMode; });
+        this.triggerAsync(
+          "warning",
+          {
+            code: "W114",
+            line: this.line,
+            character: this.char,
+            data: ["\\x-"]
+          },
+          checks,
+          function() {
+            return state.jsonMode;
+          }
+        );
 
-      char = String.fromCharCode(x);
-      jump = 3;
-      break;
-    case "\\":
-      char = "\\\\";
-      break;
-    case "\"":
-      char = "\\\"";
-      break;
-    case "/":
-      break;
-    case "":
-      allowNewLine = true;
-      char = "";
-      break;
+        char = String.fromCharCode(x);
+        jump = 3;
+        break;
+      case "\\":
+        char = "\\\\";
+        break;
+      case '"':
+        char = '\\"';
+        break;
+      case "/":
+        break;
+      case "":
+        allowNewLine = true;
+        char = "";
+        break;
     }
 
     return { char: char, jump: jump, allowNewLine: allowNewLine };
@@ -1115,7 +1227,9 @@ Lexer.prototype = {
             data: ["template literal syntax", "6"]
           },
           checks,
-          function() { return true; }
+          function() {
+            return true;
+          }
         );
       }
       // Template must start with a backtick.
@@ -1155,8 +1269,8 @@ Lexer.prototype = {
         }
       }
 
-      if (ch === '$' && this.peek(1) === '{') {
-        value += '${';
+      if (ch === "$" && this.peek(1) === "{") {
+        value += "${";
         this.skip(2);
         return {
           type: tokenType,
@@ -1167,11 +1281,11 @@ Lexer.prototype = {
           depth: depth,
           context: this.currentContext()
         };
-      } else if (ch === '\\') {
+      } else if (ch === "\\") {
         var escape = this.scanEscapeSequence(checks);
         value += escape.char;
         this.skip(escape.jump);
-      } else if (ch !== '`') {
+      } else if (ch !== "`") {
         // Otherwise, append the value and continue.
         value += ch;
         this.skip(1);
@@ -1179,7 +1293,10 @@ Lexer.prototype = {
     }
 
     // Final value is either NoSubstTemplate or TemplateTail
-    tokenType = tokenType === Token.TemplateHead ? Token.NoSubstTemplate : Token.TemplateTail;
+    tokenType =
+      tokenType === Token.TemplateHead
+        ? Token.NoSubstTemplate
+        : Token.TemplateTail;
     this.skip(1);
     this.templateStarts.pop();
 
@@ -1210,16 +1327,23 @@ Lexer.prototype = {
     var quote = this.peek();
 
     // String must start with a quote.
-    if (quote !== "\"" && quote !== "'") {
+    if (quote !== '"' && quote !== "'") {
       return null;
     }
 
     // In JSON strings must always use double quotes.
-    this.triggerAsync("warning", {
-      code: "W108",
-      line: this.line,
-      character: this.char // +1?
-    }, checks, function() { return state.jsonMode && quote !== "\""; });
+    this.triggerAsync(
+      "warning",
+      {
+        code: "W108",
+        line: this.line,
+        character: this.char // +1?
+      },
+      checks,
+      function() {
+        return state.jsonMode && quote !== '"';
+      }
+    );
 
     var value = "";
     var startLine = this.line;
@@ -1229,7 +1353,8 @@ Lexer.prototype = {
     this.skip();
 
     while (this.peek() !== quote) {
-      if (this.peek() === "") { // End Of Line
+      if (this.peek() === "") {
+        // End Of Line
         // If an EOL is not preceded by a backslash, show a warning
         // and proceed like it was a legit multi-line string where
         // author simply forgot to escape the newline symbol.
@@ -1251,17 +1376,31 @@ Lexer.prototype = {
           // Otherwise show a warning if multistr option was not set.
           // For JSON, show warning no matter what.
 
-          this.triggerAsync("warning", {
-            code: "W043",
-            line: this.line,
-            character: this.char
-          }, checks, function() { return !state.option.multistr; });
+          this.triggerAsync(
+            "warning",
+            {
+              code: "W043",
+              line: this.line,
+              character: this.char
+            },
+            checks,
+            function() {
+              return !state.option.multistr;
+            }
+          );
 
-          this.triggerAsync("warning", {
-            code: "W042",
-            line: this.line,
-            character: this.char
-          }, checks, function() { return state.jsonMode && state.option.multistr; });
+          this.triggerAsync(
+            "warning",
+            {
+              code: "W042",
+              line: this.line,
+              character: this.char
+            },
+            checks,
+            function() {
+              return state.jsonMode && state.option.multistr;
+            }
+          );
         }
 
         // If we get an EOF inside of an unclosed string, show an
@@ -1277,11 +1416,12 @@ Lexer.prototype = {
             quote: quote
           };
         }
-      } else { // Any character other than End Of Line
+      } else {
+        // Any character other than End Of Line
         allowNewLine = false;
         var char = this.peek();
         var jump = 1; // A length of a jump, after we're done
-                      // parsing this character.
+        // parsing this character.
 
         if (char < " ") {
           // Warn about a control character in a string.
@@ -1291,10 +1431,12 @@ Lexer.prototype = {
               code: "W113",
               line: this.line,
               character: this.char,
-              data: [ "<non-printable>" ]
+              data: ["<non-printable>"]
             },
             checks,
-            function() { return true; }
+            function() {
+              return true;
+            }
           );
         }
 
@@ -1354,7 +1496,9 @@ Lexer.prototype = {
     var isQuantifiable = false;
     var hasInvalidQuantifier = false;
     var escapedChars = "";
-    var hasUFlag = function() { return allFlags.indexOf("u") > -1; };
+    var hasUFlag = function() {
+      return allFlags.indexOf("u") > -1;
+    };
     var escapeSequence;
     var groupCount = 0;
     var terminated, malformedDesc;
@@ -1398,7 +1542,7 @@ Lexer.prototype = {
               code: "E016",
               line: this.line,
               character: this.char,
-              data: [ "Invalid Unicode escape sequence" ]
+              data: ["Invalid Unicode escape sequence"]
             },
             checks,
             hasUFlag
@@ -1423,7 +1567,9 @@ Lexer.prototype = {
             character: this.char
           },
           checks,
-          function() { return true; }
+          function() {
+            return true;
+          }
         );
       }
 
@@ -1436,10 +1582,12 @@ Lexer.prototype = {
             code: "W049",
             line: this.line,
             character: this.char,
-            data: [ char ]
+            data: [char]
           },
           checks,
-          function() { return true; }
+          function() {
+            return true;
+          }
         );
       } else if (char === "0" && reg.decimalDigit.test(this.peek(index + 1))) {
         this.triggerAsync(
@@ -1448,7 +1596,7 @@ Lexer.prototype = {
             code: "E016",
             line: this.line,
             character: this.char,
-            data: [ "Invalid decimal escape sequence" ]
+            data: ["Invalid decimal escape sequence"]
           },
           checks,
           hasUFlag
@@ -1517,44 +1665,46 @@ Lexer.prototype = {
       // that would not be detected by this substitution.
       var astralSubstitute = "\uFFFF";
 
-      return body
-        // Replace every Unicode escape sequence with the equivalent BMP
-        // character or a constant ASCII code point in the case of astral
-        // symbols. (See the above note on `astralSubstitute` for more
-        // information.)
-        .replace(/\\u\{([0-9a-fA-F]+)\}|\\u([a-fA-F0-9]{4})/g, function($0, $1, $2) {
-          var codePoint = parseInt($1 || $2, 16);
-          var literal;
+      return (
+        body
+          // Replace every Unicode escape sequence with the equivalent BMP
+          // character or a constant ASCII code point in the case of astral
+          // symbols. (See the above note on `astralSubstitute` for more
+          // information.)
+          .replace(
+            /\\u\{([0-9a-fA-F]+)\}|\\u([a-fA-F0-9]{4})/g,
+            function($0, $1, $2) {
+              var codePoint = parseInt($1 || $2, 16);
+              var literal;
 
-          if (codePoint > 0x10FFFF) {
-            malformed = true;
-            this.trigger("error", {
-              code: "E016",
-              line: this.line,
-              character: this.char,
-              data: [ char ]
-            });
+              if (codePoint > 0x10ffff) {
+                malformed = true;
+                this.trigger("error", {
+                  code: "E016",
+                  line: this.line,
+                  character: this.char,
+                  data: [char]
+                });
 
-            return;
-          }
-          literal = String.fromCharCode(codePoint);
+                return;
+              }
+              literal = String.fromCharCode(codePoint);
 
-          if (reg.regexpSyntaxChars.test(literal)) {
-            return $0;
-          }
+              if (reg.regexpSyntaxChars.test(literal)) {
+                return $0;
+              }
 
-          if (codePoint <= 0xFFFF) {
-            return String.fromCharCode(codePoint);
-          }
-          return astralSubstitute;
-        }.bind(this))
-        // Replace each paired surrogate with a single ASCII symbol to avoid
-        // throwing on regular expressions that are only valid in combination
-        // with the "u" flag.
-        .replace(
-          /[\uD800-\uDBFF][\uDC00-\uDFFF]/g,
-          astralSubstitute
-        );
+              if (codePoint <= 0xffff) {
+                return String.fromCharCode(codePoint);
+              }
+              return astralSubstitute;
+            }.bind(this)
+          )
+          // Replace each paired surrogate with a single ASCII symbol to avoid
+          // throwing on regular expressions that are only valid in combination
+          // with the "u" flag.
+          .replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, astralSubstitute)
+      );
     }.bind(this);
 
     // Regular expressions must start with '/'
@@ -1592,15 +1742,18 @@ Lexer.prototype = {
       if (char === "\\") {
         escapeSequence = scanRegexpEscapeSequence();
 
-        if (isCharSet && (this.peek(index) === "-" || isCharSetRange) &&
-          reg.regexpCharClasses.test(escapeSequence)) {
+        if (
+          isCharSet &&
+          (this.peek(index) === "-" || isCharSetRange) &&
+          reg.regexpCharClasses.test(escapeSequence)
+        ) {
           this.triggerAsync(
             "error",
             {
               code: "E016",
               line: this.line,
               character: this.char,
-              data: [ "Character class used in range" ]
+              data: ["Character class used in range"]
             },
             checks,
             hasUFlag
@@ -1626,8 +1779,10 @@ Lexer.prototype = {
       } else if (char === "(") {
         isGroup = true;
 
-        if (this.peek(index + 1) === "?" &&
-          (this.peek(index + 2) === "=" || this.peek(index + 2) === "!")) {
+        if (
+          this.peek(index + 1) === "?" &&
+          (this.peek(index + 2) === "=" || this.peek(index + 2) === "!")
+        ) {
           isQuantifiable = true;
         }
       } else if (char === ")") {
@@ -1641,7 +1796,7 @@ Lexer.prototype = {
                 code: "E016",
                 line: this.line,
                 character: this.char,
-                data: [ "Quantified quantifiable" ]
+                data: ["Quantified quantifiable"]
               },
               checks,
               hasUFlag
@@ -1693,10 +1848,12 @@ Lexer.prototype = {
               code: "W119",
               line: this.line,
               character: this.char,
-              data: [ "Sticky RegExp flag", "6" ]
+              data: ["Sticky RegExp flag", "6"]
             },
             checks,
-            function() { return true; }
+            function() {
+              return true;
+            }
           );
         }
       } else if (char === "u") {
@@ -1707,14 +1864,21 @@ Lexer.prototype = {
               code: "W119",
               line: this.line,
               character: this.char,
-              data: [ "Unicode RegExp flag", "6" ]
+              data: ["Unicode RegExp flag", "6"]
             },
             checks,
-            function() { return true; }
+            function() {
+              return true;
+            }
           );
         }
 
-        var hasInvalidEscape = (function(groupReferences, groupCount, escapedChars, reg) {
+        var hasInvalidEscape = (function(
+          groupReferences,
+          groupCount,
+          escapedChars,
+          reg
+        ) {
           var hasInvalidGroup = groupReferences.some(function(groupReference) {
             if (groupReference > groupCount) {
               return true;
@@ -1726,14 +1890,16 @@ Lexer.prototype = {
           }
 
           return !escapedChars.split("").every(function(escapedChar) {
-              return escapedChar === "u" ||
-                escapedChar === "/" ||
-                escapedChar === "0" ||
-                reg.regexpControlEscapes.test(escapedChar) ||
-                reg.regexpCharClasses.test(escapedChar) ||
-                reg.regexpSyntaxChars.test(escapedChar);
-            });
-        }(groupReferences, groupCount, escapedChars, reg));
+            return (
+              escapedChar === "u" ||
+              escapedChar === "/" ||
+              escapedChar === "0" ||
+              reg.regexpControlEscapes.test(escapedChar) ||
+              reg.regexpCharClasses.test(escapedChar) ||
+              reg.regexpSyntaxChars.test(escapedChar)
+            );
+          });
+        })(groupReferences, groupCount, escapedChars, reg);
 
         if (hasInvalidEscape) {
           malformedDesc = "Invalid escape";
@@ -1750,10 +1916,12 @@ Lexer.prototype = {
               code: "W119",
               line: this.line,
               character: this.char,
-              data: [ "DotAll RegExp flag", "9" ]
+              data: ["DotAll RegExp flag", "9"]
             },
             checks,
-            function() { return true; }
+            function() {
+              return true;
+            }
           );
         }
         if (value.indexOf("s") > -1) {
@@ -1774,11 +1942,18 @@ Lexer.prototype = {
     }
 
     if (allFlags.indexOf("u") === -1) {
-      this.triggerAsync("warning", {
-        code: "W147",
-        line: this.line,
-        character: this.char
-      }, checks, function() { return state.option.regexpu; });
+      this.triggerAsync(
+        "warning",
+        {
+          code: "W147",
+          line: this.line,
+          character: this.char
+        },
+        checks,
+        function() {
+          return state.option.regexpu;
+        }
+      );
     }
 
     // Check regular expression for correctness.
@@ -1800,7 +1975,7 @@ Lexer.prototype = {
         code: "E016",
         line: this.line,
         character: this.char,
-        data: [ malformedDesc ]
+        data: [malformedDesc]
       });
     } else if (allFlags.indexOf("s") > -1 && !reg.regexpDot.test(body)) {
       this.trigger("warning", {
@@ -1823,8 +1998,7 @@ Lexer.prototype = {
    * pages with non-breaking pages produce syntax errors.
    */
   scanNonBreakingSpaces: function() {
-    return state.option.nonbsp ?
-      this.input.search(/(\u00A0)/) : -1;
+    return state.option.nonbsp ? this.input.search(/(\u00A0)/) : -1;
   },
 
   /*
@@ -1843,7 +2017,8 @@ Lexer.prototype = {
     // Methods that work with multi-line structures and move the
     // character pointer.
 
-    var match = this.scanComments(checks) ||
+    var match =
+      this.scanComments(checks) ||
       this.scanStringLiteral(checks) ||
       this.scanTemplateLiteral(checks);
 
@@ -1896,7 +2071,10 @@ Lexer.prototype = {
 
     var endsWith = function() {
       return _.some(arguments, function(suffix) {
-        return inputTrimmed.indexOf(suffix, inputTrimmed.length - suffix.length) !== -1;
+        return (
+          inputTrimmed.indexOf(suffix, inputTrimmed.length - suffix.length) !==
+          -1
+        );
       });
     };
 
@@ -1914,7 +2092,9 @@ Lexer.prototype = {
         "warning",
         { code: "W125", line: this.line, character: char + 1 },
         checks,
-        function() { return true; }
+        function() {
+          return true;
+        }
       );
     }
 
@@ -1923,20 +2103,27 @@ Lexer.prototype = {
     // If there is a limit on line length, warn when lines get too
     // long.
 
-    if (!this.ignoringLinterErrors && state.option.maxlen &&
-      state.option.maxlen < this.input.length) {
-      var inComment = this.inComment ||
+    if (
+      !this.ignoringLinterErrors &&
+      state.option.maxlen &&
+      state.option.maxlen < this.input.length
+    ) {
+      var inComment =
+        this.inComment ||
         startsWith.call(inputTrimmed, "//") ||
         startsWith.call(inputTrimmed, "/*");
 
-      var shouldTriggerError = !inComment || !reg.maxlenException.test(inputTrimmed);
+      var shouldTriggerError =
+        !inComment || !reg.maxlenException.test(inputTrimmed);
 
       if (shouldTriggerError) {
         this.triggerAsync(
           "warning",
           { code: "W101", line: this.line, character: this.input.length },
           checks,
-          function() { return true; }
+          function() {
+            return true;
+          }
         );
       }
     }
@@ -1964,27 +2151,33 @@ Lexer.prototype = {
 
       if (type === "(punctuator)") {
         switch (value) {
-        case ".":
-        case ")":
-        case "~":
-        case "#":
-        case "]":
-        case "}":
-        case "++":
-        case "--":
-          this.prereg = false;
-          break;
-        default:
-          this.prereg = true;
+          case ".":
+          case ")":
+          case "~":
+          case "#":
+          case "]":
+          case "}":
+          case "++":
+          case "--":
+            this.prereg = false;
+            break;
+          default:
+            this.prereg = true;
         }
 
         obj = Object.create(state.syntax[value] || state.syntax["(error)"]);
       }
 
       if (type === "(identifier)") {
-        if (value === "return" || value === "case" || value === "yield" ||
-            value === "typeof" || value === "instanceof" || value === "void" ||
-            value === "await") {
+        if (
+          value === "return" ||
+          value === "case" ||
+          value === "yield" ||
+          value === "typeof" ||
+          value === "instanceof" ||
+          value === "void" ||
+          value === "await"
+        ) {
           this.prereg = true;
         }
 
@@ -2001,14 +2194,14 @@ Lexer.prototype = {
         obj = Object.create(state.syntax[type]);
       }
 
-      obj.identifier = (type === "(identifier)");
+      obj.identifier = type === "(identifier)";
       obj.type = obj.type || type;
       obj.value = value;
       obj.line = this.line;
       obj.character = this.char;
       obj.from = this.from;
       if (obj.identifier && token) {
-obj.raw_text = token.text || token.value;
+        obj.raw_text = token.text || token.value;
       }
       if (token && token.startLine && token.startLine !== this.line) {
         obj.startLine = token.startLine;
@@ -2058,7 +2251,7 @@ obj.raw_text = token.text || token.value;
             code: "E024",
             line: this.line,
             character: this.char,
-            data: [ this.peek() ]
+            data: [this.peek()]
           });
 
           this.input = "";
@@ -2068,136 +2261,167 @@ obj.raw_text = token.text || token.value;
       }
 
       switch (token.type) {
-      case Token.StringLiteral:
-        this.triggerAsync("String", {
-          line: this.line,
-          char: this.char,
-          from: this.from,
-          startLine: token.startLine,
-          startChar: token.startChar,
-          value: token.value,
-          quote: token.quote
-        }, checks, function() { return true; });
+        case Token.StringLiteral:
+          this.triggerAsync(
+            "String",
+            {
+              line: this.line,
+              char: this.char,
+              from: this.from,
+              startLine: token.startLine,
+              startChar: token.startChar,
+              value: token.value,
+              quote: token.quote
+            },
+            checks,
+            function() {
+              return true;
+            }
+          );
 
-        return create("(string)", token.value, null, token);
+          return create("(string)", token.value, null, token);
 
-      case Token.TemplateHead:
-        this.trigger("TemplateHead", {
-          line: this.line,
-          char: this.char,
-          from: this.from,
-          startLine: token.startLine,
-          startChar: token.startChar,
-          value: token.value
-        });
-        return create("(template)", token.value, null, token);
+        case Token.TemplateHead:
+          this.trigger("TemplateHead", {
+            line: this.line,
+            char: this.char,
+            from: this.from,
+            startLine: token.startLine,
+            startChar: token.startChar,
+            value: token.value
+          });
+          return create("(template)", token.value, null, token);
 
-      case Token.TemplateMiddle:
-        this.trigger("TemplateMiddle", {
-          line: this.line,
-          char: this.char,
-          from: this.from,
-          startLine: token.startLine,
-          startChar: token.startChar,
-          value: token.value
-        });
-        return create("(template middle)", token.value, null, token);
+        case Token.TemplateMiddle:
+          this.trigger("TemplateMiddle", {
+            line: this.line,
+            char: this.char,
+            from: this.from,
+            startLine: token.startLine,
+            startChar: token.startChar,
+            value: token.value
+          });
+          return create("(template middle)", token.value, null, token);
 
-      case Token.TemplateTail:
-        this.trigger("TemplateTail", {
-          line: this.line,
-          char: this.char,
-          from: this.from,
-          startLine: token.startLine,
-          startChar: token.startChar,
-          value: token.value
-        });
-        return create("(template tail)", token.value, null, token);
+        case Token.TemplateTail:
+          this.trigger("TemplateTail", {
+            line: this.line,
+            char: this.char,
+            from: this.from,
+            startLine: token.startLine,
+            startChar: token.startChar,
+            value: token.value
+          });
+          return create("(template tail)", token.value, null, token);
 
-      case Token.NoSubstTemplate:
-        this.trigger("NoSubstTemplate", {
-          line: this.line,
-          char: this.char,
-          from: this.from,
-          startLine: token.startLine,
-          startChar: token.startChar,
-          value: token.value
-        });
-        return create("(no subst template)", token.value, null, token);
+        case Token.NoSubstTemplate:
+          this.trigger("NoSubstTemplate", {
+            line: this.line,
+            char: this.char,
+            from: this.from,
+            startLine: token.startLine,
+            startChar: token.startChar,
+            value: token.value
+          });
+          return create("(no subst template)", token.value, null, token);
 
-      case Token.Identifier:
-        this.triggerAsync("Identifier", {
-          line: this.line,
-          char: this.char,
-          from: this.from,
-          name: token.value,
-          raw_name: token.text,
-          isProperty: state.tokens.curr.id === "."
-        }, checks, function() { return true; });
+        case Token.Identifier:
+          this.triggerAsync(
+            "Identifier",
+            {
+              line: this.line,
+              char: this.char,
+              from: this.from,
+              name: token.value,
+              raw_name: token.text,
+              isProperty: state.tokens.curr.id === "."
+            },
+            checks,
+            function() {
+              return true;
+            }
+          );
 
         /* falls through */
-      case Token.Keyword:
-        return create("(identifier)", token.value, state.tokens.curr.id === ".", token);
+        case Token.Keyword:
+          return create(
+            "(identifier)",
+            token.value,
+            state.tokens.curr.id === ".",
+            token
+          );
 
-      case Token.NumericLiteral:
-        if (token.isMalformed) {
-          // This condition unequivocally describes a syntax error.
-          // TODO: Re-factor as an "error" (not a "warning").
-          this.trigger("warning", {
-            code: "W045",
+        case Token.NumericLiteral:
+          if (token.isMalformed) {
+            // This condition unequivocally describes a syntax error.
+            // TODO: Re-factor as an "error" (not a "warning").
+            this.trigger("warning", {
+              code: "W045",
+              line: this.line,
+              character: this.char,
+              data: [token.value]
+            });
+          }
+
+          this.triggerAsync(
+            "warning",
+            {
+              code: "W114",
+              line: this.line,
+              character: this.char,
+              data: ["0x-"]
+            },
+            checks,
+            function() {
+              return token.base === 16 && state.jsonMode;
+            }
+          );
+
+          this.triggerAsync(
+            "warning",
+            {
+              code: "W115",
+              line: this.line,
+              character: this.char
+            },
+            checks,
+            function() {
+              return state.isStrict() && token.base === 8 && token.isLegacy;
+            }
+          );
+
+          this.trigger("Number", {
             line: this.line,
-            character: this.char,
-            data: [ token.value ]
-          });
-        }
-
-        this.triggerAsync("warning", {
-          code: "W114",
-          line: this.line,
-          character: this.char,
-          data: [ "0x-" ]
-        }, checks, function() { return token.base === 16 && state.jsonMode; });
-
-        this.triggerAsync("warning", {
-          code: "W115",
-          line: this.line,
-          character: this.char
-        }, checks, function() {
-          return state.isStrict() && token.base === 8 && token.isLegacy;
-        });
-
-        this.trigger("Number", {
-          line: this.line,
-          char: this.char,
-          from: this.from,
-          value: token.value,
-          base: token.base,
-          isMalformed: token.isMalformed
-        });
-
-        return create("(number)", token.value);
-
-      case Token.RegExp:
-        return create("(regexp)", token.value);
-
-      case Token.Comment:
-        if (token.isSpecial) {
-          return {
-            id: '(comment)',
+            char: this.char,
+            from: this.from,
             value: token.value,
-            body: token.body,
-            type: token.commentType,
-            isSpecial: token.isSpecial,
-            line: this.line,
-            character: this.char,
-            from: this.from
-          };
-        }
+            base: token.base,
+            isMalformed: token.isMalformed
+          });
 
-        break;
+          return create("(number)", token.value);
 
-      default:
-        return create("(punctuator)", token.value);
+        case Token.RegExp:
+          return create("(regexp)", token.value);
+
+        case Token.Comment:
+          if (token.isSpecial) {
+            return {
+              id: "(comment)",
+              value: token.value,
+              body: token.body,
+              type: token.commentType,
+              isSpecial: token.isSpecial,
+              line: this.line,
+              character: this.char,
+              from: this.from
+            };
+          }
+
+          break;
+
+        default:
+          return create("(punctuator)", token.value);
       }
     }
   }
