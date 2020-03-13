@@ -67,7 +67,6 @@ inspecode:
       # (3.4.0) on Enterprse ... 464 issues
 
   pmd:
-    #machine: { cpu: 0.75 }      # avoid OutOfMemoryError (default is 0.5)
     thresholds: { num-issues: 27 }
 
   prettier:
