@@ -84,14 +84,14 @@ function findConfig(file) {
   var proj = findFile(".jshintrc", dir);
   var home;
 
-  if (proj)
+  if (proj) {
     return proj;
-
-  else if (envs) {
+  } else if (envs) {
     home = path.normalize(path.join(envs, ".jshintrc"));
 
-    if (shjs.test("-e", home))
+    if (shjs.test("-e", home)) {
       return home;
+    }
   }
 
   return null;
@@ -127,8 +127,9 @@ function loadNpmConfig(file) {
   var dir = path.dirname(path.resolve(file));
   var fp  = findFile("package.json", dir);
 
-  if (!fp)
+  if (!fp) {
     return null;
+  }
 
   try {
     return require(fp).jshintConfig;
@@ -213,8 +214,9 @@ function loadIgnores(params) {
       return !!line.trim();
     })
     .map(function(line) {
-      if (line[0] === "!")
+      if (line[0] === "!") {
         return "!" + path.resolve(path.dirname(file), line.substr(1).trim());
+      }
 
       return path.join(path.dirname(file), line.trim());
     });
@@ -260,8 +262,9 @@ function isIgnored(fp, patterns) {
 function extract(code, when) {
   // A JS file won't start with a less-than character, whereas a HTML file
   // should always start with that.
-  if (when !== "always" && (when !== "auto" || !/^\s*</.test(code)))
+  if (when !== "always" && (when !== "auto" || !/^\s*</.test(code))) {
     return code;
+  }
 
   var inscript = false;
   var index = 0;
@@ -270,11 +273,13 @@ function extract(code, when) {
 
   // Test if current tag is a valid <script> tag.
   function onopen(name, attrs) {
-    if (name !== "script")
+    if (name !== "script") {
       return;
+    }
 
-    if (attrs.type && !/text\/javascript/.test(attrs.type.toLowerCase()))
+    if (attrs.type && !/text\/javascript/.test(attrs.type.toLowerCase())) {
       return;
+    }
 
     // Mark that we're inside a <script> a tag and push all new lines
     // in between the last </script> tag and this <script> tag to preserve
@@ -285,8 +290,9 @@ function extract(code, when) {
   }
 
   function onclose(name) {
-    if (name !== "script" || !inscript)
+    if (name !== "script" || !inscript) {
       return;
+    }
 
     inscript = false;
     index = parser.startIndex;
@@ -294,14 +300,17 @@ function extract(code, when) {
   }
 
   function ontext(data) {
-    if (!inscript)
+    if (!inscript) {
       return;
+    }
 
     var lines = data.split(/\r\n|\n|\r/);
 
     if (!startOffset) {
       lines.some(function(line) {
-        if (!line) return;
+        if (!line) {
+return;
+        }
         startOffset = /^(\s*)/.exec(line)[1];
         return true;
       });
@@ -340,8 +349,9 @@ function extract(code, when) {
 function extractOffsets(code, when) {
   // A JS file won't start with a less-than character, whereas a HTML file
   // should always start with that.
-  if (when !== "always" && (when !== "auto" || !/^\s*</.test(code)))
+  if (when !== "always" && (when !== "auto" || !/^\s*</.test(code))) {
     return;
+  }
 
   var inscript = false;
   var index = 0;
@@ -351,11 +361,13 @@ function extractOffsets(code, when) {
 
   // Test if current tag is a valid <script> tag.
   function onopen(name, attrs) {
-    if (name !== "script")
+    if (name !== "script") {
       return;
+    }
 
-    if (attrs.type && !/text\/javascript/.test(attrs.type.toLowerCase()))
+    if (attrs.type && !/text\/javascript/.test(attrs.type.toLowerCase())) {
       return;
+    }
 
     // Mark that we're inside a <script> a tag and push all new lines
     // in between the last </script> tag and this <script> tag to preserve
@@ -368,8 +380,9 @@ function extractOffsets(code, when) {
   }
 
   function onclose(name) {
-    if (name !== "script" || !inscript)
+    if (name !== "script" || !inscript) {
       return;
+    }
 
     inscript = false;
     index = parser.startIndex;
@@ -377,14 +390,17 @@ function extractOffsets(code, when) {
   }
 
   function ontext(data) {
-    if (!inscript)
+    if (!inscript) {
       return;
+    }
 
     var lines = data.split(/\r\n|\n|\r/);
 
     if (!startOffset) {
       lines.some(function(line) {
-        if (!line) return;
+        if (!line) {
+return;
+        }
         startOffset = /^(\s*)/.exec(line)[1];
         return true;
       });
@@ -459,8 +475,9 @@ function lint(code, results, config, data, file) {
   if (config.prereq) {
     config.prereq.forEach(function(fp) {
       fp = path.join(config.dirname, fp);
-      if (shjs.test("-e", fp))
+      if (shjs.test("-e", fp)) {
         buffer.push(shjs.cat(fp));
+      }
     });
     delete config.prereq;
   }
@@ -747,8 +764,9 @@ var exports = {
     function done(passed) {
       /*jshint eqnull:true */
 
-      if (passed == null)
+      if (passed == null) {
         return;
+      }
 
       exports.exit(passed ? 0 : 2);
     }
