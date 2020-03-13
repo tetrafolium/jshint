@@ -3,13 +3,12 @@
 // These are the JSHint boolean options.
 exports.bool = {
   enforcing: {
-
     /**
      * This option prohibits the use of bitwise operators such as `^` (XOR),
      * `|` (OR) and others. Bitwise operators are very rare in JavaScript
      * programs and quite often `&` is simply a mistyped `&&`.
      */
-    bitwise     : true,
+    bitwise: true,
 
     /**
      *
@@ -20,7 +19,7 @@ exports.bool = {
      *     Array.prototype.count = function (value) { return 4; };
      *     // -> Warning: Extending prototype of native object: 'Array'.
      */
-    freeze      : true,
+    freeze: true,
 
     /**
      * This option allows you to force all variable names to use either
@@ -31,7 +30,7 @@ exports.bool = {
      *             check out [the JSCS
      *             project](https://github.com/jscs-dev/node-jscs).
      */
-    camelcase   : true,
+    camelcase: true,
 
     /**
      * This option requires you to always put curly braces around blocks in
@@ -48,7 +47,7 @@ exports.bool = {
      *       shuffle();
      *       sleep();
      */
-    curly       : true,
+    curly: true,
 
     /**
      * This options prohibits the use of `==` and `!=` in favor of `===` and
@@ -59,7 +58,7 @@ exports.bool = {
      * JavaScript](http://javascriptweblog.wordpress.com/2011/02/07/truth-equality-and-javascript/)
      * by Angus Croll.
      */
-    eqeqeq      : true,
+    eqeqeq: true,
 
     /**
      * This option enables warnings about the use of identifiers which are
@@ -77,7 +76,7 @@ exports.bool = {
      *
      * @deprecated Use `esversion: 3` instead.
      */
-    es3         : true,
+    es3: true,
 
     /**
      * This option enables syntax first defined in [the ECMAScript 5.1
@@ -86,7 +85,7 @@ exports.bool = {
      *
      * @deprecated Use `esversion: 5` instead.
      */
-    es5         : true,
+    es5: true,
 
     /**
      * This option requires all `for in` loops to filter object's items. The
@@ -107,7 +106,7 @@ exports.bool = {
      * loops](http://javascriptweblog.wordpress.com/2011/01/04/exploring-javascript-for-in-loops/)
      * by Angus Croll.
      */
-    forin       : true,
+    forin: true,
 
     /**
      * This option prohibits the use of immediate function invocations without
@@ -120,7 +119,7 @@ exports.bool = {
      *             check out [the JSCS
      *             project](https://github.com/jscs-dev/node-jscs).
      */
-    immed       : true,
+    immed: true,
 
     /**
      * This option prohibits unnecessary clauses within `switch` statements,
@@ -135,7 +134,7 @@ exports.bool = {
      * While clauses like these are technically valid, they do not effect
      * program behavior and may indicate an erroneous refactoring.
      */
-    leanswitch  : true,
+    leanswitch: true,
 
     /**
      * This option requires you to capitalize names of constructor functions.
@@ -156,7 +155,7 @@ exports.bool = {
      *             check out [the JSCS
      *             project](https://github.com/jscs-dev/node-jscs).
      */
-    newcap      : true,
+    newcap: true,
 
     /**
      * This option prohibits the use of `arguments.caller` and
@@ -165,14 +164,14 @@ exports.bool = {
      * JavaScript. In fact, ECMAScript 5 forbids the use of `arguments.callee`
      * in strict mode.
      */
-    noarg       : true,
+    noarg: true,
 
     /**
      * This option prohibits the use of the comma operator. When misused, the
      * comma operator can obscure the value of a statement and promote
      * incorrect code.
      */
-    nocomma     : true,
+    nocomma: true,
 
     /**
      * This option warns when you have an empty block in your code. JSLint was
@@ -185,14 +184,14 @@ exports.bool = {
      *             check out [the JSCS
      *             project](https://github.com/jscs-dev/node-jscs).
      */
-    noempty     : true,
+    noempty: true,
 
     /**
      * This option warns about "non-breaking whitespace" characters. These
      * characters can be entered with option-space on Mac computers and have a
      * potential of breaking non-UTF8 web pages.
      */
-    nonbsp      : true,
+    nonbsp: true,
 
     /**
      * This option prohibits the use of constructor functions for side-effects.
@@ -205,8 +204,7 @@ exports.bool = {
      * `MyConstructor` since the object that the operator `new` creates isn't
      * used anywhere so you should generally avoid constructors like this one.
      */
-    nonew       : true,
-
+    nonew: true,
 
     /**
      * Async functions resolve on their return value. In most cases, this makes
@@ -227,7 +225,7 @@ exports.bool = {
      * if it is executed in a JavaScript engine which does not support the "u"
      * flag.
      */
-    regexpu     : true,
+    regexpu: true,
 
     /**
      * This option prohibits the use of explicitly undeclared variables. This
@@ -243,7 +241,7 @@ exports.bool = {
      * If your variable is defined in another file, you can use the `global`
      * directive to tell JSHint about it.
      */
-    undef       : true,
+    undef: true,
 
     /**
      * This option prohibits the use of the grouping operator when it is not
@@ -276,7 +274,7 @@ exports.bool = {
      *             warnings/errors in when upgrading between minor versions of
      *             JSHint.
      */
-    enforceall : false,
+    enforceall: false,
 
     /**
      * This option warns when a comma is not placed after the last element in an
@@ -319,7 +317,6 @@ exports.bool = {
     trailingcomma: false
   },
   relaxing: {
-
     /**
      * This option suppresses warnings about missing semicolons. There is a lot
      * of FUD about semicolon spread by quite a few people in the community.
@@ -334,7 +331,7 @@ exports.bool = {
      * by Isaac Schlueter and [JavaScript Semicolon
      * Insertion](http://inimino.org/~inimino/blog/javascript_semicolons).
      */
-    asi         : true,
+    asi: true,
 
     /**
      * This option suppresses warnings about multi-line strings. Multi-line
@@ -362,13 +359,13 @@ exports.bool = {
      *             check out [the JSCS
      *             project](https://github.com/jscs-dev/node-jscs).
      */
-    multistr    : true,
+    multistr: true,
 
     /**
      * This option suppresses warnings about the `debugger` statements in your
      * code.
      */
-    debug       : true,
+    debug: true,
 
     /**
      * This option suppresses warnings about the use of assignments in cases
@@ -382,15 +379,15 @@ exports.bool = {
      *
      *     for (var i = 0, person; (person = people[i]); i++) {}
      */
-    boss        : true,
+    boss: true,
 
     /**
      * This option suppresses warnings about the use of `eval`. The use of
      * `eval` is discouraged because it can make your code vulnerable to
      * various injection attacks and it makes it hard for JavaScript
      * interpreter to do certain optimizations.
-    */
-    evil        : true,
+     */
+    evil: true,
 
     /**
      * This option suppresses warnings about declaring variables inside
@@ -409,7 +406,7 @@ exports.bool = {
      *                 // No warning when funcscope:true
      *     }
      */
-    funcscope   : true,
+    funcscope: true,
 
     /**
      * This option suppresses warnings about the use of global strict mode.
@@ -426,9 +423,9 @@ exports.bool = {
      * This option suppresses warnings about the `__iterator__` property. This
      * property is not supported by all browsers so use it carefully.
      */
-    iterator    : true,
+    iterator: true,
 
-     /**
+    /**
      * This option suppresses warnings about invalid `typeof` operator values.
      * This operator has only [a limited set of possible return
      * values](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/typeof).
@@ -443,7 +440,7 @@ exports.bool = {
      * Do not use this option unless you're absolutely sure you don't want
      * these checks.
      */
-    notypeof    : true,
+    notypeof: true,
 
     /**
      * This option prohibits the use of unary increment and decrement
@@ -451,18 +448,18 @@ exports.bool = {
      * their coding styles and there are programming languages—such as
      * Python—that go completely without these operators.
      */
-    plusplus    : true,
+    plusplus: true,
 
     /**
      * This option suppresses warnings about the `__proto__` property.
      */
-    proto       : true,
+    proto: true,
 
     /**
      * This option suppresses warnings about the use of script-targeted
      * URLs—such as `javascript:...`.
      */
-    scripturl   : true,
+    scripturl: true,
 
     /**
      * This option suppresses warnings about using `[]` notation when it can be
@@ -473,7 +470,7 @@ exports.bool = {
      *             check out [the JSCS
      *             project](https://github.com/jscs-dev/node-jscs).
      */
-    sub         : true,
+    sub: true,
 
     /**
      * This option suppresses warnings about "weird" constructions like
@@ -487,7 +484,7 @@ exports.bool = {
      *       this.publicMethod2 = function () {}
      *     };
      */
-    supernew    : true,
+    supernew: true,
 
     /**
      * This option suppresses most of the warnings about possibly unsafe line
@@ -499,7 +496,7 @@ exports.bool = {
      *             check out [the JSCS
      *             project](https://github.com/jscs-dev/node-jscs).
      */
-    laxbreak    : true,
+    laxbreak: true,
 
     /**
      * This option suppresses warnings about comma-first coding style:
@@ -515,7 +512,7 @@ exports.bool = {
      *             check out [the JSCS
      *             project](https://github.com/jscs-dev/node-jscs).
      */
-    laxcomma    : true,
+    laxcomma: true,
 
     /**
      * This option suppresses warnings about possible strict violations when
@@ -529,7 +526,7 @@ exports.bool = {
      * JSHint will fail with an error if you will try to set this option
      * globally.
      */
-    validthis   : true,
+    validthis: true,
 
     /**
      * This option suppresses warnings about the use of the `with` statement.
@@ -541,7 +538,7 @@ exports.bool = {
      * * [with Statement Considered
      *   Harmful](http://yuiblog.com/blog/2006/04/11/with-statement-considered-harmful/)
      */
-    withstmt    : true,
+    withstmt: true,
 
     /**
      * This options tells JSHint that your code uses Mozilla JavaScript
@@ -553,20 +550,20 @@ exports.bool = {
      * * [New in JavaScript
      *   1.7](https://developer.mozilla.org/en-US/docs/JavaScript/New_in_JavaScript/1.7)
      */
-    moz         : true,
+    moz: true,
 
     /**
      * This option suppresses warnings about generator functions with no
      * `yield` statement in them.
      */
-    noyield     : true,
+    noyield: true,
 
     /**
      * This option suppresses warnings about `== null` comparisons. Such
      * comparisons are often useful when you want to check if a variable is
      * `null` or `undefined`.
      */
-    eqnull      : true,
+    eqnull: true,
 
     /**
      * This option suppresses warnings about missing semicolons, but only when
@@ -577,7 +574,7 @@ exports.bool = {
      * This is a very niche use case that is useful only when you use automatic
      * JavaScript code generators.
      */
-    lastsemic   : true,
+    lastsemic: true,
 
     /**
      * This option suppresses warnings about functions inside of loops.
@@ -605,7 +602,7 @@ exports.bool = {
      *       }(i));
      *     }
      */
-    loopfunc    : true,
+    loopfunc: true,
 
     /**
      * This option suppresses warnings about the use of expressions where
@@ -613,7 +610,7 @@ exports.bool = {
      * the time, such code is a typo. However, it is not forbidden by the spec
      * and that's why this warning is optional.
      */
-    expr        : true,
+    expr: true,
 
     /**
      * This option tells JSHint that your code uses ECMAScript 6 specific
@@ -626,23 +623,22 @@ exports.bool = {
      *
      * @deprecated Use `esversion: 6` instead.
      */
-    esnext      : true,
+    esnext: true,
 
     /**
      * This option tells JSHint that your code uses ES3 array elision elements,
      * or empty elements (for example, `[1, , , 4, , , 7]`).
      */
-    elision     : true,
+    elision: true
   },
 
   // Third party globals
   environments: {
-
     /**
      * This option defines globals exposed by the
      * [MooTools](http://mootools.net/) JavaScript framework.
      */
-    mootools    : true,
+    mootools: true,
 
     /**
      * This option defines globals exposed by
@@ -650,19 +646,19 @@ exports.bool = {
      * database that can be queried and indexed in a MapReduce fashion using
      * JavaScript.
      */
-    couch       : true,
+    couch: true,
 
     /**
      * This option defines globals exposed by [the Jasmine unit testing
      * framework](https://jasmine.github.io/).
      */
-    jasmine     : true,
+    jasmine: true,
 
     /**
      * This option defines globals exposed by the [jQuery](http://jquery.com/)
      * JavaScript library.
      */
-    jquery      : true,
+    jquery: true,
 
     /**
      * This option defines globals available when your code is running inside
@@ -672,57 +668,57 @@ exports.bool = {
      * in the browser environments but don't make sense in Node such as
      * file-level `use strict` pragmas and `console.log` statements.
      */
-    node        : true,
+    node: true,
 
     /**
      * This option defines globals exposed by [the QUnit unit testing
      * framework](http://qunitjs.com/).
      */
-    qunit       : true,
+    qunit: true,
 
     /**
      * This option defines globals available when your code is running inside
      * of the Rhino runtime environment. [Rhino](http://www.mozilla.org/rhino/)
      * is an open-source implementation of JavaScript written entirely in Java.
      */
-    rhino       : true,
+    rhino: true,
 
     /**
      * This option defines globals exposed by [the ShellJS
      * library](http://documentup.com/arturadib/shelljs).
      */
-    shelljs     : true,
+    shelljs: true,
 
     /**
      * This option defines globals exposed by the
      * [Prototype](http://www.prototypejs.org/) JavaScript framework.
      */
-    prototypejs : true,
+    prototypejs: true,
 
     /**
      * This option defines globals exposed by the [YUI](http://yuilibrary.com/)
      * JavaScript framework.
      */
-    yui         : true,
+    yui: true,
 
     /**
      * This option defines globals exposed by the "BDD" and "TDD" UIs of the
      * [Mocha unit testing framework](http://mochajs.org/).
      */
-    mocha       : true,
+    mocha: true,
 
     /**
      * This option informs JSHint that the input code describes an ECMAScript 6
      * module. All module code is interpreted as strict mode code.
      */
-    module      : true,
+    module: true,
 
     /**
      * This option defines globals available when your code is running as a
      * script for the [Windows Script
      * Host](http://en.wikipedia.org/wiki/Windows_Script_Host).
      */
-    wsh         : true,
+    wsh: true,
 
     /**
      * This option defines globals available when your code is running inside
@@ -730,13 +726,13 @@ exports.bool = {
      * Workers](https://developer.mozilla.org/en/Using_web_workers) provide a
      * simple means for web content to run scripts in background threads.
      */
-    worker      : true,
+    worker: true,
 
     /**
      * This option defines non-standard but widely adopted globals such as
      * `escape` and `unescape`.
      */
-    nonstandard : true,
+    nonstandard: true,
 
     /**
      * This option defines globals exposed by modern browsers: all the way from
@@ -746,13 +742,13 @@ exports.bool = {
      * **Note:** This option doesn't expose variables like `alert` or
      * `console`. See option `devel` for more information.
      */
-    browser     : true,
+    browser: true,
 
     /**
      * This option defines globals available when using [the Browserify
      * tool](http://browserify.org/) to build a project.
      */
-    browserify  : true,
+    browserify: true,
 
     /**
      * This option defines globals that are usually used for logging poor-man's
@@ -760,13 +756,13 @@ exports.bool = {
      * ship them in production because, for example, `console.log` breaks in
      * legacy versions of Internet Explorer.
      */
-    devel       : true,
+    devel: true,
 
     /**
      * This option defines globals exposed by the [Dojo
      * Toolkit](http://dojotoolkit.org/).
      */
-    dojo        : true,
+    dojo: true,
 
     /**
      * This option defines globals for typed array constructors.
@@ -776,7 +772,7 @@ exports.bool = {
      * * [JavaScript typed
      *   arrays](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Typed_arrays)
      */
-    typed       : true,
+    typed: true,
 
     /**
      * This option defines globals available when your core is running inside
@@ -785,22 +781,21 @@ exports.bool = {
      * native support for various web standards: DOM handling, CSS selector,
      * JSON, Canvas, and SVG.
      */
-    phantom     : true
+    phantom: true
   },
 
   // Obsolete options
   obsolete: {
-    onecase     : true, // if one case switch statements should be allowed
-    regexp      : true, // if the . should not be allowed in regexp literals
-    regexdash   : true  // if unescaped first/last dash (-) inside brackets
-                        // should be tolerated
+    onecase: true, // if one case switch statements should be allowed
+    regexp: true, // if the . should not be allowed in regexp literals
+    regexdash: true // if unescaped first/last dash (-) inside brackets
+    // should be tolerated
   }
 };
 
 // These are the JSHint options that can take any value
 // (we use this object to detect invalid options)
 exports.val = {
-
   /**
    * This option lets you set the maximum length of a line.
    *
@@ -808,7 +803,7 @@ exports.val = {
    *             you would like to enforce rules relating to code style, check
    *             out [the JSCS project](https://github.com/jscs-dev/node-jscs).
    */
-  maxlen       : false,
+  maxlen: false,
 
   /**
    * This option sets a specific tab width for your code.
@@ -817,13 +812,13 @@ exports.val = {
    *             you would like to enforce rules relating to code style, check
    *             out [the JSCS project](https://github.com/jscs-dev/node-jscs).
    */
-  indent       : false,
+  indent: false,
 
   /**
    * This options allows you to set the maximum amount of warnings JSHint will
    * produce before giving up. Default is 50.
    */
-  maxerr       : false,
+  maxerr: false,
 
   /**
    * This option allows you to control which variables JSHint considers to be
@@ -836,7 +831,7 @@ exports.val = {
    * This option cannot be specified in-line; it may only be used via the
    * JavaScript API or from an external configuration file.
    */
-  predef       : false,
+  predef: false,
 
   /**
    * This option can be used to specify a white list of global variables that
@@ -855,7 +850,7 @@ exports.val = {
    * To configure `globals` within an individual file, see [Inline
    * Configuration](http://jshint.com/docs/#inline-configuration).
    */
-  globals      : false,
+  globals: false,
 
   /**
    * This option enforces the consistency of quotation marks used throughout
@@ -868,9 +863,9 @@ exports.val = {
    *             you would like to enforce rules relating to code style, check
    *             out [the JSCS project](https://github.com/jscs-dev/node-jscs).
    */
-  quotmark     : false,
+  quotmark: false,
 
-  scope        : false,
+  scope: false,
 
   /**
    * This option lets you set the max number of statements allowed per function:
@@ -915,7 +910,7 @@ exports.val = {
    *       }
    *     }
    */
-  maxdepth     : false,
+  maxdepth: false,
 
   /**
    * This option lets you set the max number of formal parameters allowed per
@@ -932,7 +927,7 @@ exports.val = {
    *       // ...
    *     }
    */
-  maxparams    : false,
+  maxparams: false,
 
   /**
    * This option lets you control cyclomatic complexity throughout your code.
@@ -951,7 +946,7 @@ exports.val = {
    * - false    - same as inner
    * - true     - allow variable shadowing
    */
-  shadow       : false,
+  shadow: false,
 
   /**
    * This option requires the code to run in ECMAScript 5's strict mode.
@@ -970,7 +965,7 @@ exports.val = {
    *               could adversely effect other scripts running on the same
    *               page
    */
-  strict      : true,
+  strict: true,
 
   /**
    * This option warns when you define and never use your variables. It is very
@@ -998,7 +993,7 @@ exports.val = {
    * only check for variables, not function parameters, or `strict` to check
    * all variables and parameters.
    */
-  unused       : true,
+  unused: true,
 
   /**
    * This option prohibits the use of a variable before it was defined.
@@ -1015,16 +1010,16 @@ exports.val = {
    * Hoisting](http://www.adequatelygood.com/2010/2/JavaScript-Scoping-and-Hoisting)
    * by Ben Cherry.
    */
-  latedef      : false,
+  latedef: false,
 
-  ignore       : false, // start/end ignoring lines of code, bypassing the lexer
-                        //   start    - start ignoring lines, including the current line
-                        //   end      - stop ignoring lines, starting on the next line
-                        //   line     - ignore warnings / errors for just a single line
-                        //              (this option does not bypass the lexer)
+  ignore: false, // start/end ignoring lines of code, bypassing the lexer
+  //   start    - start ignoring lines, including the current line
+  //   end      - stop ignoring lines, starting on the next line
+  //   line     - ignore warnings / errors for just a single line
+  //              (this option does not bypass the lexer)
 
   ignoreDelimiters: false, // array of start/end delimiters used to ignore
-                           // certain chunks from code
+  // certain chunks from code
 
   /**
    * This option is used to specify the ECMAScript version to which the code
@@ -1078,16 +1073,16 @@ exports.unstable = {
 // These are JSHint boolean options which are shared with JSLint
 // where the definition in JSHint is opposite JSLint
 exports.inverted = {
-  bitwise : true,
-  forin   : true,
-  newcap  : true,
+  bitwise: true,
+  forin: true,
+  newcap: true,
   plusplus: true,
-  regexp  : true,
-  undef   : true,
+  regexp: true,
+  undef: true,
 
   // Inverted and renamed, use JSHint name here
-  eqeqeq  : true,
-  strict  : true
+  eqeqeq: true,
+  strict: true
 };
 
 exports.validNames = Object.keys(exports.val)
@@ -1102,9 +1097,9 @@ exports.unstableNames = Object.keys(exports.unstable);
 // These are JSHint boolean options which are shared with JSLint
 // where the name has been changed but the effect is unchanged
 exports.renamed = {
-  eqeq   : "eqeqeq",
+  eqeq: "eqeqeq",
   windows: "wsh",
-  sloppy : "strict"
+  sloppy: "strict"
 };
 
 exports.removed = {

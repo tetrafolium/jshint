@@ -5,11 +5,11 @@
   "use strict";
 
   var filenames = [];
-  var flags     = {};
-  var opts      = {};
-  var globals   = {};
-  var retval    = 0;
-  var readf     = (typeof readFully === "function" ? readFully : readFile);
+  var flags = {};
+  var opts = {};
+  var globals = {};
+  var retval = 0;
+  var readf = typeof readFully === "function" ? readFully : readFile;
 
   var optstr; // arg1=val1,arg2=val2,...
   var predef; // global1=true,global2,global3,...
@@ -71,20 +71,20 @@
       } else {
         opts[o[0]] = (function(ov) {
           switch (ov) {
-          case "true":
-            return true;
-          case "false":
-            return false;
-          default:
-            return ov;
+            case "true":
+              return true;
+            case "false":
+              return false;
+            default:
+              return ov;
           }
-        }(o[1]));
+        })(o[1]);
       }
     });
   }
 
   globals = opts.globals || {};
-  delete(opts.globals);
+  delete opts.globals;
 
   if (predef) {
     predef.split(",").forEach(function(arg) {
@@ -102,9 +102,13 @@
     }
 
     if (!JSHINT(input, opts, globals)) {
-      for (var i = 0, err; err = JSHINT.errors[i]; i += 1) {
-        print(err.reason + " (" + name + ":" + err.line + ":" + err.character + ")");
-        print("> " + (err.evidence || "").replace(/^\s*(\S*(\s+\S+)*)\s*$/, "$1"));
+      for (var i = 0, err; (err = JSHINT.errors[i]); i += 1) {
+        print(
+          err.reason + " (" + name + ":" + err.line + ":" + err.character + ")"
+        );
+        print(
+          "> " + (err.evidence || "").replace(/^\s*(\S*(\s+\S+)*)\s*$/, "$1")
+        );
         print("");
       }
       retval = 2;
@@ -112,4 +116,4 @@
   });
 
   quit(retval);
-}(arguments));
+})(arguments);

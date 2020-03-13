@@ -21,7 +21,8 @@ module.exports = {
       }
       prevfile = file;
 
-      str += file + ":" + error.line + ":" + error.character + ": " + error.reason;
+      str +=
+        file + ":" + error.line + ":" + error.character + ": " + error.reason;
 
       if (opts.verbose) {
         str += " (" + error.code + ")";
@@ -31,7 +32,7 @@ module.exports = {
     });
 
     if (str) {
-      console.log(str + "\n" + len + " error" + ((len === 1) ? "" : "s"));
+      console.log(str + "\n" + len + " error" + (len === 1 ? "" : "s"));
     }
   }
 };

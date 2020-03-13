@@ -13,7 +13,7 @@ exports.register = function(linter) {
       linter.warn("W103", {
         line: data.line,
         char: data.char,
-        data: [ data.name, "6" ]
+        data: [data.name, "6"]
       });
     }
   });
@@ -31,7 +31,7 @@ exports.register = function(linter) {
       linter.warn("W103", {
         line: data.line,
         char: data.char,
-        data: [ data.name ]
+        data: [data.name]
       });
     }
   });
@@ -44,11 +44,14 @@ exports.register = function(linter) {
       return;
     }
 
-    if (data.name.replace(/^_+|_+$/g, "").indexOf("_") > -1 && !data.name.match(/^[A-Z0-9_]*$/)) {
+    if (
+      data.name.replace(/^_+|_+$/g, "").indexOf("_") > -1 &&
+      !data.name.match(/^[A-Z0-9_]*$/)
+    ) {
       linter.warn("W106", {
         line: data.line,
         char: data.char,
-        data: [ data.name ]
+        data: [data.name]
       });
     }
   });
@@ -71,7 +74,7 @@ exports.register = function(linter) {
 
     // If quotmark is set to 'double' warn about all single-quotes.
 
-    if (quotmark === "double" && data.quote !== "\"") {
+    if (quotmark === "double" && data.quote !== '"') {
       code = "W108";
     }
 
@@ -91,7 +94,7 @@ exports.register = function(linter) {
     if (code) {
       linter.warn(code, {
         line: data.line,
-        char: data.char,
+        char: data.char
       });
     }
   });
@@ -102,7 +105,7 @@ exports.register = function(linter) {
       linter.warn("W008", {
         line: data.line,
         char: data.char,
-        data: [ data.value ]
+        data: [data.value]
       });
     }
 
@@ -111,7 +114,7 @@ exports.register = function(linter) {
       linter.warn("W047", {
         line: data.line,
         char: data.char,
-        data: [ data.value ]
+        data: [data.value]
       });
     }
 
@@ -120,7 +123,7 @@ exports.register = function(linter) {
       linter.warn("W046", {
         line: data.line,
         char: data.char,
-        data: [ data.value ]
+        data: [data.value]
       });
     }
   });
