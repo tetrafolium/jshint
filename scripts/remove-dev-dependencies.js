@@ -6,7 +6,7 @@
  * utility does not attempt to install them in a subsequent execution of `npm
  * install. Although the `npm` utility offers a "remove" command, that command
  * can remove only one package per invocation and triggers installation of all
- * other packages. This script allows mutliple packages to be removed prior to
+ * other packages. This script allows multiple packages to be removed prior to
  * installation.
  */
 
