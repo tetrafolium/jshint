@@ -21,9 +21,10 @@ inspecode:
   cpd:
     options: [ --skip-lexical-errors ]
     thresholds: { num-issues: 11 }
+
   eslint:
     auto-fix: true
-    thresholds: { num-issues: 339 }
+    thresholds: { num-issues: 341 }
       # too many issues detected: 2785 > 1000 (in default configuration)
       #   ----------------------------
       #   2785 issues  (total in default config.)
