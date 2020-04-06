@@ -133,7 +133,7 @@ exports.bool = {
      *         z();
      *     }
      *
-     * While clauses like these are techincally valid, they do not effect
+     * While clauses like these are technically valid, they do not effect
      * program behavior and may indicate an erroneous refactoring.
      */
     leanswitch : true,
@@ -1067,7 +1067,7 @@ exports.val = {
 exports.unstable = {
   /**
    * [The BigInt proposal](https://github.com/tc39/proposal-bigint) extends the
-   * language's grammer for numeric literals to support integer values of
+   * language's grammar for numeric literals to support integer values of
    * arbitrary precision. It also introduces a new value of the `typeof`
    * operator, "bigint".
    *

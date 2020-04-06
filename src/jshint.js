@@ -44,7 +44,7 @@ var scopeManager = require("./scope-manager.js");
 var prodParams = require("./prod-params.js");
 
 // We need this module here because environments such as IE and Rhino
-// don't necessarilly expose the 'console' API and browserify uses
+// don't necessarily expose the 'console' API and browserify uses
 // it to log things. It's a sad state of affair, really.
 var console = require("console-browserify");
 
@@ -458,7 +458,7 @@ var JSHINT = (function() {
    * Process an inline linting directive
    *
    * @param {Token} directiveToken - the directive-bearing comment token
-   * @param {Token} previous - the token that preceeds the directive
+   * @param {Token} previous - the token that precedes the directive
    */
   function lintingDirective(directiveToken, previous) {
     var body =
@@ -3107,7 +3107,7 @@ var JSHINT = (function() {
           // which prevented the branch's execution in all cases. While
           // enabling the code will produce behavior that is consistent with
           // the other forms of code evaluation that follow, such a change is
-          // also technically incompatable with prior versions of JSHint (due
+          // also technically incompatible with prior versions of JSHint (due
           // to the fact that the behavior was never formally documented). This
           // branch should be enabled as part of a major release.
           // if (p[0] && p[0].id === "(string)") {
@@ -3163,7 +3163,7 @@ var JSHINT = (function() {
   prefix("(", function(context, rbp) {
     var ret, triggerFnExpr, first, last;
     var opening = state.tokens.curr;
-    var preceeding = state.tokens.prev;
+    var preceding = state.tokens.prev;
     var isNecessary = !state.option.singleGroups;
     var pn = peekThroughParens(1);
 
@@ -5107,7 +5107,7 @@ var JSHINT = (function() {
     } else if (state.tokens.next.id === "const" ||
                // The "let" keyword only signals a lexical binding if it is
                // followed by an identifier, `{`, or `[`. Otherwise, it should
-               // be parsed as an IdentifierReference (i.e. in a subsquent
+               // be parsed as an IdentifierReference (i.e. in a subsequent
                // branch).
                (state.tokens.next.id === "let" &&
                 ((afterNext.identifier && afterNext.id !== "in") ||
