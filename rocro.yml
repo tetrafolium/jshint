@@ -6,14 +6,14 @@ inspecode:
 
   ##----------------------------------------------------------------------------
   ## [on SaaS]
-  ##   Succeeded / found 157 issues.
+  ##   Succeeded / found 28 issues.
   ##   + clang-format supports JavaScript
   ## [on Enterprise]
   ##   Aborted / ClangFormat was aborted unexpectedly. (codelift#1747)
   ##----------------------------------------------------------------------------
   clang-format:         ## (only on staging)
     auto-fix: true
-    thresholds: { num-issues: 157 }
+    thresholds: { num-issues: 28 }
 
   cpd:
     options: [ --skip-lexical-errors ]
@@ -43,7 +43,7 @@ inspecode:
     thresholds: { num-issues: 22 }
 
   npm-audit:
-    thresholds: { num-issues: 38 }
+    thresholds: { num-issues: 42 }
 
   ##----------------------------------------------------------------------------
   ## [on SaaS (prod)]
