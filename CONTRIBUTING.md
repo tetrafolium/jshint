@@ -10,10 +10,10 @@ This document describes the best way to contribute each of these. The
 maintenance team will assign one of the following labels to document the
 report's severity:
 
-- *P1:* Something is throwing exceptions; broken JSHint backward compatibility.
-- *P2:* Something is not being parsed correctly.
-- *P3:* Features that the core team will work on once P2s and P1s are done.
-- *P4:* Patches welcome; The request is good, but low priority.
+- _P1:_ Something is throwing exceptions; broken JSHint backward compatibility.
+- _P2:_ Something is not being parsed correctly.
+- _P3:_ Features that the core team will work on once P2s and P1s are done.
+- _P4:_ Patches welcome; The request is good, but low priority.
 
 ## Bug Reports
 
@@ -51,13 +51,13 @@ with a link to a snippet, etc.
 
 However, before sending a patch, please make sure that the following applies:
 
-* Your commit message follows the [Commit Message Guidelines](#commit-message-guidelines).
-* You have signed the [Contributor's License Agreement](https://www.clahub.com/agreements/jshint/jshint).
-* Your patch doesn't have useless merge commits.
-* Your coding style is similar to ours (see below).
-* Your patch is 100% tested. We don't accept any test regressions.
-* All tests and lint checks pass (`npm test`).
-* You understand that we're super grateful for your patch.
+- Your commit message follows the [Commit Message Guidelines](#commit-message-guidelines).
+- You have signed the [Contributor's License Agreement](https://www.clahub.com/agreements/jshint/jshint).
+- Your patch doesn't have useless merge commits.
+- Your coding style is similar to ours (see below).
+- Your patch is 100% tested. We don't accept any test regressions.
+- All tests and lint checks pass (`npm test`).
+- You understand that we're super grateful for your patch.
 
 ### Development Environment
 
@@ -83,74 +83,73 @@ that's fine but if you're going to send us patches treat this guide as a law.
 
 #### Whitespace
 
-* We use two spaces everywhere.
-* Use one space after `if`, `for`, `while`, etc.
-* No spaces between `function` and `(` for anonymous functions, no space between name and `(`  for named functions:
+- We use two spaces everywhere.
+- Use one space after `if`, `for`, `while`, etc.
+- No spaces between `function` and `(` for anonymous functions, no space between name and `(` for named functions:
 
-    ```javascript
-    var a = function() {};
-    function a() {}
-    ```
+  ```javascript
+  var a = function() {};
+  function a() {}
+  ```
 
-* Feel free to indent variable assignments or property definitions if it makes the code look better. But don't abuse that:
+- Feel free to indent variable assignments or property definitions if it makes the code look better. But don't abuse that:
 
-    ```javascript
-    // Good
-    var next = token.peak();
-    var prev = token.peak(-1);
-    var cur  = token.current;
+  ```javascript
+  // Good
+  var next = token.peak();
+  var prev = token.peak(-1);
+  var cur = token.current;
 
-    var scope = {
-      name:   "(global)",
-      parent: parentScope,
-      vars:   [],
-      uses:   []
-    };
+  var scope = {
+    name: "(global)",
+    parent: parentScope,
+    vars: [],
+    uses: []
+  };
 
-    // Bad
-    var cur         = token.current;
-    var isSemicolon = cur.isPunctuator(";");
-    ```
+  // Bad
+  var cur = token.current;
+  var isSemicolon = cur.isPunctuator(";");
+  ```
 
-* Wrap multi-line comments with new lines on both sides.
+- Wrap multi-line comments with new lines on both sides.
 
 #### Variables
 
-* Use one `var` per variable unless you don't assign any values to it (and it's short enough):
+- Use one `var` per variable unless you don't assign any values to it (and it's short enough):
 
-    ```javascript
-    var token = tokens.find(index);
-    var scope = scopes.current;
-    var next, prev, cur;
-    ```
+  ```javascript
+  var token = tokens.find(index);
+  var scope = scopes.current;
+  var next, prev, cur;
+  ```
 
-* Don't be overly descriptive with your variable names but don't abuse one-letter variables either. Find a sweet spot somewhere in between.
+- Don't be overly descriptive with your variable names but don't abuse one-letter variables either. Find a sweet spot somewhere in between.
 
 #### Comments
 
-* Comment everything that is not obvious.
-* If you're adding a new check, write a comment describing why this check is important and what it checks for.
+- Comment everything that is not obvious.
+- If you're adding a new check, write a comment describing why this check is important and what it checks for.
 
 #### Misc
 
-* Always use strict mode.
-* Always use strict comparisons: `===` and `!==`.
-* Use semicolons.
-* Don't use comma-first notation.
-* Try not to chain stuff unless it **really** helps (e.g. in tests).
-* Don't short-circuit expressions if you're not assigning the result:
+- Always use strict mode.
+- Always use strict comparisons: `===` and `!==`.
+- Use semicolons.
+- Don't use comma-first notation.
+- Try not to chain stuff unless it **really** helps (e.g. in tests).
+- Don't short-circuit expressions if you're not assigning the result:
 
-    ```javascript
-    // Good
-    token = token || tokens.find(0);
+  ```javascript
+  // Good
+  token = token || tokens.find(0);
 
-    // Bad
-    token.isPunctuator(";") && report.addWarning("W001");
+  // Bad
+  token.isPunctuator(";") && report.addWarning("W001");
 
-    // Good
-    if (token.isPunctuator(";"))
-      report.addWarning("W001");
-    ```
+  // Good
+  if (token.isPunctuator(";")) report.addWarning("W001");
+  ```
 
 ### Commit Message Guidelines
 
