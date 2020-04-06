@@ -22740,7 +22740,7 @@ ret = emitter._events[type].length;
                *         z();
                *     }
                *
-               * While clauses like these are techincally valid, they do not
+               * While clauses like these are technically valid, they do not
                * effect program behavior and may indicate an erroneous
                * refactoring.
                */
@@ -23730,7 +23730,7 @@ ret = emitter._events[type].length;
           exports.unstable = {
             /**
              * [The BigInt proposal](https://github.com/tc39/proposal-bigint)
-             * extends the language's grammer for numeric literals to support
+             * extends the language's grammar for numeric literals to support
              * integer values of arbitrary precision. It also introduces a new
              * value of the `typeof` operator, "bigint".
              *
@@ -26215,7 +26215,7 @@ ret = emitter._events[type].length;
           var prodParams = require("./prod-params.js");
 
           // We need this module here because environments such as IE and Rhino
-          // don't necessarilly expose the 'console' API and browserify uses
+          // don't necessarily expose the 'console' API and browserify uses
           // it to log things. It's a sad state of affair, really.
           var console = require("console-browserify");
 
@@ -26640,7 +26640,7 @@ ret = emitter._events[type].length;
              *
              * @param {Token} directiveToken - the directive-bearing comment
              *     token
-             * @param {Token} previous - the token that preceeds the directive
+             * @param {Token} previous - the token that precedes the directive
              */
             function lintingDirective(directiveToken, previous) {
               var body = directiveToken.body.split(",").map(function(
@@ -29460,7 +29460,7 @@ ret = emitter._events[type].length;
                     // cases. While enabling the code will produce behavior that
                     // is consistent with the other forms of code evaluation
                     // that follow, such a change is also technically
-                    // incompatable with prior versions of JSHint (due to the
+                    // incompatible with prior versions of JSHint (due to the
                     // fact that the behavior was never formally documented).
                     // This branch should be enabled as part of a major release.
                     // if (p[0] && p[0].id === "(string)") {
@@ -29518,7 +29518,7 @@ ret = emitter._events[type].length;
             prefix("(", function(context, rbp) {
               var ret, triggerFnExpr, first, last;
               var opening = state.tokens.curr;
-              var preceeding = state.tokens.prev;
+              var preceding = state.tokens.prev;
               var isNecessary = !state.option.singleGroups;
               var pn = peekThroughParens(1);
 
@@ -31556,7 +31556,7 @@ ret = emitter._events[type].length;
                          // The "let" keyword only signals a lexical binding if
                          // it is followed by an identifier, `{`, or `[`.
                          // Otherwise, it should be parsed as an
-                         // IdentifierReference (i.e. in a subsquent branch).
+                         // IdentifierReference (i.e. in a subsequent branch).
                          (state.tokens.next.id === "let" &&
                           ((afterNext.identifier && afterNext.id !== "in") ||
                            checkPunctuators(afterNext, [ "{", "[" ])))) {
