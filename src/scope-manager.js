@@ -1,6 +1,6 @@
 "use strict";
 
-var _      = require("lodash");
+var _ = require("lodash");
 var events = require("events");
 
 // Used to denote membership in lookup tables (a primitive value such as `true`
@@ -24,18 +24,18 @@ var marker = {};
  * @returns {object} - a scope manager
  */
 var scopeManager = function(state, predefined, exported, declared) {
-
   var _current;
   var _scopeStack = [];
 
   function _newScope(type) {
     _current = {
-      "(bindings)": Object.create(null),
-      "(usages)": Object.create(null),
-      "(labels)": Object.create(null),
-      "(parent)": _current,
-      "(type)": type,
-      "(params)": (type === "functionparams" || type === "catchparams") ? [] : null
+      "(bindings)" : Object.create(null),
+      "(usages)" : Object.create(null),
+      "(labels)" : Object.create(null),
+      "(parent)" : _current,
+      "(type)" : type,
+      "(params)" : (type === "functionparams" || type === "catchparams") ? []
+                                                                         : null
     };
     _scopeStack.push(_current);
   }
@@ -43,7 +43,8 @@ var scopeManager = function(state, predefined, exported, declared) {
   _newScope("global");
   _current["(predefined)"] = predefined;
 
-  var _currentFunctBody = _current; // this is the block after the params = function
+  var _currentFunctBody =
+      _current; // this is the block after the params = function
 
   var usedPredefinedAndGlobals = Object.create(null);
   var impliedGlobals = Object.create(null);
@@ -51,27 +52,21 @@ var scopeManager = function(state, predefined, exported, declared) {
   var emitter = new events.EventEmitter();
 
   function warning(code, token) {
-    emitter.emit("warning", {
-      code: code,
-      token: token,
-      data: _.slice(arguments, 2)
-    });
+    emitter.emit("warning",
+                 {code : code, token : token, data : _.slice(arguments, 2)});
   }
 
   function error(code, token) {
-    emitter.emit("warning", {
-      code: code,
-      token: token,
-      data: _.slice(arguments, 2)
-    });
+    emitter.emit("warning",
+                 {code : code, token : token, data : _.slice(arguments, 2)});
   }
 
   function _setupUsages(bindingName) {
     if (!_current["(usages)"][bindingName]) {
       _current["(usages)"][bindingName] = {
-        "(modified)": [],
-        "(reassigned)": [],
-        "(tokens)": []
+        "(modified)" : [],
+        "(reassigned)" : [],
+        "(tokens)" : []
       };
     }
   }
@@ -90,30 +85,27 @@ var scopeManager = function(state, predefined, exported, declared) {
 
   var _warnUnused = function(name, tkn, type, unused_opt) {
     var line = tkn.line;
-    var chr  = tkn.from;
+    var chr = tkn.from;
     var raw_name = tkn.raw_text || name;
 
     unused_opt = _getUnusedOption(unused_opt);
 
     var warnable_types = {
-      "vars": ["var"],
-      "last-param": ["var", "param"],
-      "strict": ["var", "param", "last-param"]
+      "vars" : [ "var" ],
+      "last-param" : [ "var", "param" ],
+      "strict" : [ "var", "param", "last-param" ]
     };
 
     if (unused_opt) {
-      if (warnable_types[unused_opt] && warnable_types[unused_opt].indexOf(type) !== -1) {
-        warning("W098", { line: line, from: chr }, raw_name);
+      if (warnable_types[unused_opt] &&
+          warnable_types[unused_opt].indexOf(type) !== -1) {
+        warning("W098", {line : line, from : chr}, raw_name);
       }
     }
 
     // inconsistent - see gh-1894
     if (unused_opt || type === "var") {
-      unuseds.push({
-        name: name,
-        line: line,
-        character: chr
-      });
+      unuseds.push({name : name, line : line, character : chr});
     }
   };
 
@@ -130,8 +122,9 @@ var scopeManager = function(state, predefined, exported, declared) {
     var currentBindings = _current["(bindings)"];
     for (var bindingName in currentBindings) {
       if (currentBindings[bindingName]["(type)"] !== "exception" &&
-        currentBindings[bindingName]["(unused)"]) {
-        _warnUnused(bindingName, currentBindings[bindingName]["(token)"], "var");
+          currentBindings[bindingName]["(unused)"]) {
+        _warnUnused(bindingName, currentBindings[bindingName]["(token)"],
+                    "var");
       }
     }
   }
@@ -167,7 +160,8 @@ var scopeManager = function(state, predefined, exported, declared) {
         return;
 
       if (binding["(unused)"]) {
-        _warnUnused(param, binding["(token)"], "param", state.funct["(unusedOption)"]);
+        _warnUnused(param, binding["(token)"], "param",
+                    state.funct["(unusedOption)"]);
       } else if (unused_opt === "last-param") {
         return;
       }
@@ -186,7 +180,7 @@ var scopeManager = function(state, predefined, exported, declared) {
    * @returns {Object} - the scope in which the binding was found
    */
   function _getBinding(bindingName) {
-    for (var i = _scopeStack.length - 1 ; i >= 0; --i) {
+    for (var i = _scopeStack.length - 1; i >= 0; --i) {
       var scopeBindings = _scopeStack[i]["(bindings)"];
       if (scopeBindings[bindingName]) {
         return scopeBindings;
@@ -223,7 +217,7 @@ var scopeManager = function(state, predefined, exported, declared) {
     }
 
     var isGlobal = _currentFunctBody["(type)"] === "global",
-      isNewFunction = _current["(type)"] === "functionparams";
+        isNewFunction = _current["(type)"] === "functionparams";
 
     var outsideCurrentFunction = !isGlobal;
     for (var i = 0; i < _scopeStack.length; i++) {
@@ -246,7 +240,7 @@ var scopeManager = function(state, predefined, exported, declared) {
 
     if (state.option.latedef) {
       isFunction = type === "function" || type === "generator function" ||
-        type === "async function";
+                   type === "async function";
 
       // if either latedef is strict and this is a function
       //    or this is not a function
@@ -258,14 +252,13 @@ var scopeManager = function(state, predefined, exported, declared) {
 
   var scopeManagerInst = {
 
-    on: function(names, listener) {
-      names.split(" ").forEach(function(name) {
-        emitter.on(name, listener);
-      });
+    on : function(names, listener) {
+      names.split(" ").forEach(function(name) { emitter.on(name, listener); });
     },
 
-    isPredefined: function(bindingName) {
-      return !this.has(bindingName) && _.has(_scopeStack[0]["(predefined)"], bindingName);
+    isPredefined : function(bindingName) {
+      return !this.has(bindingName) &&
+             _.has(_scopeStack[0]["(predefined)"], bindingName);
     },
 
     /**
@@ -277,7 +270,7 @@ var scopeManager = function(state, predefined, exported, declared) {
      *                          "functionparams", "catchparams" and
      *                          "functionouter"
      */
-    stack: function(type) {
+    stack : function(type) {
       var previousScope = _current;
       _newScope(type);
 
@@ -292,12 +285,13 @@ var scopeManager = function(state, predefined, exported, declared) {
      * Valldate all binding references and declarations in the current scope
      * and set the next scope on the stack as the active scope.
      */
-    unstack: function() {
+    unstack : function() {
       // jshint proto: true
-      var subScope = _scopeStack.length > 1 ? _scopeStack[_scopeStack.length - 2] : null;
+      var subScope =
+          _scopeStack.length > 1 ? _scopeStack[_scopeStack.length - 2] : null;
       var isUnstackingFunctionBody = _current === _currentFunctBody,
-        isUnstackingFunctionParams = _current["(type)"] === "functionparams",
-        isUnstackingFunctionOuter = _current["(type)"] === "functionouter";
+          isUnstackingFunctionParams = _current["(type)"] === "functionparams",
+          isUnstackingFunctionOuter = _current["(type)"] === "functionouter";
 
       var i, j, isImmutable, isFunction;
       var currentUsages = _current["(usages)"];
@@ -305,7 +299,8 @@ var scopeManager = function(state, predefined, exported, declared) {
       var usedBindingNameList = Object.keys(currentUsages);
 
       /* istanbul ignore if */
-      if (currentUsages.__proto__ && usedBindingNameList.indexOf("__proto__") === -1) {
+      if (currentUsages.__proto__ &&
+          usedBindingNameList.indexOf("__proto__") === -1) {
         usedBindingNameList.push("__proto__");
       }
 
@@ -316,12 +311,14 @@ var scopeManager = function(state, predefined, exported, declared) {
         var usedBinding = currentBindings[usedBindingName];
         if (usedBinding) {
           var usedBindingType = usedBinding["(type)"];
-          isImmutable = usedBindingType === "const" || usedBindingType === "import";
+          isImmutable =
+              usedBindingType === "const" || usedBindingType === "import";
 
           if (usedBinding["(useOutsideOfScope)"] && !state.option.funcscope) {
             var usedTokens = usage["(tokens)"];
             for (j = 0; j < usedTokens.length; j++) {
-              // Keep the consistency of https://github.com/jshint/jshint/issues/2409
+              // Keep the consistency of
+              // https://github.com/jshint/jshint/issues/2409
               if (usedBinding["(function)"] === usedTokens[j]["(function)"]) {
                 error("W038", usedTokens[j], usedBindingName);
               }
@@ -339,14 +336,16 @@ var scopeManager = function(state, predefined, exported, declared) {
           }
 
           isFunction = usedBindingType === "function" ||
-            usedBindingType === "generator function" ||
-            usedBindingType === "async function";
+                       usedBindingType === "generator function" ||
+                       usedBindingType === "async function";
 
           // check for re-assigning a function declaration
-          if ((isFunction || usedBindingType === "class") && usage["(reassigned)"]) {
+          if ((isFunction || usedBindingType === "class") &&
+              usage["(reassigned)"]) {
             for (j = 0; j < usage["(reassigned)"].length; j++) {
               if (!usage["(reassigned)"][j].ignoreW021) {
-                warning("W021", usage["(reassigned)"][j], usedBindingName, usedBindingType);
+                warning("W021", usage["(reassigned)"][j], usedBindingName,
+                        usedBindingType);
               }
             }
           }
@@ -355,8 +354,10 @@ var scopeManager = function(state, predefined, exported, declared) {
 
         if (subScope) {
           var bindingType = this.bindingtype(usedBindingName);
-          isImmutable = bindingType === "const" ||
-            (bindingType === null && _scopeStack[0]["(predefined)"][usedBindingName] === false);
+          isImmutable =
+              bindingType === "const" ||
+              (bindingType === null &&
+               _scopeStack[0]["(predefined)"][usedBindingName] === false);
           if (isUnstackingFunctionOuter && !isImmutable) {
             if (!state.funct["(outerMutables)"]) {
               state.funct["(outerMutables)"] = [];
@@ -364,21 +365,26 @@ var scopeManager = function(state, predefined, exported, declared) {
             state.funct["(outerMutables)"].push(usedBindingName);
           }
 
-          // not exiting the global scope, so copy the usage down in case its an out of scope usage
+          // not exiting the global scope, so copy the usage down in case its an
+          // out of scope usage
           if (!subScope["(usages)"][usedBindingName]) {
             subScope["(usages)"][usedBindingName] = usage;
             if (isUnstackingFunctionBody) {
-              subScope["(usages)"][usedBindingName]["(onlyUsedSubFunction)"] = true;
+              subScope["(usages)"][usedBindingName]["(onlyUsedSubFunction)"] =
+                  true;
             }
           } else {
             var subScopeUsage = subScope["(usages)"][usedBindingName];
-            subScopeUsage["(modified)"] = subScopeUsage["(modified)"].concat(usage["(modified)"]);
-            subScopeUsage["(tokens)"] = subScopeUsage["(tokens)"].concat(usage["(tokens)"]);
+            subScopeUsage["(modified)"] =
+                subScopeUsage["(modified)"].concat(usage["(modified)"]);
+            subScopeUsage["(tokens)"] =
+                subScopeUsage["(tokens)"].concat(usage["(tokens)"]);
             subScopeUsage["(reassigned)"] =
-              subScopeUsage["(reassigned)"].concat(usage["(reassigned)"]);
+                subScopeUsage["(reassigned)"].concat(usage["(reassigned)"]);
           }
         } else {
-          // this is exiting global scope, so we finalise everything here - we are at the end of the file
+          // this is exiting global scope, so we finalise everything here - we
+          // are at the end of the file
           if (typeof _current["(predefined)"][usedBindingName] === "boolean") {
 
             // remove the declared token, so we know it is used
@@ -388,17 +394,17 @@ var scopeManager = function(state, predefined, exported, declared) {
             usedPredefinedAndGlobals[usedBindingName] = marker;
 
             // check for re-assigning a read-only (set to false) predefined
-            if (_current["(predefined)"][usedBindingName] === false && usage["(reassigned)"]) {
+            if (_current["(predefined)"][usedBindingName] === false &&
+                usage["(reassigned)"]) {
               for (j = 0; j < usage["(reassigned)"].length; j++) {
                 if (!usage["(reassigned)"][j].ignoreW020) {
                   warning("W020", usage["(reassigned)"][j]);
                 }
               }
             }
-          }
-          else {
-            // binding usage is not predefined and we have not found a declaration
-            // so report as undeclared
+          } else {
+            // binding usage is not predefined and we have not found a
+            // declaration so report as undeclared
             for (j = 0; j < usage["(tokens)"].length; j++) {
               var undefinedToken = usage["(tokens)"][j];
               // if its not a forgiven undefined (e.g. typof x)
@@ -408,11 +414,12 @@ var scopeManager = function(state, predefined, exported, declared) {
                   warning("W117", undefinedToken, usedBindingName);
                 }
                 if (impliedGlobals[usedBindingName]) {
-                  impliedGlobals[usedBindingName].line.push(undefinedToken.line);
+                  impliedGlobals[usedBindingName].line.push(
+                      undefinedToken.line);
                 } else {
                   impliedGlobals[usedBindingName] = {
-                    name: usedBindingName,
-                    line: [undefinedToken.line]
+                    name : usedBindingName,
+                    line : [ undefinedToken.line ]
                   };
                 }
               }
@@ -421,27 +428,28 @@ var scopeManager = function(state, predefined, exported, declared) {
         }
       }
 
-      // if exiting the global scope, we can warn about declared globals that haven't been used yet
+      // if exiting the global scope, we can warn about declared globals that
+      // haven't been used yet
       if (!subScope) {
-        Object.keys(declared)
-          .forEach(function(bindingNotUsed) {
-            _warnUnused(bindingNotUsed, declared[bindingNotUsed], "var");
-          });
+        Object.keys(declared).forEach(function(bindingNotUsed) {
+          _warnUnused(bindingNotUsed, declared[bindingNotUsed], "var");
+        });
       }
 
-      // If this is not a function boundary, transfer function-scoped bindings to
-      // the parent block (a rough simulation of variable hoisting). Previously
-      // existing bindings in the parent block should take precedence so that
-      // prior usages are not discarded.
+      // If this is not a function boundary, transfer function-scoped bindings
+      // to the parent block (a rough simulation of variable hoisting).
+      // Previously existing bindings in the parent block should take precedence
+      // so that prior usages are not discarded.
       if (subScope && !isUnstackingFunctionBody &&
-        !isUnstackingFunctionParams && !isUnstackingFunctionOuter) {
+          !isUnstackingFunctionParams && !isUnstackingFunctionOuter) {
         var bindingNames = Object.keys(currentBindings);
         for (i = 0; i < bindingNames.length; i++) {
 
           var defBindingName = bindingNames[i];
           var defBinding = currentBindings[defBindingName];
 
-          if (!defBinding["(blockscoped)"] && defBinding["(type)"] !== "exception") {
+          if (!defBinding["(blockscoped)"] &&
+              defBinding["(type)"] !== "exception") {
             var shadowed = subScope["(bindings)"][defBindingName];
 
             // Do not overwrite a binding if it exists in the parent scope
@@ -451,18 +459,18 @@ var scopeManager = function(state, predefined, exported, declared) {
             if (shadowed) {
               shadowed["(unused)"] &= defBinding["(unused)"];
 
-            // "Hoist" the variable to the parent block, decorating the binding
-            // so that future references, though technically valid, can be
-            // reported as "out-of-scope" in the absence of the `funcscope`
-            // option.
+              // "Hoist" the variable to the parent block, decorating the
+              // binding so that future references, though technically valid,
+              // can be reported as "out-of-scope" in the absence of the
+              // `funcscope` option.
             } else {
               defBinding["(useOutsideOfScope)"] =
-                // Do not warn about out-of-scope usages in the global scope
-                _currentFunctBody["(type)"] !== "global" &&
-                // When a higher scope contains a binding for the binding, the
-                // binding is a re-declaration and should not prompt "used
-                // out-of-scope" warnings.
-                !this.funct.has(defBindingName, { excludeCurrent: true });
+                  // Do not warn about out-of-scope usages in the global scope
+                  _currentFunctBody["(type)"] !== "global" &&
+                  // When a higher scope contains a binding for the binding, the
+                  // binding is a re-declaration and should not prompt "used
+                  // out-of-scope" warnings.
+                  !this.funct.has(defBindingName, {excludeCurrent : true});
 
               subScope["(bindings)"][defBindingName] = defBinding;
             }
@@ -476,10 +484,12 @@ var scopeManager = function(state, predefined, exported, declared) {
 
       _scopeStack.pop();
       if (isUnstackingFunctionBody) {
-        _currentFunctBody = _scopeStack[_.findLastIndex(_scopeStack, function(scope) {
-          // if function or if global (which is at the bottom so it will only return true if we call back)
-          return scope["(isFuncBody)"] || scope["(type)"] === "global";
-        })];
+        _currentFunctBody =
+            _scopeStack[_.findLastIndex(_scopeStack, function(scope) {
+              // if function or if global (which is at the bottom so it will
+              // only return true if we call back)
+              return scope["(isFuncBody)"] || scope["(type)"] === "global";
+            })];
       }
 
       _current = subScope;
@@ -492,20 +502,22 @@ var scopeManager = function(state, predefined, exported, declared) {
      * @param {Token} token
      * @param {string} [type] - binding type; defaults to "param"
      */
-    addParam: function(bindingName, token, type) {
+    addParam : function(bindingName, token, type) {
       type = type || "param";
 
       if (type === "exception") {
         // if defined in the current function
         var previouslyDefinedBindingType = this.funct.bindingtype(bindingName);
-        if (previouslyDefinedBindingType && previouslyDefinedBindingType !== "exception") {
+        if (previouslyDefinedBindingType &&
+            previouslyDefinedBindingType !== "exception") {
           // and has not been used yet in the current function scope
           if (!state.option.node) {
             warning("W002", state.tokens.next, bindingName);
           }
         }
 
-        if (state.isStrict() && (bindingName === "arguments" || bindingName === "eval")) {
+        if (state.isStrict() &&
+            (bindingName === "arguments" || bindingName === "eval")) {
           warning("E008", token);
         }
       }
@@ -514,15 +526,16 @@ var scopeManager = function(state, predefined, exported, declared) {
       if (_.has(_current["(bindings)"], bindingName)) {
         _current["(bindings)"][bindingName].duplicated = true;
 
-      // The variable was declared in an outer scope
+        // The variable was declared in an outer scope
       } else {
         // if this scope has the variable defined, it's a re-definition error
         _checkOuterShadow(bindingName, token);
 
         _current["(bindings)"][bindingName] = {
           "(type)" : type,
-          "(token)": token,
-          "(unused)": true };
+          "(token)" : token,
+          "(unused)" : true
+        };
 
         _current["(params)"].push(bindingName);
       }
@@ -539,7 +552,7 @@ var scopeManager = function(state, predefined, exported, declared) {
       }
     },
 
-    validateParams: function(isArrow) {
+    validateParams : function(isArrow) {
       var isStrict = state.isStrict();
       var currentFunctParamScope = _currentFunctBody["(parent)"];
       // From ECMAScript 2017:
@@ -572,13 +585,14 @@ var scopeManager = function(state, predefined, exported, declared) {
           }
         }
 
-        if (isStrict && (bindingName === "arguments" || bindingName === "eval")) {
+        if (isStrict &&
+            (bindingName === "arguments" || bindingName === "eval")) {
           warning("E008", binding["(token)"]);
         }
       });
     },
 
-    getUsedOrDefinedGlobals: function() {
+    getUsedOrDefinedGlobals : function() {
       // jshint proto: true
       var list = Object.keys(usedPredefinedAndGlobals);
 
@@ -587,7 +601,7 @@ var scopeManager = function(state, predefined, exported, declared) {
       // environment).
       /* istanbul ignore if */
       if (usedPredefinedAndGlobals.__proto__ === marker &&
-        list.indexOf("__proto__") === -1) {
+          list.indexOf("__proto__") === -1) {
         list.push("__proto__");
       }
 
@@ -599,7 +613,7 @@ var scopeManager = function(state, predefined, exported, declared) {
      *
      * @returns {Array.<{ name: string, line: Array.<number>}>}
      */
-    getImpliedGlobals: function() {
+    getImpliedGlobals : function() {
       // jshint proto: true
       var values = _.values(impliedGlobals);
       var hasProto = false;
@@ -608,9 +622,8 @@ var scopeManager = function(state, predefined, exported, declared) {
       // table may not be enumerated by `_.values` (depending on the
       // environment).
       if (impliedGlobals.__proto__) {
-        hasProto = values.some(function(value) {
-          return value.name === "__proto__";
-        });
+        hasProto =
+            values.some(function(value) { return value.name === "__proto__"; });
 
         /* istanbul ignore if */
         if (!hasProto) {
@@ -626,9 +639,7 @@ var scopeManager = function(state, predefined, exported, declared) {
      *
      * @returns {Array<Object>}
      */
-    getUnuseds: function() {
-      return unuseds;
-    },
+    getUnuseds : function() { return unuseds; },
 
     /**
      * Determine if a given name has been defined in the current scope or any
@@ -638,9 +649,7 @@ var scopeManager = function(state, predefined, exported, declared) {
      *
      * @return {boolean}
      */
-    has: function(bindingName) {
-      return Boolean(_getBinding(bindingName));
-    },
+    has : function(bindingName) { return Boolean(_getBinding(bindingName)); },
 
     /**
      * Retrieve binding described by `bindingName` or null
@@ -650,7 +659,7 @@ var scopeManager = function(state, predefined, exported, declared) {
      * @returns {string|null} - the type of the binding or `null` if no such
      *                          binding exists
      */
-    bindingtype: function(bindingName) {
+    bindingtype : function(bindingName) {
       var scopeBindings = _getBinding(bindingName);
       if (scopeBindings) {
         return scopeBindings[bindingName]["(type)"];
@@ -663,7 +672,7 @@ var scopeManager = function(state, predefined, exported, declared) {
      *
      * @param {string} bindingName - the value of the identifier
      */
-    addExported: function(bindingName) {
+    addExported : function(bindingName) {
       var globalBindings = _scopeStack[0]["(bindings)"];
       if (_.has(declared, bindingName)) {
         // remove the declared token, so we know it is used
@@ -695,9 +704,8 @@ var scopeManager = function(state, predefined, exported, declared) {
      * @param {string} bindingName - the value of the identifier
      * @param {object} token
      */
-    setExported: function(bindingName, token) {
-      this.block.use(bindingName, token);
-    },
+    setExported : function(bindingName,
+                           token) { this.block.use(bindingName, token); },
 
     /**
      * Mark a binding as "initialized." This is necessary to enforce the
@@ -706,7 +714,7 @@ var scopeManager = function(state, predefined, exported, declared) {
      *
      * @param {string} bindingName - the value of the identifier
      */
-    initialize: function(bindingName) {
+    initialize : function(bindingName) {
       if (_current["(bindings)"][bindingName]) {
         _current["(bindings)"][bindingName]["(initialized)"] = true;
       }
@@ -727,39 +735,45 @@ var scopeManager = function(state, predefined, exported, declared) {
      * @param {boolean} opts.initialized - whether the binding should be
      *                                     created in an "initialized" state.
      */
-    addbinding: function(bindingName, opts) {
-
-      var type  = opts.type;
+    addbinding : function(bindingName, opts) {
+      var type = opts.type;
       var token = opts.token;
-      var isblockscoped = type === "let" || type === "const" ||
-        type === "class" || type === "import" || type === "generator function" ||
-        type === "async function" || type === "async generator function";
+      var isblockscoped =
+          type === "let" || type === "const" || type === "class" ||
+          type === "import" || type === "generator function" ||
+          type === "async function" || type === "async generator function";
       var ishoisted = type === "function" || type === "generator function" ||
-        type === "async function" || type === "import";
-      var isexported    = (isblockscoped ? _current : _currentFunctBody)["(type)"] === "global" &&
-                          _.has(exported, bindingName);
+                      type === "async function" || type === "import";
+      var isexported =
+          (isblockscoped ? _current : _currentFunctBody)["(type)"] ===
+              "global" &&
+          _.has(exported, bindingName);
 
       // outer shadow check (inner is only on non-block scoped)
       _checkOuterShadow(bindingName, token);
 
-      if (state.isStrict() && (bindingName === "arguments" || bindingName === "eval")) {
+      if (state.isStrict() &&
+          (bindingName === "arguments" || bindingName === "eval")) {
         warning("E008", token);
       }
 
       if (isblockscoped) {
 
         var declaredInCurrentScope = _current["(bindings)"][bindingName];
-        // for block scoped variables, params are seen in the current scope as the root function
-        // scope, so check these too.
+        // for block scoped variables, params are seen in the current scope as
+        // the root function scope, so check these too.
         if (!declaredInCurrentScope && _current === _currentFunctBody &&
-          _current["(type)"] !== "global") {
-          declaredInCurrentScope = !!_currentFunctBody["(parent)"]["(bindings)"][bindingName];
+            _current["(type)"] !== "global") {
+          declaredInCurrentScope =
+              !!_currentFunctBody["(parent)"]["(bindings)"][bindingName];
         }
 
-        // if its not already defined (which is an error, so ignore) and is used in TDZ
+        // if its not already defined (which is an error, so ignore) and is used
+        // in TDZ
         if (!declaredInCurrentScope && _current["(usages)"][bindingName]) {
           var usage = _current["(usages)"][bindingName];
-          // if its in a sub function it is not necessarily an error, just latedef
+          // if its in a sub function it is not necessarily an error, just
+          // latedef
           if (usage["(onlyUsedSubFunction)"] || ishoisted) {
             _latedefWarning(type, bindingName, token);
           } else if (!ishoisted) {
@@ -776,37 +790,39 @@ var scopeManager = function(state, predefined, exported, declared) {
         //    scope but not within block statements
         // 2. this is not a "hoisted" block-scoped binding
         if (declaredInCurrentScope &&
-          (!ishoisted || (_current["(type)"] !== "global" || type === "import"))) {
+            (!ishoisted ||
+             (_current["(type)"] !== "global" || type === "import"))) {
           warning("E011", token, bindingName);
-        }
-        else if (state.option.shadow === "outer") {
+        } else if (state.option.shadow === "outer") {
 
-          // if shadow is outer, for block scope we want to detect any shadowing within this function
+          // if shadow is outer, for block scope we want to detect any shadowing
+          // within this function
           if (scopeManagerInst.funct.has(bindingName)) {
             warning("W004", token, bindingName);
           }
         }
 
-        scopeManagerInst.block.add(
-          bindingName, type, token, !isexported, opts.initialized
-        );
+        scopeManagerInst.block.add(bindingName, type, token, !isexported,
+                                   opts.initialized);
 
       } else {
 
-        var declaredInCurrentFunctionScope = scopeManagerInst.funct.has(bindingName);
+        var declaredInCurrentFunctionScope =
+            scopeManagerInst.funct.has(bindingName);
 
         // check for late definition, ignore if already declared
-        if (!declaredInCurrentFunctionScope && usedSoFarInCurrentFunction(bindingName)) {
+        if (!declaredInCurrentFunctionScope &&
+            usedSoFarInCurrentFunction(bindingName)) {
           _latedefWarning(type, bindingName, token);
         }
 
-        // defining with a var or a function when a block scope variable of the same name
-        // is in scope is an error
-        if (scopeManagerInst.funct.has(bindingName, { onlyBlockscoped: true })) {
+        // defining with a var or a function when a block scope variable of the
+        // same name is in scope is an error
+        if (scopeManagerInst.funct.has(bindingName, {onlyBlockscoped : true})) {
           warning("E011", token, bindingName);
         } else if (state.option.shadow !== true) {
-          // now since we didn't get any block scope variables, test for var/function
-          // shadowing
+          // now since we didn't get any block scope variables, test for
+          // var/function shadowing
           if (declaredInCurrentFunctionScope && bindingName !== "__proto__") {
 
             // see https://github.com/jshint/jshint/issues/2400
@@ -818,13 +834,14 @@ var scopeManager = function(state, predefined, exported, declared) {
 
         scopeManagerInst.funct.add(bindingName, type, token, !isexported);
 
-        if (_currentFunctBody["(type)"] === "global" && !state.impliedClosure()) {
+        if (_currentFunctBody["(type)"] === "global" &&
+            !state.impliedClosure()) {
           usedPredefinedAndGlobals[bindingName] = marker;
         }
       }
     },
 
-    funct: {
+    funct : {
       /**
        * Return the type of the provided binding given certain options
        *
@@ -837,17 +854,19 @@ var scopeManager = function(state, predefined, exported, declared) {
        *
        * @returns {String}
        */
-      bindingtype: function(bindingName, options) {
+      bindingtype : function(bindingName, options) {
         var onlyBlockscoped = options && options.onlyBlockscoped;
         var excludeParams = options && options.excludeParams;
-        var currentScopeIndex = _scopeStack.length - (options && options.excludeCurrent ? 2 : 1);
+        var currentScopeIndex =
+            _scopeStack.length - (options && options.excludeCurrent ? 2 : 1);
         for (var i = currentScopeIndex; i >= 0; i--) {
           var current = _scopeStack[i];
           if (current["(bindings)"][bindingName] &&
-            (!onlyBlockscoped || current["(bindings)"][bindingName]["(blockscoped)"])) {
+              (!onlyBlockscoped ||
+               current["(bindings)"][bindingName]["(blockscoped)"])) {
             return current["(bindings)"][bindingName]["(type)"];
           }
-          var scopeCheck = excludeParams ? _scopeStack[ i - 1 ] : current;
+          var scopeCheck = excludeParams ? _scopeStack[i - 1] : current;
           if (scopeCheck && scopeCheck["(type)"] === "functionparams") {
             return null;
           }
@@ -863,7 +882,7 @@ var scopeManager = function(state, predefined, exported, declared) {
        *
        * @returns {boolean}
        */
-      hasLabel: function(labelName) {
+      hasLabel : function(labelName) {
         for (var i = _scopeStack.length - 1; i >= 0; i--) {
           var current = _scopeStack[i];
 
@@ -887,9 +906,9 @@ var scopeManager = function(state, predefined, exported, declared) {
        *
        * @return {boolean}
        */
-      has: function(bindingName, options) {
-        return Boolean(this.bindingtype(bindingName, options));
-      },
+      has : function(
+          bindingName,
+          options) { return Boolean(this.bindingtype(bindingName, options)); },
 
       /**
        * Create a new function-scoped binding and add it to the current scope.
@@ -903,26 +922,25 @@ var scopeManager = function(state, predefined, exported, declared) {
        * @param {boolean} unused - `true` if the binding has not been
        *                           referenced
        */
-      add: function(bindingName, type, tok, unused) {
+      add : function(bindingName, type, tok, unused) {
         _current["(bindings)"][bindingName] = {
           "(type)" : type,
-          "(token)": tok,
-          "(blockscoped)": false,
-          "(function)": _currentFunctBody,
-          "(unused)": unused };
+          "(token)" : tok,
+          "(blockscoped)" : false,
+          "(function)" : _currentFunctBody,
+          "(unused)" : unused
+        };
       }
     },
 
-    block: {
+    block : {
 
       /**
        * Determine whether the current block scope is the global scope.
        *
        * @returns Boolean
        */
-      isGlobal: function() {
-        return _current["(type)"] === "global";
-      },
+      isGlobal : function() { return _current["(type)"] === "global"; },
 
       /**
        * Resolve a reference to a binding and mark the corresponding binding as
@@ -931,7 +949,7 @@ var scopeManager = function(state, predefined, exported, declared) {
        * @param {string} bindingName - the value of the identifier
        * @param {object} token - the token value that triggered the reference
        */
-      use: function(bindingName, token) {
+      use : function(bindingName, token) {
         // If the name resolves to a parameter of the current function, then do
         // not store usage. This is because in cases such as the following:
         //
@@ -944,11 +962,12 @@ var scopeManager = function(state, predefined, exported, declared) {
         // variable binding.
         var paramScope = _currentFunctBody["(parent)"];
         if (paramScope && paramScope["(bindings)"][bindingName] &&
-          paramScope["(bindings)"][bindingName]["(type)"] === "param") {
+            paramScope["(bindings)"][bindingName]["(type)"] === "param") {
 
           // then check its not declared by a block scope variable
-          if (!scopeManagerInst.funct.has(bindingName,
-                { excludeParams: true, onlyBlockscoped: true })) {
+          if (!scopeManagerInst.funct.has(
+                  bindingName,
+                  {excludeParams : true, onlyBlockscoped : true})) {
             paramScope["(bindings)"][bindingName]["(unused)"] = false;
           }
         }
@@ -974,7 +993,7 @@ var scopeManager = function(state, predefined, exported, declared) {
         }
       },
 
-      reassign: function(bindingName, token) {
+      reassign : function(bindingName, token) {
         token.ignoreW020 = state.ignored.W020;
         token.ignoreW021 = state.ignored.W021;
 
@@ -983,8 +1002,7 @@ var scopeManager = function(state, predefined, exported, declared) {
         _current["(usages)"][bindingName]["(reassigned)"].push(token);
       },
 
-      modify: function(bindingName, token) {
-
+      modify : function(bindingName, token) {
         _setupUsages(bindingName);
 
         _current["(usages)"][bindingName]["(onlyUsedSubFunction)"] = false;
@@ -1007,21 +1025,21 @@ var scopeManager = function(state, predefined, exported, declared) {
        *                                bindings created via `import`
        *                                declarations)
        */
-      add: function(bindingName, type, tok, unused, initialized) {
+      add : function(bindingName, type, tok, unused, initialized) {
         _current["(bindings)"][bindingName] = {
           "(type)" : type,
-          "(token)": tok,
-          "(initialized)": !!initialized,
-          "(blockscoped)": true,
-          "(unused)": unused };
+          "(token)" : tok,
+          "(initialized)" : !!initialized,
+          "(blockscoped)" : true,
+          "(unused)" : unused
+        };
       },
 
-      addLabel: function(labelName, opts) {
+      addLabel : function(labelName, opts) {
         var token = opts.token;
         if (scopeManagerInst.funct.hasLabel(labelName)) {
           warning("E011", token, labelName);
-        }
-        else if (state.option.shadow === "outer") {
+        } else if (state.option.shadow === "outer") {
           if (scopeManagerInst.funct.has(labelName)) {
             warning("W004", token, labelName);
           } else {
