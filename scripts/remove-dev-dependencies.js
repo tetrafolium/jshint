@@ -1,4 +1,4 @@
-"use strict"
+"use strict";
 /**
  * Some of this project's development dependencies cannot be successfully
  * installed in legacy versions of Node.js. This module removes development
@@ -19,8 +19,9 @@ var newContents;
 
 packageNames.forEach(function(packageName) {
   if (!manifest.devDependencies[packageName]) {
-    throw new Error("Could not locate development dependency named \"" +
-                    packageName + "\"");
+    throw new Error(
+      'Could not locate development dependency named "' + packageName + '"'
+    );
   }
 
   delete manifest.devDependencies[packageName];

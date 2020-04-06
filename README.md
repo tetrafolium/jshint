@@ -14,7 +14,7 @@
 [![Coverage Status](https://img.shields.io/coveralls/jshint/jshint.svg?style=flat)](https://coveralls.io/r/jshint/jshint?branch=master)
 
 JSHint is a community-driven tool that detects errors and potential problems in
-JavaScript code. Since JSHint is so flexible, you can easily adjust it in 
+JavaScript code. Since JSHint is so flexible, you can easily adjust it in
 the environment you expect your code to execute. JSHint is open source and
 will always stay this way.
 
@@ -24,7 +24,7 @@ The project aims to help JavaScript developers write complex programs
 without worrying about typos and language gotchas.
 
 Any code base eventually becomes huge at some point, so simple mistakes — that
-would not show themselves when written — can become show stoppers and add 
+would not show themselves when written — can become show stoppers and add
 extra hours of debugging. So, static code analysis tools come into play
 and help developers spot such problems. JSHint scans a program written in
 JavaScript and reports about commonly made mistakes and potential bugs. The
@@ -47,9 +47,9 @@ To report a bug simply create a
 your problem or suggestion. We welcome all kinds of feedback regarding
 JSHint including but not limited to:
 
- * When JSHint doesn't work as expected
- * When JSHint complains about valid JavaScript code that works in all browsers
- * When you simply want a new option or feature
+- When JSHint doesn't work as expected
+- When JSHint complains about valid JavaScript code that works in all browsers
+- When you simply want a new option or feature
 
 Before reporting a bug, please look around to see if there are any open or closed tickets
 that discuss your issue, and remember the wisdom: pull request > bug report > tweet.
@@ -58,34 +58,34 @@ that discuss your issue, and remember the wisdom: pull request > bug report > tw
 
 Engineers from these companies and projects use JSHint:
 
-* [Mozilla](https://www.mozilla.org/)
-* [Wikipedia](https://wikipedia.org/)
-* [Facebook](https://facebook.com/)
-* [Twitter](https://twitter.com/)
-* [Bootstrap](http://getbootstrap.com/)
-* [Disqus](https://disqus.com/)
-* [Medium](https://medium.com/)
-* [Yahoo!](https://yahoo.com/)
-* [SmugMug](http://smugmug.com/)
-* [jQuery](http://jquery.com/)
-* [PDF.js](http://mozilla.github.io/pdf.js)
-* [Coursera](http://coursera.com/)
-* [Adobe Brackets](http://brackets.io/)
-* [Apache Cordova](http://cordova.io/)
-* [RedHat](http://redhat.com/)
-* [SoundCloud](http://soundcloud.com/)
-* [Nodejitsu](http://nodejitsu.com/)
-* [Yelp](https://yelp.com/)
-* [Voxer](http://voxer.com/)
-* [EnyoJS](http://enyojs.com/)
-* [QuickenLoans](http://quickenloans.com/)
-* [Cloud9](http://c9.io/)
-* [CodeClimate](https://codeclimate.com/)
-* [Zendesk](http://zendesk.com/)
-* [Apache CouchDB](http://couchdb.apache.org/)
-* [Google](https://www.google.com/)
-* [Codacy](https://www.codacy.com) [ref](https://support.codacy.com/hc/en-us/articles/207995005-Special-Thanks)
-* [Spotify](https://www.spotify.com)
+- [Mozilla](https://www.mozilla.org/)
+- [Wikipedia](https://wikipedia.org/)
+- [Facebook](https://facebook.com/)
+- [Twitter](https://twitter.com/)
+- [Bootstrap](http://getbootstrap.com/)
+- [Disqus](https://disqus.com/)
+- [Medium](https://medium.com/)
+- [Yahoo!](https://yahoo.com/)
+- [SmugMug](http://smugmug.com/)
+- [jQuery](http://jquery.com/)
+- [PDF.js](http://mozilla.github.io/pdf.js)
+- [Coursera](http://coursera.com/)
+- [Adobe Brackets](http://brackets.io/)
+- [Apache Cordova](http://cordova.io/)
+- [RedHat](http://redhat.com/)
+- [SoundCloud](http://soundcloud.com/)
+- [Nodejitsu](http://nodejitsu.com/)
+- [Yelp](https://yelp.com/)
+- [Voxer](http://voxer.com/)
+- [EnyoJS](http://enyojs.com/)
+- [QuickenLoans](http://quickenloans.com/)
+- [Cloud9](http://c9.io/)
+- [CodeClimate](https://codeclimate.com/)
+- [Zendesk](http://zendesk.com/)
+- [Apache CouchDB](http://couchdb.apache.org/)
+- [Google](https://www.google.com/)
+- [Codacy](https://www.codacy.com) [ref](https://support.codacy.com/hc/en-us/articles/207995005-Special-Thanks)
+- [Spotify](https://www.spotify.com)
 
 And many more!
 

@@ -6,7 +6,7 @@ var version = require("../package.json").version;
 
 var srcDir = path.join(__dirname, "../src");
 
-var targets = [ "web", "rhino" ];
+var targets = ["web", "rhino"];
 
 module.exports = function(target, done) {
   var bundle = browserify();
@@ -18,7 +18,7 @@ module.exports = function(target, done) {
     return;
   }
 
-  bundle.require(srcDir + "/jshint.js", {expose : "jshint"});
+  bundle.require(srcDir + "/jshint.js", { expose: "jshint" });
 
   return bundle.bundle(function(err, src) {
     var wrapped;
@@ -29,9 +29,13 @@ module.exports = function(target, done) {
     }
 
     wrapped = [
-      "/*! " + version + " */", "var JSHINT;",
-      "if (typeof window === 'undefined') window = {};", "(function () {",
-      "var require;", src, "JSHINT = require('jshint').JSHINT;",
+      "/*! " + version + " */",
+      "var JSHINT;",
+      "if (typeof window === 'undefined') window = {};",
+      "(function () {",
+      "var require;",
+      src,
+      "JSHINT = require('jshint').JSHINT;",
       "if (typeof exports === 'object' && exports) exports.JSHINT = JSHINT;",
       "}());"
     ];
