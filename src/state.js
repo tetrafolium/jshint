@@ -2,16 +2,16 @@
 var NameStack = require("./name-stack.js");
 
 var state = {
-  syntax: {},
+  syntax : {},
 
   /**
    * Determine if the code currently being linted is strict mode code.
    *
    * @returns {boolean}
    */
-  isStrict: function() {
+  isStrict : function() {
     return this.directive["use strict"] || this.inClassBody ||
-      this.option.module || this.option.strict === "implied";
+           this.option.module || this.option.strict === "implied";
   },
 
   /**
@@ -28,7 +28,7 @@ var state = {
    * function interprets `strict` option values `true` and `undefined` as
    * equivalent.
    */
-  stmtMissingStrict: function() {
+  stmtMissingStrict : function() {
     if (this.option.strict === "global") {
       return true;
     }
@@ -44,9 +44,9 @@ var state = {
     return false;
   },
 
-  allowsGlobalUsd: function() {
+  allowsGlobalUsd : function() {
     return this.option.strict === "global" || this.option.globalstrict ||
-      this.option.module || this.impliedClosure();
+           this.option.module || this.impliedClosure();
   },
 
   /**
@@ -55,51 +55,41 @@ var state = {
    *
    * @returns {boolean}
    */
-  impliedClosure: function() {
+  impliedClosure : function() {
     return this.option.node || this.option.phantom || this.option.browserify;
   },
 
   // Assumption: chronologically ES3 < ES5 < ES6 < Moz
 
-  inMoz: function() {
-    return this.option.moz;
-  },
+  inMoz : function() { return this.option.moz; },
 
   /**
    * Determine if constructs introduced in ECMAScript 10 should be accepted.
    *
    * @returns {boolean}
    */
-  inES10: function() {
-    return this.esVersion >= 10;
-  },
+  inES10 : function() { return this.esVersion >= 10; },
 
   /**
    * Determine if constructs introduced in ECMAScript 9 should be accepted.
    *
    * @returns {boolean}
    */
-  inES9: function() {
-    return this.esVersion >= 9;
-  },
+  inES9 : function() { return this.esVersion >= 9; },
 
   /**
    * Determine if constructs introduced in ECMAScript 8 should be accepted.
    *
    * @returns {boolean}
    */
-  inES8: function() {
-    return this.esVersion >= 8;
-  },
+  inES8 : function() { return this.esVersion >= 8; },
 
   /**
    * Determine if constructs introduced in ECMAScript 7 should be accepted.
    *
    * @returns {boolean}
    */
-  inES7: function() {
-    return this.esVersion >= 7;
-  },
+  inES7 : function() { return this.esVersion >= 7; },
 
   /**
    * Determine if constructs introduced in ECMAScript 6 should be accepted.
@@ -109,7 +99,7 @@ var state = {
    *
    * @returns {boolean}
    */
-  inES6: function(strict) {
+  inES6 : function(strict) {
     if (!strict && this.option.moz) {
       return true;
     }
@@ -122,7 +112,7 @@ var state = {
    *
    * @returns {boolean}
    */
-  inES5: function() {
+  inES5 : function() {
     return !this.esVersion || this.esVersion >= 5 || this.option.moz;
   },
 
@@ -136,7 +126,7 @@ var state = {
    * @returns {string|null} - the name of any incompatible option detected,
    *                          `null` otherwise
    */
-  inferEsVersion: function() {
+  inferEsVersion : function() {
     var badOpt = null;
 
     if (this.option.esversion) {
@@ -166,14 +156,10 @@ var state = {
     return null;
   },
 
-  reset: function() {
-    this.tokens = {
-      prev: null,
-      next: null,
-      curr: null
-    };
+  reset : function() {
+    this.tokens = {prev : null, next : null, curr : null};
 
-    this.option = { unstable: {} };
+    this.option = {unstable : {}};
     this.esVersion = 5;
     this.funct = null;
     this.ignored = {};

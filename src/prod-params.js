@@ -16,33 +16,33 @@ module.exports = {
    * Enabled when parsing expressions within ES2015 "export" declarations,
    * allowing otherwise-unreferenced bindings to be considered "used".
    */
-  export: 1,
+  export : 1,
 
   /**
    * Enabled when parsing expressions within the head of `for` statements,
    * allowing to distinguish between `for-in` and "C-style" `for` statements.
    */
-  noin: 2,
+  noin : 2,
 
   /**
    * Enabled when the expression begins the statement, allowing the parser to
    * correctly select between the null denotation ("nud") and first null
    * denotation ("fud") parsing strategy.
    */
-  initial: 4,
+  initial : 4,
 
-  preAsync: 8,
+  preAsync : 8,
 
-  async: 16,
+  async : 16,
 
   /**
    * Enabled when any exception thrown by the expression will be caught by a
    * TryStatement.
    */
-  tryClause: 32,
+  tryClause : 32,
 
   /**
    * Enabled when parsing the body of a generator function.
    */
-  yield: 64
+  yield : 64
 };

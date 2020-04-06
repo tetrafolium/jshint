@@ -10,11 +10,9 @@ exports.register = function(linter) {
     }
 
     if (data.name === "__proto__") {
-      linter.warn("W103", {
-        line: data.line,
-        char: data.char,
-        data: [ data.name, "6" ]
-      });
+      linter.warn(
+          "W103",
+          {line : data.line, char : data.char, data : [ data.name, "6" ]});
     }
   });
 
@@ -28,11 +26,8 @@ exports.register = function(linter) {
     }
 
     if (data.name === "__iterator__") {
-      linter.warn("W103", {
-        line: data.line,
-        char: data.char,
-        data: [ data.name ]
-      });
+      linter.warn("W103",
+                  {line : data.line, char : data.char, data : [ data.name ]});
     }
   });
 
@@ -44,12 +39,10 @@ exports.register = function(linter) {
       return;
     }
 
-    if (data.name.replace(/^_+|_+$/g, "").indexOf("_") > -1 && !data.name.match(/^[A-Z0-9_]*$/)) {
-      linter.warn("W106", {
-        line: data.line,
-        char: data.char,
-        data: [ data.name ]
-      });
+    if (data.name.replace(/^_+|_+$/g, "").indexOf("_") > -1 &&
+        !data.name.match(/^[A-Z0-9_]*$/)) {
+      linter.warn("W106",
+                  {line : data.line, char : data.char, data : [ data.name ]});
     }
   });
 
@@ -90,8 +83,8 @@ exports.register = function(linter) {
 
     if (code) {
       linter.warn(code, {
-        line: data.line,
-        char: data.char,
+        line : data.line,
+        char : data.char,
       });
     }
   });
@@ -99,29 +92,20 @@ exports.register = function(linter) {
   linter.on("Number", function style_scanNumbers(data) {
     if (data.value.charAt(0) === ".") {
       // Warn about a leading decimal point.
-      linter.warn("W008", {
-        line: data.line,
-        char: data.char,
-        data: [ data.value ]
-      });
+      linter.warn("W008",
+                  {line : data.line, char : data.char, data : [ data.value ]});
     }
 
     if (data.value.substr(data.value.length - 1) === ".") {
       // Warn about a trailing decimal point.
-      linter.warn("W047", {
-        line: data.line,
-        char: data.char,
-        data: [ data.value ]
-      });
+      linter.warn("W047",
+                  {line : data.line, char : data.char, data : [ data.value ]});
     }
 
     if (/^00+/.test(data.value)) {
       // Multiple leading zeroes.
-      linter.warn("W046", {
-        line: data.line,
-        char: data.char,
-        data: [ data.value ]
-      });
+      linter.warn("W046",
+                  {line : data.line, char : data.char, data : [ data.value ]});
     }
   });
 
@@ -135,10 +119,7 @@ exports.register = function(linter) {
     }
 
     if (re.test(data.value)) {
-      linter.warn("W107", {
-        line: data.line,
-        char: data.char
-      });
+      linter.warn("W107", {line : data.line, char : data.char});
     }
   });
 };
