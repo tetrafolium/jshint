@@ -4,7 +4,7 @@
 */
 function blah() {
   /*jshint -W093*/
-  return boo=true;
+  return (boo = true);
   // normal comment
   /*jshint +W093*/
   /*jslint +W093*/

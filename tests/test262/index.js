@@ -13,7 +13,7 @@ var report = require("./report");
 var expectationsFile = path.join(__dirname, "expectations.txt");
 var shouldUpdate = process.argv.indexOf("--update-expectations") > -1;
 var stream = new Test262Stream(path.join(__dirname, "test262"), {
-  omitRuntime: true
+  omitRuntime: true,
 });
 var count = 0;
 
@@ -23,7 +23,7 @@ function normalizePath(str) {
 
 var results = new Transform({
   objectMode: true,
-  transform: function(test, encoding, done) {
+  transform: function (test, encoding, done) {
     count += 1;
     if (count % 2000 === 0) {
       console.log("Completed " + count + " tests.");
@@ -31,14 +31,16 @@ var results = new Transform({
 
     done(null, {
       id: normalizePath(test.file) + "(" + test.scenario + ")",
-      expected: test.attrs.negative && test.attrs.negative.phase === "parse"
-        ? "fail" : "pass",
-      actual: runTest(test) ? "pass": "fail"
+      expected:
+        test.attrs.negative && test.attrs.negative.phase === "parse"
+          ? "fail"
+          : "pass",
+      actual: runTest(test) ? "pass" : "fail",
     });
-  }
+  },
 });
 var interpreter = new Interpreter(expectationsFile, {
-  outputFile: shouldUpdate ? expectationsFile : null
+  outputFile: shouldUpdate ? expectationsFile : null,
 });
 
 console.log("Now running tests...");
@@ -46,18 +48,19 @@ console.log("Now running tests...");
 if (shouldUpdate) {
   console.log(
     "The expectations file will be updated according to the results of this " +
-    "test run."
+      "test run."
   );
 } else {
   console.log(
     "Note: the expectations file may be automatically updated by specifying " +
-    "the `--update-expectations` flag."
+      "the `--update-expectations` flag."
   );
 }
 
-stream.pipe(results)
+stream
+  .pipe(results)
   .pipe(interpreter)
-  .on("error", function(error) {
+  .on("error", function (error) {
     console.error(error);
     process.exitCode = 1;
   })

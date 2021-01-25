@@ -4,13 +4,13 @@ module.exports = function report(summary) {
   var goodnews = [
     summary.allowed.success.length + " valid programs parsed without error",
     summary.allowed.failure.length +
-    " invalid programs produced a parsing error",
+      " invalid programs produced a parsing error",
     summary.allowed.falsePositive.length +
-    " invalid programs did not produce a parsing error" +
-    " (and allowed by the expectations file)",
+      " invalid programs did not produce a parsing error" +
+      " (and allowed by the expectations file)",
     summary.allowed.falseNegative.length +
-    " valid programs produced a parsing error" +
-    " (and allowed by the expectations file)"
+      " valid programs produced a parsing error" +
+      " (and allowed by the expectations file)",
   ];
   var badnews = [];
   var badnewsDetails = [];
@@ -19,31 +19,31 @@ module.exports = function report(summary) {
     {
       tests: summary.disallowed.success,
       label:
-      "valid programs parsed without error" +
-      " (in violation of the expectations file)"
+        "valid programs parsed without error" +
+        " (in violation of the expectations file)",
     },
     {
       tests: summary.disallowed.failure,
       label:
-      "invalid programs produced a parsing error" +
-      " (in violation of the expectations file)"
+        "invalid programs produced a parsing error" +
+        " (in violation of the expectations file)",
     },
     {
       tests: summary.disallowed.falsePositive,
       label:
-      "invalid programs did not produce a parsing error" +
-      " (without a corresponding entry in the expectations file)"
+        "invalid programs did not produce a parsing error" +
+        " (without a corresponding entry in the expectations file)",
     },
     {
       tests: summary.disallowed.falseNegative,
       label:
-      "valid programs produced a parsing error" +
-      " (without a corresponding entry in the expectations file)"
+        "valid programs produced a parsing error" +
+        " (without a corresponding entry in the expectations file)",
     },
     {
       tests: summary.unrecognized,
-      label: "non-existent programs specified in the expectations file"
-    }
+      label: "non-existent programs specified in the expectations file",
+    },
   ].forEach(function (entry) {
     var tests = entry.tests;
     var label = entry.label;

@@ -1,15 +1,15 @@
 var x = 3;
 
 try {
-    throw "boom";
+  throw "boom";
 } catch (x) {}
 
 console.log(x);
 
 if (true) {
-    var y;
+  var y;
 }
 
 try {
-    throw "boom";
+  throw "boom";
 } catch (y) {}

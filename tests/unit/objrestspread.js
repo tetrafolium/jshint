@@ -4,11 +4,19 @@ var TestRun = require("../helpers/testhelper").setup.testRun;
 
 exports.enabling = function (test) {
   TestRun(test, "Not enabled")
-    .addError(1, 11, "'object spread property' is only available in ES9 (use 'esversion: 9').")
+    .addError(
+      1,
+      11,
+      "'object spread property' is only available in ES9 (use 'esversion: 9')."
+    )
     .test("void { ...x };", { esversion: 8 });
 
   TestRun(test, "Not enabled")
-    .addError(1, 7, "'object rest property' is only available in ES9 (use 'esversion: 9').")
+    .addError(
+      1,
+      7,
+      "'object rest property' is only available in ES9 (use 'esversion: 9')."
+    )
     .test("({ ...x } = {});", { esversion: 8 });
 
   test.done();
@@ -20,11 +28,10 @@ exports.spread = function (test) {
     "o = { ...o };",
     "o = { set x(_) {}, ...o, get x() {} };",
     "o = { *gen() { yield; }, ...o, [o]() {} };",
-    "o = { ...o, };"
+    "o = { ...o, };",
   ];
 
-  TestRun(test, "identifier")
-    .test(code, { esversion: 9 });
+  TestRun(test, "identifier").test(code, { esversion: 9 });
 
   code = [
     "var o;",
@@ -33,11 +40,10 @@ exports.spread = function (test) {
     "o = { ...'string' };",
     "o = { ...o = {} };",
     "o = { ...() => {} };",
-    "o = { ...o => {} };"
+    "o = { ...o => {} };",
   ];
 
-  TestRun(test, "expression")
-    .test(code, { esversion: 9 });
+  TestRun(test, "expression").test(code, { esversion: 9 });
 
   test.done();
 };
@@ -48,18 +54,17 @@ exports.rest = function (test) {
     "({ a, ...x } = {});",
     "({ a = 0, ...x } = {});",
     "({ a: A, ...x } = {});",
-    "({ a: A = 0, ...x } = {});"
+    "({ a: A = 0, ...x } = {});",
   ];
 
-  TestRun(test, "identifier, final")
-    .test(code, { esversion: 9 });
+  TestRun(test, "identifier, final").test(code, { esversion: 9 });
 
   code = [
     "({ ...x, } = {});",
     "({ a, ...x, b } = {});",
     "({ a = 0, ...x, b = 1 } = {});",
     "({ a: A, ...x, b: B } = {});",
-    "({ a: A = 0, ...x, b: B = 0 } = {});"
+    "({ a: A = 0, ...x, b: B = 0 } = {});",
   ];
 
   TestRun(test, "identifier, not final")
@@ -75,7 +80,7 @@ exports.rest = function (test) {
     "({ a, ...[b, c, d] } = {});",
     "({ a = 0, ...[b, c, d] } = {});",
     "({ a: A, ...[b, c, d] } = {});",
-    "({ a: A = 0, ...[b, c, d] } = {});"
+    "({ a: A = 0, ...[b, c, d] } = {});",
   ];
 
   TestRun(test, "nested array pattern, final")
@@ -115,7 +120,10 @@ exports.rest = function (test) {
     .addError(1, 7, "Expected an identifier and instead saw '{'.")
     .test("({ ...{} } = {});", { esversion: 9 });
 
-  TestRun(test, "gh-3377 - identifier interpreted as new binding, not reference")
+  TestRun(
+    test,
+    "gh-3377 - identifier interpreted as new binding, not reference"
+  )
     .addError(1, 10, "'x' is defined but never used.")
     .test("var { ...x } = {};", { esversion: 9, unused: true, undef: true });
 

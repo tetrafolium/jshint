@@ -1,21 +1,20 @@
 var Factory = function () {};
 
 (function () {
-    "use strict";
+  "use strict";
 
-    var a = Factory();
-    var b = new Factory();
+  var a = Factory();
+  var b = new Factory();
 
-    return a && b;
+  return a && b;
 })();
 
-
 (function () {
-    "use strict";
-    /*jshint newcap:false */
+  "use strict";
+  /*jshint newcap:false */
 
-    var a = Factory();
-    var b = new Factory();
+  var a = Factory();
+  var b = new Factory();
 
-    return a && b;
+  return a && b;
 })();

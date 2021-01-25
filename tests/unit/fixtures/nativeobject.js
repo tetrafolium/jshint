@@ -1,7 +1,8 @@
 // Test that a warning will occur when modifying a native object's prototype.
 
 Array.prototype.count = function (value) {
-  var count = 0, i;
+  var count = 0,
+    i;
   for (i = 0; i < this.length; ++i) {
     if (this[i] === value) {
       ++count;
@@ -11,7 +12,7 @@ Array.prototype.count = function (value) {
 };
 
 Boolean.prototype = {
-  sup: function () {}
+  sup: function () {},
 };
 
 NonArray.prototype.random = function () {
@@ -20,10 +21,10 @@ NonArray.prototype.random = function () {
 
 {
   let Array = {};
-  Array.prototype.method = function() {};
+  Array.prototype.method = function () {};
 }
 
-(function() {
+(function () {
   var Array = 2;
-  Array.prototype.method = function() {};
-}());
+  Array.prototype.method = function () {};
+})();

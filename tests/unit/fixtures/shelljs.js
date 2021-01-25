@@ -21,11 +21,11 @@ popd();
 env();
 exec();
 chmod();
-config.hi = 'hi';
+config.hi = "hi";
 error();
 tempdir();
 
 // node stuff
-require('hi');
-module.exports = 'hi';
+require("hi");
+module.exports = "hi";
 process.exit();

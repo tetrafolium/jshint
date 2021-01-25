@@ -1,4 +1,4 @@
-(function() {
+(function () {
   void funcBefore;
   void topBlockBefore;
   void nestedBlockBefore;
@@ -32,4 +32,4 @@
   void nestedBlockAfter;
   void topBlockAfter;
   void funcAfter;
-}());
+})();

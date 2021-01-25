@@ -1,9 +1,9 @@
 var i = 5;
 
 try {
-    var u = "I'm trying here!";
+  var u = "I'm trying here!";
 } catch (e) {
-    var w = "Let's play catch.";
+  var w = "Let's play catch.";
 }
 
 alert("i:" + i);
@@ -11,27 +11,27 @@ alert("u:" + u);
 alert("w:" + w);
 
 function test() {
-    var w;
+  var w;
 
-    try {
-        alert("Hello.");
-    } catch (e) {
-        var w = "What's up?";
-    }
+  try {
+    alert("Hello.");
+  } catch (e) {
+    var w = "What's up?";
+  }
 
-    alert("w:" + w);
+  alert("w:" + w);
 }
 
 function infunc() {
-    var i2 = 5;
+  var i2 = 5;
 
-    try {
-        var u2 = "I'm trying here!";
-    } catch (e) {
-        var w2 = "Let's play catch.";
-    }
+  try {
+    var u2 = "I'm trying here!";
+  } catch (e) {
+    var w2 = "Let's play catch.";
+  }
 
-    alert("i2:" + i2);
-    alert("u2:" + u2);
-    alert("w2:" + w2);
+  alert("i2:" + i2);
+  alert("u2:" + u2);
+  alert("w2:" + w2);
 }

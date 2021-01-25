@@ -1,17 +1,17 @@
 "use strict";
 
 var browserify = require("browserify");
-var path       = require("path");
-var version    = require("../package.json").version;
+var path = require("path");
+var version = require("../package.json").version;
 
-var srcDir     = path.join(__dirname, "../src");
+var srcDir = path.join(__dirname, "../src");
 
 var targets = ["web", "rhino"];
 
-module.exports = function(target, done) {
+module.exports = function (target, done) {
   var bundle = browserify();
 
-  done = done || function() {};
+  done = done || function () {};
 
   if (targets.indexOf(target) === -1) {
     done(new Error("Unrecognized target: '" + target + "'"));
@@ -20,7 +20,7 @@ module.exports = function(target, done) {
 
   bundle.require(srcDir + "/jshint.js", { expose: "jshint" });
 
-  return bundle.bundle(function(err, src) {
+  return bundle.bundle(function (err, src) {
     var wrapped;
 
     if (err) {
@@ -28,15 +28,16 @@ module.exports = function(target, done) {
       return;
     }
 
-    wrapped = [ "/*! " + version + " */",
+    wrapped = [
+      "/*! " + version + " */",
       "var JSHINT;",
       "if (typeof window === 'undefined') window = {};",
       "(function () {",
-        "var require;",
-        src,
-        "JSHINT = require('jshint').JSHINT;",
-        "if (typeof exports === 'object' && exports) exports.JSHINT = JSHINT;",
-      "}());"
+      "var require;",
+      src,
+      "JSHINT = require('jshint').JSHINT;",
+      "if (typeof exports === 'object' && exports) exports.JSHINT = JSHINT;",
+      "}());",
     ];
 
     if (target === "rhino") {

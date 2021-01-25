@@ -1,8 +1,7 @@
-function main () {
-    function foo () {
-        bar();
-    }
+function main() {
+  function foo() {
+    bar();
+  }
 
-    function bar () {
-    }
+  function bar() {}
 }

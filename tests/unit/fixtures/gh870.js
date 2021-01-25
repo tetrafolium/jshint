@@ -1,8 +1,8 @@
 var s;
 var iterator;
 
-while (s = iterator.next()) { // jshint ignore:line
-
+while ((s = iterator.next())) {
+  // jshint ignore:line
 }
 
 var u; // jshint ignore:line

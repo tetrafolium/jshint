@@ -1,39 +1,39 @@
-var a = function () {
-    return;
-}();
+var a = (function () {
+  return;
+})();
 
 var b = (function () {
-    return;
+  return;
 })();
 
 var c = (function () {
-    return;
-}());
+  return;
+})();
 
-var d = (function () {
-    return;
-});
+var d = function () {
+  return;
+};
 
-var e = (function (a) {
-    return;
-}).call(null, 1);
+var e = function (a) {
+  return;
+}.call(null, 1);
 
-var f = (function () {
-    return;
-}).apply(null, []);
+var f = function () {
+  return;
+}.apply(null, []);
 
-var g = (function () {
-    return;
-}.apply(null, []));
+var g = function () {
+  return;
+}.apply(null, []);
 
-var h = (function () {
-    return;
-}.call(null, true, undefined));
+var h = function () {
+  return;
+}.call(null, true, undefined);
 
 // gh-1737: Necessary wrapping function in parens is marked as unnecessary by
 // the immed option
-var i = (function() {
-    return;
-}).should.not['throw']();
+var i = function () {
+  return;
+}.should.not["throw"]();
 
-(function() {})[i ? 'call' : 'apply']();
+(function () {}[i ? "call" : "apply"]());

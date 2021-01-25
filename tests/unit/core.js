@@ -1,7 +1,7 @@
 "use strict";
 
-var JSHINT  = require("../..").JSHINT;
-var fs      = require('fs');
+var JSHINT = require("../..").JSHINT;
+var fs = require("fs");
 var TestRun = require("../helpers/testhelper").setup.testRun;
 
 /**
@@ -9,7 +9,7 @@ var TestRun = require("../helpers/testhelper").setup.testRun;
  * function so it is not necessary to spam code with jshint-related comments
  */
 exports.testCustomGlobals = function (test) {
-  var code   = '(function (test) { return [ fooGlobal, barGlobal ]; }());';
+  var code = "(function (test) { return [ fooGlobal, barGlobal ]; }());";
   var custom = { fooGlobal: false, barGlobal: false };
 
   test.ok(JSHINT(code, {}, custom));
@@ -19,24 +19,18 @@ exports.testCustomGlobals = function (test) {
   test.equal(report.globals.length, 2);
 
   var dict = {};
-  for (var i = 0, g; g = report.globals[i]; i += 1)
-    dict[g] = true;
+  for (var i = 0, g; (g = report.globals[i]); i += 1) dict[g] = true;
 
   var customKeys = Object.keys(custom);
-  for (i = 0, g = null; g = customKeys[i]; i += 1)
-    test.ok(g in dict);
+  for (i = 0, g = null; (g = customKeys[i]); i += 1) test.ok(g in dict);
 
   // Regression test (GH-665)
-  code = [
-    "/*global bar*/",
-    "foo = {};",
-    "bar = {};"
-  ];
+  code = ["/*global bar*/", "foo = {};", "bar = {};"];
 
   TestRun(test)
     .addError(2, 1, "Read only.")
     .addError(3, 1, "Read only.")
-    .test(code, { es3: true, unused: true, predef: { foo: false }});
+    .test(code, { es3: true, unused: true, predef: { foo: false } });
 
   JSHINT("x = null;", { undef: true, globals: { x: true } });
 
@@ -50,7 +44,7 @@ exports.testCustomGlobals = function (test) {
 
   test.equal(JSHINT.data().errors.length, 1);
 
-  JSHINT('x = null;', { undef: true, globals: { x: false } }, { x: true });
+  JSHINT("x = null;", { undef: true, globals: { x: false } }, { x: true });
 
   test.ok(
     !JSHINT.data().errors,
@@ -79,45 +73,34 @@ exports.testUnusedDefinedGlobals = function (test) {
 };
 
 exports.testImplieds = function (test) {
-  var src = [
-    "f = 0;",
-    "(function() {",
-    "  g = 0;",
-    "}());",
-    "h = 0;"
-  ];
+  var src = ["f = 0;", "(function() {", "  g = 0;", "}());", "h = 0;"];
   var report;
 
   TestRun(test).test(src);
   report = JSHINT.data();
 
-  test.deepEqual(
-    report.implieds,
-    [
-      { name: "f", line: [1] },
-      { name: "g", line: [3] },
-      { name: "h", line: [5] }
-    ]
-  );
+  test.deepEqual(report.implieds, [
+    { name: "f", line: [1] },
+    { name: "g", line: [3] },
+    { name: "h", line: [5] },
+  ]);
 
-  TestRun(test)
-    .test("__proto__ = 0;", { proto: true });
+  TestRun(test).test("__proto__ = 0;", { proto: true });
   report = JSHINT.data();
 
-  test.deepEqual(report.implieds, [ { name: "__proto__", line: [1] } ]);
+  test.deepEqual(report.implieds, [{ name: "__proto__", line: [1] }]);
 
   test.done();
 };
 
 exports.testExportedDefinedGlobals = function (test) {
-  var src = ["/*global foo, bar */",
-    "export { bar, foo };"];
+  var src = ["/*global foo, bar */", "export { bar, foo };"];
 
   // Test should pass
   TestRun(test).test(src, { esnext: true, unused: true }, {});
 
   var report = JSHINT.data();
-  test.deepEqual(report.globals, ['bar', 'foo']);
+  test.deepEqual(report.globals, ["bar", "foo"]);
 
   test.done();
 };
@@ -128,7 +111,7 @@ exports.testGlobalVarDeclarations = function (test) {
   TestRun(test).test(src, { es3: true }, {});
 
   var report = JSHINT.data();
-  test.deepEqual(report.globals, ['a']);
+  test.deepEqual(report.globals, ["a"]);
 
   TestRun(test).test(src, { es3: true, node: true }, {});
 
@@ -152,16 +135,19 @@ exports.globalDeclarations = function (test) {
   src = [
     "/*jshint node:true */",
     "/*global exports:true */",
-    "exports = module.exports = function (test) {};"
+    "exports = module.exports = function (test) {};",
   ];
 
-  TestRun(test).test(src.join('\n'));
+  TestRun(test).test(src.join("\n"));
 
   test.done();
 };
 
 exports.multilineGlobalDeclarations = function (test) {
-  var src = fs.readFileSync(__dirname + "/fixtures/multiline-global-declarations.js", "utf8");
+  var src = fs.readFileSync(
+    __dirname + "/fixtures/multiline-global-declarations.js",
+    "utf8"
+  );
 
   TestRun(test)
     .addError(12, 1, "'pi' is defined but never used.")
@@ -172,8 +158,8 @@ exports.multilineGlobalDeclarations = function (test) {
 
 /** Test that JSHint recognizes `new Array(<expr>)` as a valid expression */
 exports.testNewArray = function (test) {
-  var code  = 'new Array(1);';
-  var code1 = 'new Array(v + 1);';
+  var code = "new Array(1);";
+  var code1 = "new Array(v + 1);";
   var code2 = 'new Array("hello", "there", "chaps");';
 
   TestRun(test).test(code);
@@ -182,16 +168,16 @@ exports.testNewArray = function (test) {
 
   TestRun(test)
     .addError(1, 10, "The array literal notation [] is preferable.")
-    .test('new Array();');
+    .test("new Array();");
 
   test.done();
 };
 
 /** Test that JSHint recognizes `new foo.Array(<expr>)` as a valid expression #527 **/
 exports.testNewNonNativeArray = function (test) {
-  var code  = 'new foo.Array();';
-  var code1 = 'new foo.Array(1);';
-  var code2 = 'new foo.Array(v + 1);';
+  var code = "new foo.Array();";
+  var code1 = "new foo.Array(1);";
+  var code2 = "new foo.Array(v + 1);";
   var code3 = 'new foo.Array("hello", "there", "chaps");';
 
   TestRun(test).test(code);
@@ -203,8 +189,8 @@ exports.testNewNonNativeArray = function (test) {
 };
 
 exports.testNonNativeArray = function (test) {
-  var code1 = 'foo.Array();';
-  var code2 = 'foo.Array(v + 1);';
+  var code1 = "foo.Array();";
+  var code2 = "foo.Array(v + 1);";
   var code3 = 'foo.Array("hello", "there", "chaps");';
 
   TestRun(test).test(code1);
@@ -214,32 +200,31 @@ exports.testNonNativeArray = function (test) {
   test.done();
 };
 
-
 /** Test that JSHint recognizes `new Object(<expr>)` as a valid expression */
 exports.testNewObject = function (test) {
-  var code  = 'Object(1);';
-  var code1 = 'new Object(1);';
+  var code = "Object(1);";
+  var code1 = "new Object(1);";
 
   TestRun(test).test(code);
   TestRun(test).test(code1);
 
   TestRun(test)
     .addError(1, 7, "The object literal notation {} is preferable.")
-    .test('Object();');
+    .test("Object();");
 
   TestRun(test)
     .addError(1, 11, "The object literal notation {} is preferable.")
-    .test('new Object();');
+    .test("new Object();");
 
   test.done();
 };
 
 /** Test that JSHint recognizes `new foo.Object(<expr>)` as a valid expression #527 **/
 exports.testNewNonNativeObject = function (test) {
-  var code  = 'new foo.Object();';
-  var code1 = 'new foo.Object(1);';
-  var code2 = 'foo.Object();';
-  var code3 = 'foo.Object(1);';
+  var code = "new foo.Object();";
+  var code1 = "new foo.Object(1);";
+  var code2 = "foo.Object();";
+  var code3 = "foo.Object(1);";
 
   TestRun(test).test(code);
   TestRun(test).test(code1);
@@ -249,7 +234,6 @@ exports.testNewNonNativeObject = function (test) {
   test.done();
 };
 
-
 /**
  * Test that JSHint allows `undefined` to be a function parameter.
  * It is a common pattern to protect against the case when somebody
@@ -258,22 +242,20 @@ exports.testNewNonNativeObject = function (test) {
  * More info: https://gist.github.com/315916
  */
 exports.testUndefinedAsParam = function (test) {
-  var code  = '(function (undefined) {}());';
-  var code1 = 'var undefined = 1;';
+  var code = "(function (undefined) {}());";
+  var code1 = "var undefined = 1;";
 
   TestRun(test).test(code);
 
   // But it must never tolerate reassigning of undefined
-  TestRun(test)
-    .addError(1, 5, "Redefinition of 'undefined'.")
-    .test(code1);
+  TestRun(test).addError(1, 5, "Redefinition of 'undefined'.").test(code1);
 
   test.done();
 };
 
 /** Tests that JSHint accepts new line after a dot (.) operator */
 exports.newLineAfterDot = function (test) {
-  TestRun(test).test([ "chain().chain().", "chain();" ]);
+  TestRun(test).test(["chain().chain().", "chain();"]);
   test.done();
 };
 
@@ -283,8 +265,8 @@ exports.newLineAfterDot = function (test) {
  */
 exports.noDelete = function (test) {
   TestRun(test)
-    .addError(1, 21, 'Variables should not be deleted.')
-    .test('delete NullReference;');
+    .addError(1, 21, "Variables should not be deleted.")
+    .test("delete NullReference;");
 
   test.done();
 };
@@ -294,7 +276,10 @@ exports.noDelete = function (test) {
  * using special comments.
  */
 exports.switchFallThrough = function (test) {
-  var src = fs.readFileSync(__dirname + '/fixtures/switchFallThrough.js', 'utf8');
+  var src = fs.readFileSync(
+    __dirname + "/fixtures/switchFallThrough.js",
+    "utf8"
+  );
   TestRun(test)
     .addError(3, 18, "Expected a 'break' statement before 'case'.")
     .addError(40, 12, "Unexpected ':'.")
@@ -306,7 +291,10 @@ exports.switchFallThrough = function (test) {
 // GH-490: JSHint shouldn't require break before default if default is
 // the first switch statement.
 exports.switchDefaultFirst = function (test) {
-  var src = fs.readFileSync(__dirname + "/fixtures/switchDefaultFirst.js", "utf8");
+  var src = fs.readFileSync(
+    __dirname + "/fixtures/switchDefaultFirst.js",
+    "utf8"
+  );
 
   TestRun(test)
     .addError(5, 16, "Expected a 'break' statement before 'default'.")
@@ -316,18 +304,17 @@ exports.switchDefaultFirst = function (test) {
 };
 
 exports.testVoid = function (test) {
-  var code = [
-    "void(0);",
-    "void 0;",
-    "var a = void(1);"
-  ];
+  var code = ["void(0);", "void 0;", "var a = void(1);"];
   TestRun(test).test(code);
 
   test.done();
 };
 
 exports.functionScopedOptions = function (test) {
-  var src = fs.readFileSync(__dirname + '/fixtures/functionScopedOptions.js', 'utf8');
+  var src = fs.readFileSync(
+    __dirname + "/fixtures/functionScopedOptions.js",
+    "utf8"
+  );
   TestRun(test)
     .addError(1, 1, "eval can be harmful.")
     .addError(8, 1, "eval can be harmful.")
@@ -338,21 +325,21 @@ exports.functionScopedOptions = function (test) {
 
 /** JSHint should not only read jshint, but also jslint options */
 exports.jslintOptions = function (test) {
-  var src = fs.readFileSync(__dirname + '/fixtures/jslintOptions.js', 'utf8');
+  var src = fs.readFileSync(__dirname + "/fixtures/jslintOptions.js", "utf8");
   TestRun(test).test(src);
 
   test.done();
 };
 
 exports.jslintInverted = function (test) {
-  var src = fs.readFileSync(__dirname + '/fixtures/jslintInverted.js', 'utf8');
+  var src = fs.readFileSync(__dirname + "/fixtures/jslintInverted.js", "utf8");
   TestRun(test).test(src);
 
   test.done();
 };
 
 exports.jslintRenamed = function (test) {
-  var src = fs.readFileSync(__dirname + '/fixtures/jslintRenamed.js', 'utf8');
+  var src = fs.readFileSync(__dirname + "/fixtures/jslintRenamed.js", "utf8");
   TestRun(test)
     .addError(4, 9, "Expected '===' and instead saw '=='.")
     .test(src);
@@ -363,8 +350,7 @@ exports.jslintRenamed = function (test) {
 exports.jslintSloppy = function (test) {
   var src = "/*jslint sloppy:true */ function test() { return 1; }";
 
-  TestRun(test)
-    .test(src);
+  TestRun(test).test(src);
 
   test.done();
 };
@@ -373,25 +359,27 @@ exports.jslintSloppy = function (test) {
 exports.jslintUnrecognized = function (test) {
   var src = "/*jslint closure:true */ function test() { return 1; }";
 
-  TestRun(test)
-    .test(src);
+  TestRun(test).test(src);
 
   test.done();
 };
 
 exports.caseExpressions = function (test) {
-  var src = fs.readFileSync(__dirname + '/fixtures/caseExpressions.js', 'utf8');
-  TestRun(test)
-    .test(src);
+  var src = fs.readFileSync(__dirname + "/fixtures/caseExpressions.js", "utf8");
+  TestRun(test).test(src);
 
   test.done();
 };
 
 exports.returnStatement = function (test) {
-  var src = fs.readFileSync(__dirname + '/fixtures/return.js', 'utf8');
+  var src = fs.readFileSync(__dirname + "/fixtures/return.js", "utf8");
 
   TestRun(test)
-    .addError(3, 14, "Did you mean to return a conditional instead of an assignment?")
+    .addError(
+      3,
+      14,
+      "Did you mean to return a conditional instead of an assignment?"
+    )
     .addError(38, 5, "Line breaking error 'return'.")
     .addError(38, 11, "Missing semicolon.")
     .addError(39, 7, "Unnecessary semicolon.")
@@ -401,7 +389,7 @@ exports.returnStatement = function (test) {
 };
 
 exports.argsInCatchReused = function (test) {
-  var src = fs.readFileSync(__dirname + '/fixtures/trycatch.js', 'utf8');
+  var src = fs.readFileSync(__dirname + "/fixtures/trycatch.js", "utf8");
   TestRun(test)
     .addError(6, 13, "'e' is already defined.")
     .addError(12, 9, "Do not assign to the exception parameter.")
@@ -413,20 +401,24 @@ exports.argsInCatchReused = function (test) {
 };
 
 exports.testRawOnError = function (test) {
-  JSHINT(';', { maxerr: 1 });
-  test.equal(JSHINT.errors[0].raw, 'Unnecessary semicolon.');
-  test.equal(JSHINT.errors[1].raw, 'Too many errors.');
+  JSHINT(";", { maxerr: 1 });
+  test.equal(JSHINT.errors[0].raw, "Unnecessary semicolon.");
+  test.equal(JSHINT.errors[1].raw, "Too many errors.");
   test.equal(JSHINT.errors[2], null);
 
   test.done();
 };
 
 exports.yesEmptyStmt = function (test) {
-  var src = fs.readFileSync(__dirname + '/fixtures/emptystmt.js', 'utf8');
+  var src = fs.readFileSync(__dirname + "/fixtures/emptystmt.js", "utf8");
 
   TestRun(test)
     .addError(1, 4, "Expected an identifier and instead saw ';'.")
-    .addError(6, 1, "Expected an assignment or function call and instead saw an expression.")
+    .addError(
+      6,
+      1,
+      "Expected an assignment or function call and instead saw an expression."
+    )
     .addError(10, 2, "Unnecessary semicolon.")
     .addError(17, 11, "Unnecessary semicolon.")
     .test(src, { es3: true, curly: false });
@@ -441,7 +433,7 @@ exports.yesEmptyStmt = function (test) {
 };
 
 exports.insideEval = function (test) {
-  var src = fs.readFileSync(__dirname + '/fixtures/insideEval.js', 'utf8');
+  var src = fs.readFileSync(__dirname + "/fixtures/insideEval.js", "utf8");
 
   TestRun(test)
     .addError(1, 1, "eval can be harmful.")
@@ -449,10 +441,26 @@ exports.insideEval = function (test) {
     .addError(5, 1, "eval can be harmful.")
     .addError(7, 1, "eval can be harmful.")
     .addError(9, 1, "eval can be harmful.")
-    .addError(11, 1, "Implied eval. Consider passing a function instead of a string.")
-    .addError(13, 1, "Implied eval. Consider passing a function instead of a string.")
-    .addError(15, 7, "Implied eval. Consider passing a function instead of a string.")
-    .addError(17, 7, "Implied eval. Consider passing a function instead of a string.")
+    .addError(
+      11,
+      1,
+      "Implied eval. Consider passing a function instead of a string."
+    )
+    .addError(
+      13,
+      1,
+      "Implied eval. Consider passing a function instead of a string."
+    )
+    .addError(
+      15,
+      7,
+      "Implied eval. Consider passing a function instead of a string."
+    )
+    .addError(
+      17,
+      7,
+      "Implied eval. Consider passing a function instead of a string."
+    )
 
     // The "TestRun" class (and these errors) probably needs some
     // facility for checking the expected scope of the error
@@ -473,9 +481,7 @@ exports.insideEval = function (test) {
 };
 
 exports.escapedEvil = function (test) {
-  var code = [
-    "\\u0065val(\"'test'\");"
-  ];
+  var code = ["\\u0065val(\"'test'\");"];
 
   TestRun(test)
     .addError(1, 1, "eval can be harmful.")
@@ -486,12 +492,12 @@ exports.escapedEvil = function (test) {
 
 // Regression test for GH-394.
 exports.noExcOnTooManyUndefined = function (test) {
-  var code = 'a(); b();';
+  var code = "a(); b();";
 
   try {
-    JSHINT(code, {undef: true, maxerr: 1});
+    JSHINT(code, { undef: true, maxerr: 1 });
   } catch (e) {
-    test.ok(false, 'Exception was thrown');
+    test.ok(false, "Exception was thrown");
   }
 
   TestRun(test)
@@ -503,7 +509,7 @@ exports.noExcOnTooManyUndefined = function (test) {
 };
 
 exports.defensiveSemicolon = function (test) {
-  var src = fs.readFileSync(__dirname + '/fixtures/gh-226.js', 'utf8');
+  var src = fs.readFileSync(__dirname + "/fixtures/gh-226.js", "utf8");
 
   TestRun(test)
     .addError(16, 1, "Unnecessary semicolon.")
@@ -516,11 +522,11 @@ exports.defensiveSemicolon = function (test) {
 // Test different variants of IIFE
 exports.iife = function (test) {
   var iife = [
-    '(function (test) { return; }());',
-    '(function (test) { return; })();'
+    "(function (test) { return; }());",
+    "(function (test) { return; })();",
   ];
 
-  TestRun(test).test(iife.join('\n'));
+  TestRun(test).test(iife.join("\n"));
 
   test.done();
 };
@@ -536,7 +542,7 @@ exports.invalidOptions = function (test) {
 };
 
 exports.multilineArray = function (test) {
-  var src = fs.readFileSync(__dirname + '/fixtures/gh-334.js', 'utf8');
+  var src = fs.readFileSync(__dirname + "/fixtures/gh-334.js", "utf8");
 
   TestRun(test).test(src);
 
@@ -545,22 +551,32 @@ exports.multilineArray = function (test) {
 
 exports.testInvalidSource = function (test) {
   TestRun(test)
-    .addError(0, undefined, "Input is neither a string nor an array of strings.")
+    .addError(
+      0,
+      undefined,
+      "Input is neither a string nor an array of strings."
+    )
     .test(undefined);
 
   TestRun(test)
-    .addError(0, undefined, "Input is neither a string nor an array of strings.")
+    .addError(
+      0,
+      undefined,
+      "Input is neither a string nor an array of strings."
+    )
     .test(null);
 
   TestRun(test)
-    .addError(0, undefined, "Input is neither a string nor an array of strings.")
-    .test({}, {es3: true});
+    .addError(
+      0,
+      undefined,
+      "Input is neither a string nor an array of strings."
+    )
+    .test({}, { es3: true });
 
-  TestRun(test)
-    .test("", {es3: true});
+  TestRun(test).test("", { es3: true });
 
-  TestRun(test)
-    .test([], {es3: true});
+  TestRun(test).test([], { es3: true });
 
   test.done();
 };
@@ -570,7 +586,7 @@ exports.testConstructor = function (test) {
 
   TestRun(test)
     .addError(1, 1, "Do not use Number as a constructor.")
-    .test(code, {es3: true});
+    .test(code, { es3: true });
 
   test.done();
 };
@@ -580,7 +596,7 @@ exports.missingRadix = function (test) {
 
   TestRun(test)
     .addError(1, 12, "Missing radix parameter.")
-    .test(code, {es3: true});
+    .test(code, { es3: true });
 
   TestRun(test).test(code);
 
@@ -589,15 +605,14 @@ exports.missingRadix = function (test) {
 
 exports.NumberNaN = function (test) {
   var code = "(function (test) { return Number.NaN; })();";
-  TestRun(test).test(code, {es3: true});
+  TestRun(test).test(code, { es3: true });
 
   test.done();
 };
 
 exports.htmlEscapement = function (test) {
-  TestRun(test).test("var a = '<\\!--';", {es3: true});
-  TestRun(test)
-    .test("var a = '\\!';", {es3: true});
+  TestRun(test).test("var a = '<\\!--';", { es3: true });
+  TestRun(test).test("var a = '\\!';", { es3: true });
 
   test.done();
 };
@@ -611,10 +626,9 @@ exports.testSparseArrays = function (test) {
     .addError(1, 23, "Extra comma. (it breaks older versions of IE)")
     .addError(1, 28, "Extra comma. (it breaks older versions of IE)")
     .addError(1, 40, "Extra comma. (it breaks older versions of IE)")
-    .test(src, {es3: true});
+    .test(src, { es3: true });
 
-  TestRun(test)
-    .test(src, { elision: true }); // es5
+  TestRun(test).test(src, { elision: true }); // es5
 
   test.done();
 };
@@ -623,14 +637,34 @@ exports.testReserved = function (test) {
   var src = fs.readFileSync(__dirname + "/fixtures/reserved.js", "utf8");
 
   TestRun(test)
-    .addError(1, 1, "Expected an identifier and instead saw 'volatile' (a reserved word).")
-    .addError(13, 13, "Expected an identifier and instead saw 'class' (a reserved word).")
-    .addError(14, 5, "Expected an identifier and instead saw 'else' (a reserved word).")
-    .addError(15, 5, "Expected an identifier and instead saw 'protected' (a reserved word).")
-    .test(src, {es3: true});
+    .addError(
+      1,
+      1,
+      "Expected an identifier and instead saw 'volatile' (a reserved word)."
+    )
+    .addError(
+      13,
+      13,
+      "Expected an identifier and instead saw 'class' (a reserved word)."
+    )
+    .addError(
+      14,
+      5,
+      "Expected an identifier and instead saw 'else' (a reserved word)."
+    )
+    .addError(
+      15,
+      5,
+      "Expected an identifier and instead saw 'protected' (a reserved word)."
+    )
+    .test(src, { es3: true });
 
   TestRun(test)
-    .addError(10, 7, "Expected an identifier and instead saw 'let' (a reserved word).")
+    .addError(
+      10,
+      7,
+      "Expected an identifier and instead saw 'let' (a reserved word)."
+    )
     .test(src, {}); // es5
 
   test.done();
@@ -642,29 +676,77 @@ exports.testES5Reserved = function (test) {
   var src = fs.readFileSync(__dirname + "/fixtures/es5Reserved.js", "utf8");
 
   TestRun(test)
-    .addError(2, 3, "Expected an identifier and instead saw 'default' (a reserved word).")
+    .addError(
+      2,
+      3,
+      "Expected an identifier and instead saw 'default' (a reserved word)."
+    )
     .addError(3, 3, "Unexpected 'in'.")
-    .addError(3, 3, "Expected an identifier and instead saw 'in' (a reserved word).")
-    .addError(6, 5, "Expected an identifier and instead saw 'default' (a reserved word).")
-    .addError(7, 10, "Expected an identifier and instead saw 'new' (a reserved word).")
-    .addError(8, 12, "Expected an identifier and instead saw 'class' (a reserved word).")
-    .addError(9, 3, "Expected an identifier and instead saw 'default' (a reserved word).")
-    .addError(10, 3, "Expected an identifier and instead saw 'in' (a reserved word).")
-    .addError(11, 10, "Expected an identifier and instead saw 'in' (a reserved word).")
-    .test(src, {es3: true});
+    .addError(
+      3,
+      3,
+      "Expected an identifier and instead saw 'in' (a reserved word)."
+    )
+    .addError(
+      6,
+      5,
+      "Expected an identifier and instead saw 'default' (a reserved word)."
+    )
+    .addError(
+      7,
+      10,
+      "Expected an identifier and instead saw 'new' (a reserved word)."
+    )
+    .addError(
+      8,
+      12,
+      "Expected an identifier and instead saw 'class' (a reserved word)."
+    )
+    .addError(
+      9,
+      3,
+      "Expected an identifier and instead saw 'default' (a reserved word)."
+    )
+    .addError(
+      10,
+      3,
+      "Expected an identifier and instead saw 'in' (a reserved word)."
+    )
+    .addError(
+      11,
+      10,
+      "Expected an identifier and instead saw 'in' (a reserved word)."
+    )
+    .test(src, { es3: true });
 
   TestRun(test)
-    .addError(6, 5, "Expected an identifier and instead saw 'default' (a reserved word).")
-    .addError(7, 10, "Expected an identifier and instead saw 'new' (a reserved word).")
-    .addError(8, 12, "Expected an identifier and instead saw 'class' (a reserved word).")
-    .addError(11, 10, "Expected an identifier and instead saw 'in' (a reserved word).")
+    .addError(
+      6,
+      5,
+      "Expected an identifier and instead saw 'default' (a reserved word)."
+    )
+    .addError(
+      7,
+      10,
+      "Expected an identifier and instead saw 'new' (a reserved word)."
+    )
+    .addError(
+      8,
+      12,
+      "Expected an identifier and instead saw 'class' (a reserved word)."
+    )
+    .addError(
+      11,
+      10,
+      "Expected an identifier and instead saw 'in' (a reserved word)."
+    )
     .test(src, {}); // es5
 
   test.done();
 };
 
 exports.testCatchBlocks = function (test) {
-  var src = fs.readFileSync(__dirname + '/fixtures/gh247.js', 'utf8');
+  var src = fs.readFileSync(__dirname + "/fixtures/gh247.js", "utf8");
 
   TestRun(test)
     .addError(19, 13, "'w' is already defined.")
@@ -672,64 +754,56 @@ exports.testCatchBlocks = function (test) {
     .addError(36, 19, "'w2' used out of scope.")
     .test(src, { es3: true, undef: true, devel: true });
 
-  src = fs.readFileSync(__dirname + '/fixtures/gh618.js', 'utf8');
+  src = fs.readFileSync(__dirname + "/fixtures/gh618.js", "utf8");
 
   TestRun(test)
     .addError(5, 11, "Value of 'x' may be overwritten in IE 8 and earlier.")
     .addError(15, 11, "Value of 'y' may be overwritten in IE 8 and earlier.")
     .test(src, { es3: true, undef: true, devel: true });
 
-  TestRun(test)
-    .test(src, { es3: true, undef: true, devel: true, node: true });
+  TestRun(test).test(src, { es3: true, undef: true, devel: true, node: true });
 
   var code = "try {} catch ({ message }) {}";
 
-  TestRun(test, "destructuring in catch blocks' parameter")
-    .test(code, { esnext: true });
+  TestRun(test, "destructuring in catch blocks' parameter").test(code, {
+    esnext: true,
+  });
 
   test.done();
 };
 
 exports.testNumericParams = function (test) {
-  TestRun(test)
-    .test("/*jshint maxparams:4, indent:3, maxlen:false */");
+  TestRun(test).test("/*jshint maxparams:4, indent:3, maxlen:false */");
 
   TestRun(test)
-    .addError(1, 1, "Expected a small integer or 'false' and instead saw 'face'.")
+    .addError(
+      1,
+      1,
+      "Expected a small integer or 'false' and instead saw 'face'."
+    )
     .test("/*jshint maxparams:face */");
 
   test.done();
 };
 
 exports.testForIn = function (test) {
-  var src = [
-    "(function (o) {",
-    "for (var i in o) { i(); }",
-    "}());"
-  ];
+  var src = ["(function (o) {", "for (var i in o) { i(); }", "}());"];
+
+  TestRun(test).test(src, { es3: true });
+
+  src = ["(function (o) {", "for (i in o) { i(); }", "}());"];
 
   TestRun(test)
-    .test(src, {es3: true});
+    .addError(
+      2,
+      6,
+      "Creating global 'for' variable. Should be 'for (var i ...'."
+    )
+    .test(src, { es3: true });
 
-  src = [
-    "(function (o) {",
-    "for (i in o) { i(); }",
-    "}());"
-  ];
+  src = ["(function (o) {", "for ('i' in o) { i(); }", "}());"];
 
-  TestRun(test)
-    .addError(2, 6, "Creating global 'for' variable. Should be 'for (var i ...'.")
-    .test(src, {es3: true});
-
-  src = [
-    "(function (o) {",
-    "for ('i' in o) { i(); }",
-    "}());"
-  ];
-
-  TestRun(test)
-    .addError(2, 10, "Bad assignment.")
-    .test(src);
+  TestRun(test).addError(2, 10, "Bad assignment.").test(src);
 
   src = [
     "(function (o) {",
@@ -737,14 +811,30 @@ exports.testForIn = function (test) {
     "for (var x, u in o) { x(); }",
     "for (z = 0 in o) { z(); }",
     "for (var q = 0 in o) { q(); }",
-    "})();"
+    "})();",
   ];
 
   TestRun(test, "bad lhs errors")
-    .addError(2, 7, "Invalid for-in loop left-hand-side: more than one ForBinding.")
-    .addError(3, 6, "Invalid for-in loop left-hand-side: more than one ForBinding.")
-    .addError(4, 8, "Invalid for-in loop left-hand-side: initializer is forbidden.")
-    .addError(5, 6, "Invalid for-in loop left-hand-side: initializer is forbidden.")
+    .addError(
+      2,
+      7,
+      "Invalid for-in loop left-hand-side: more than one ForBinding."
+    )
+    .addError(
+      3,
+      6,
+      "Invalid for-in loop left-hand-side: more than one ForBinding."
+    )
+    .addError(
+      4,
+      8,
+      "Invalid for-in loop left-hand-side: initializer is forbidden."
+    )
+    .addError(
+      5,
+      6,
+      "Invalid for-in loop left-hand-side: initializer is forbidden."
+    )
     .test(src);
 
   src = [
@@ -753,44 +843,57 @@ exports.testForIn = function (test) {
     "for (const x, u in o) { x(); }",
     "for (let z = 0 in o) { z(); }",
     "for (const q = 0 in o) { q(); }",
-    "})();"
+    "})();",
   ];
 
   TestRun(test, "bad lhs errors (lexical)")
-    .addError(2, 6, "Invalid for-in loop left-hand-side: more than one ForBinding.")
-    .addError(3, 6, "Invalid for-in loop left-hand-side: more than one ForBinding.")
-    .addError(4, 6, "Invalid for-in loop left-hand-side: initializer is forbidden.")
-    .addError(5, 6, "Invalid for-in loop left-hand-side: initializer is forbidden.")
+    .addError(
+      2,
+      6,
+      "Invalid for-in loop left-hand-side: more than one ForBinding."
+    )
+    .addError(
+      3,
+      6,
+      "Invalid for-in loop left-hand-side: more than one ForBinding."
+    )
+    .addError(
+      4,
+      6,
+      "Invalid for-in loop left-hand-side: initializer is forbidden."
+    )
+    .addError(
+      5,
+      6,
+      "Invalid for-in loop left-hand-side: initializer is forbidden."
+    )
     .test(src, { esnext: true });
 
-  TestRun(test, "Left-hand side as MemberExpression")
-    .test([
-      "for (x.y in {}) {}",
-      "for (x[z] in {}) {}",
-    ]);
+  TestRun(test, "Left-hand side as MemberExpression").test([
+    "for (x.y in {}) {}",
+    "for (x[z] in {}) {}",
+  ]);
 
   TestRun(test, "Left-hand side as MemberExpression (invalid)")
     .addError(1, 10, "Bad assignment.")
     .addError(2, 13, "Bad assignment.")
-    .test([
-      "for (x+y in {}) {}",
-      "for ((this) in {}) {}"
-    ]);
+    .test(["for (x+y in {}) {}", "for ((this) in {}) {}"]);
 
-  TestRun(test, "expression context")
-    .test([
-      "for (0 ? 0 in {} : 0 ; false; false ) {}",
-      "for (x[0 in {}] ; false; false ) {}",
-      "for (x = function() { return 0 in {}; } ; false; false ) {}"
-    ]);
+  TestRun(test, "expression context").test([
+    "for (0 ? 0 in {} : 0 ; false; false ) {}",
+    "for (x[0 in {}] ; false; false ) {}",
+    "for (x = function() { return 0 in {}; } ; false; false ) {}",
+  ]);
 
-  TestRun(test, "expression context (ES2015 forms)")
-    .test([
+  TestRun(test, "expression context (ES2015 forms)").test(
+    [
       "for (({ [x in {}]: null }); false; false ) {}",
       "for (var { prop = 'x' in {} } of [{}]) {}",
       "for (x = () => { return 0 in {}; } ; false; false ) {}",
-      "for (x = function(x = 0 in {}) {} ; false; false ) {}"
-    ], { esversion: 2015 });
+      "for (x = function(x = 0 in {}) {} ; false; false ) {}",
+    ],
+    { esversion: 2015 }
+  );
 
   test.done();
 };
@@ -798,8 +901,7 @@ exports.testForIn = function (test) {
 exports.testRegexArray = function (test) {
   var src = fs.readFileSync(__dirname + "/fixtures/regex_array.js", "utf8");
 
-  TestRun(test)
-    .test(src, {es3: true});
+  TestRun(test).test(src, { es3: true });
 
   test.done();
 };
@@ -831,7 +933,7 @@ exports.testUndefinedAssignment = function (test) {
     "let [ o = undefined === 0 ] = [];",
     "[ o = undefined === 0] = [];",
     "let { p = undefined === 0, x: q = undefined === 0 } = {};",
-    "({ p = undefined === 0, x: q = undefined === 0 } = {});"
+    "({ p = undefined === 0, x: q = undefined === 0 } = {});",
   ];
 
   TestRun(test)
@@ -844,13 +946,16 @@ exports.testUndefinedAssignment = function (test) {
     .addError(9, 9, "It's not necessary to initialize 'f' to 'undefined'.")
     .addError(10, 11, "It's not necessary to initialize 'g' to 'undefined'.")
     .addError(11, 9, "It's not necessary to initialize 'h' to 'undefined'.")
-    .test(src, {esnext: true});
+    .test(src, { esnext: true });
 
   test.done();
 };
 
 exports.testES6Modules = function (test) {
-  var src = fs.readFileSync(__dirname + "/fixtures/es6-import-export.js", "utf8");
+  var src = fs.readFileSync(
+    __dirname + "/fixtures/es6-import-export.js",
+    "utf8"
+  );
 
   var importConstErrors = [
     [51, 1, "Attempting to override '$' which is a constant."],
@@ -862,14 +967,20 @@ exports.testES6Modules = function (test) {
     [58, 17, "'emGet' has already been declared."],
     [58, 24, "'set' has already been declared."],
     [59, 21, "'_' has already been declared."],
-    [60, 13, "'ember2' has already been declared."]
+    [60, 13, "'ember2' has already been declared."],
   ];
 
   var testRun = TestRun(test)
     .addError(74, 1, "Empty export: this is unnecessary and can be removed.")
-    .addError(75, 1, "Empty export: consider replacing with `import 'source';`.");
-  importConstErrors.forEach(function(error) { testRun.addError.apply(testRun, error); });
-  testRun.test(src, {esnext: true});
+    .addError(
+      75,
+      1,
+      "Empty export: consider replacing with `import 'source';`."
+    );
+  importConstErrors.forEach(function (error) {
+    testRun.addError.apply(testRun, error);
+  });
+  testRun.test(src, { esnext: true });
 
   testRun
     .addError(3, 1, "'import' is only available in ES6 (use 'esversion: 6').")
@@ -890,19 +1001,39 @@ exports.testES6Modules = function (test) {
     .addError(40, 1, "'export' is only available in ES6 (use 'esversion: 6').")
     .addError(44, 1, "'export' is only available in ES6 (use 'esversion: 6').")
     .addError(46, 1, "'export' is only available in ES6 (use 'esversion: 6').")
-    .addError(47, 8, "'class' is available in ES6 (use 'esversion: 6') or Mozilla JS extensions (use moz).")
+    .addError(
+      47,
+      8,
+      "'class' is available in ES6 (use 'esversion: 6') or Mozilla JS extensions (use moz)."
+    )
     .addError(48, 1, "'export' is only available in ES6 (use 'esversion: 6').")
-    .addError(48, 16, "'class' is available in ES6 (use 'esversion: 6') or Mozilla JS extensions (use moz).")
+    .addError(
+      48,
+      16,
+      "'class' is available in ES6 (use 'esversion: 6') or Mozilla JS extensions (use moz)."
+    )
     .addError(47, 1, "'export' is only available in ES6 (use 'esversion: 6').")
-    .addError(46, 8, "'class' is available in ES6 (use 'esversion: 6') or Mozilla JS extensions (use moz).")
+    .addError(
+      46,
+      8,
+      "'class' is available in ES6 (use 'esversion: 6') or Mozilla JS extensions (use moz)."
+    )
     .addError(57, 1, "'import' is only available in ES6 (use 'esversion: 6').")
     .addError(58, 1, "'import' is only available in ES6 (use 'esversion: 6').")
     .addError(59, 1, "'import' is only available in ES6 (use 'esversion: 6').")
     .addError(60, 1, "'import' is only available in ES6 (use 'esversion: 6').")
     .addError(65, 1, "'import' is only available in ES6 (use 'esversion: 6').")
     .addError(67, 1, "'export' is only available in ES6 (use 'esversion: 6').")
-    .addError(67, 16, "'function*' is only available in ES6 (use 'esversion: 6').")
-    .addError(67, 26, "'yield' is available in ES6 (use 'esversion: 6') or Mozilla JS extensions (use moz).")
+    .addError(
+      67,
+      16,
+      "'function*' is only available in ES6 (use 'esversion: 6')."
+    )
+    .addError(
+      67,
+      26,
+      "'yield' is available in ES6 (use 'esversion: 6') or Mozilla JS extensions (use moz)."
+    )
     .addError(70, 1, "'export' is only available in ES6 (use 'esversion: 6').")
     .addError(71, 1, "'import' is only available in ES6 (use 'esversion: 6').")
     .addError(74, 1, "'export' is only available in ES6 (use 'esversion: 6').")
@@ -910,76 +1041,79 @@ exports.testES6Modules = function (test) {
     .addError(76, 1, "'import' is only available in ES6 (use 'esversion: 6').")
     .test(src);
 
-  var src2 = [
-    "var a = {",
-    "import: 'foo',",
-    "export: 'bar'",
-    "};"
-  ];
+  var src2 = ["var a = {", "import: 'foo',", "export: 'bar'", "};"];
 
-  TestRun(test)
-    .test(src2, {});
+  TestRun(test).test(src2, {});
 
   // See gh-3055 "Labels Break JSHint"
-  TestRun(test, "following labeled block")
-    .test([
+  TestRun(test, "following labeled block").test(
+    [
       "label: {}",
       "export function afterLabelExported() {}",
-      "import afterLabelImported from 'elsewhere';"
-    ], { esversion: 6 });
+      "import afterLabelImported from 'elsewhere';",
+    ],
+    { esversion: 6 }
+  );
 
   TestRun(test, "invalid ImportsList")
     .addError(1, 12, "Unexpected 'y'.")
     .addError(1, 12, "Expected 'from' and instead saw 'y'.")
     .addError(1, 14, "Expected '(string)' and instead saw '}'.")
     .addError(1, 15, "Missing semicolon.")
-    .addError(1, 16, "Expected an assignment or function call and instead saw an expression.")
+    .addError(
+      1,
+      16,
+      "Expected an assignment or function call and instead saw an expression."
+    )
     .addError(1, 20, "Missing semicolon.")
-    .addError(1, 21, "Expected an assignment or function call and instead saw an expression.")
+    .addError(
+      1,
+      21,
+      "Expected an assignment or function call and instead saw an expression."
+    )
     .addError(1, 16, "'from' is not defined.")
-    .test([
-      "import { x y } from 'elsewhere';"
-    ], { esversion: 6, module: true });
+    .test(["import { x y } from 'elsewhere';"], { esversion: 6, module: true });
 
-  TestRun(test, "async as Identifier")
-    .test([
-      "var async;",
-      "export default async;"
-    ], { esversion: 6, module: true });
+  TestRun(test, "async as Identifier").test(
+    ["var async;", "export default async;"],
+    { esversion: 6, module: true }
+  );
 
-  TestRun(test, "async in CallExpression")
-    .test([
-      "var async, x, y, z;",
-      "export default async(x, y, z);"
-    ], { esversion: 6, module: true });
+  TestRun(test, "async in CallExpression").test(
+    ["var async, x, y, z;", "export default async(x, y, z);"],
+    { esversion: 6, module: true }
+  );
 
-  TestRun(test, "async functions")
-    .test([
+  TestRun(test, "async functions").test(
+    [
       "export async function f() { await 0; }",
       "export default async function() { await 0; }",
-    ], { esversion: 8, module: true });
+    ],
+    { esversion: 8, module: true }
+  );
 
-  TestRun(test, "async arrow function - zero arguments")
-    .test([
-      "export default async () => {};"
-    ], { esversion: 8, module: true });
+  TestRun(test, "async arrow function - zero arguments").test(
+    ["export default async () => {};"],
+    { esversion: 8, module: true }
+  );
 
-  TestRun(test, "async arrow function - concise argument")
-    .test([
-      "export default async _ => {};"
-    ], { esversion: 8, module: true });
+  TestRun(test, "async arrow function - concise argument").test(
+    ["export default async _ => {};"],
+    { esversion: 8, module: true }
+  );
 
-  TestRun(test, "async arrow function - many arguments")
-    .test([
-      "export default async (x, y, z) => {};"
-    ], { esversion: 8, module: true });
+  TestRun(test, "async arrow function - many arguments").test(
+    ["export default async (x, y, z) => {};"],
+    { esversion: 8, module: true }
+  );
 
-
-  TestRun(test, "async generator functions")
-    .test([
+  TestRun(test, "async generator functions").test(
+    [
       "export async function * f() { yield 0; await 0; }",
       "export default async function * () { yield 0; await 0; }",
-    ], { esversion: 9, module: true });
+    ],
+    { esversion: 9, module: true }
+  );
 
   test.done();
 };
@@ -1006,7 +1140,7 @@ exports.testES6ModulesNamedExportsAffectUnused = function (test) {
     "export var v1u, v2u;",
     "export let l1u, l2u;",
     "export const c1u, c2u;",
-    "export function* gen() { yield 1; }"
+    "export function* gen() { yield 1; }",
   ];
 
   TestRun(test)
@@ -1014,14 +1148,13 @@ exports.testES6ModulesNamedExportsAffectUnused = function (test) {
     .addError(19, 19, "const 'c2u' is initialized to 'undefined'.")
     .test(src1, {
       esnext: true,
-      unused: true
+      unused: true,
     });
 
   test.done();
 };
 
 exports.testConstRedeclaration = function (test) {
-
   // consts cannot be redeclared, but they can shadow
   var src = [
     "const a = 1;",
@@ -1036,23 +1169,26 @@ exports.testConstRedeclaration = function (test) {
     "}",
     "function b() {",
     "}",
-    "const b = 1;"
+    "const b = 1;",
   ];
 
   TestRun(test)
     .addError(2, 7, "'a' has already been declared.")
-    .addError(6, 16, "'a' was used before it was declared, which is illegal for 'const' variables.")
+    .addError(
+      6,
+      16,
+      "'a' was used before it was declared, which is illegal for 'const' variables."
+    )
     .addError(9, 10, "'a' has already been declared.")
     .addError(13, 7, "'b' has already been declared.")
     .test(src, {
-      esnext: true
+      esnext: true,
     });
 
   test.done();
 };
 
 exports["test typeof in TDZ"] = function (test) {
-
   var src = [
     "let a = typeof b;", // error, use in TDZ
     "let b;",
@@ -1060,20 +1196,23 @@ exports["test typeof in TDZ"] = function (test) {
     "let c = typeof e;", // e is not in scope, no error
     "{",
     "  let e;",
-    "}"
+    "}",
   ];
 
   TestRun(test)
-    .addError(2, 5, "'b' was used before it was declared, which is illegal for 'let' variables.")
+    .addError(
+      2,
+      5,
+      "'b' was used before it was declared, which is illegal for 'let' variables."
+    )
     .test(src, {
-      esnext: true
+      esnext: true,
     });
 
   test.done();
 };
 
 exports.testConstModification = function (test) {
-
   var src = [
     "const a = 1;",
     "const b = { a: 2 };",
@@ -1134,43 +1273,49 @@ exports.testConstModification = function (test) {
     "  f++;",
     "}",
     "const f = 1;",
-    "e();"
+    "e();",
   ];
 
   TestRun(test)
-      .addError(3, 1, "Attempting to override 'a' which is a constant.")
-      .addError(4, 1, "Attempting to override 'b' which is a constant.")
-      .addError(5, 1, "Attempting to override 'a' which is a constant.")
-      .addError(6, 3, "Attempting to override 'a' which is a constant.")
-      .addError(7, 1, "Attempting to override 'a' which is a constant.")
-      .addError(8, 9, "Attempting to override 'a' which is a constant.")
-      .addError(8, 9, "You might be leaking a variable (a) here.")
-      .addError(53, 5, "Missing '()' invoking a constructor.")
-      .addError(55, 3, "Attempting to override 'f' which is a constant.")
-      .test(src, {
-        esnext: true
-      });
+    .addError(3, 1, "Attempting to override 'a' which is a constant.")
+    .addError(4, 1, "Attempting to override 'b' which is a constant.")
+    .addError(5, 1, "Attempting to override 'a' which is a constant.")
+    .addError(6, 3, "Attempting to override 'a' which is a constant.")
+    .addError(7, 1, "Attempting to override 'a' which is a constant.")
+    .addError(8, 9, "Attempting to override 'a' which is a constant.")
+    .addError(8, 9, "You might be leaking a variable (a) here.")
+    .addError(53, 5, "Missing '()' invoking a constructor.")
+    .addError(55, 3, "Attempting to override 'f' which is a constant.")
+    .test(src, {
+      esnext: true,
+    });
 
   test.done();
 };
 
 exports["class declaration export"] = function (test) {
-  var source = fs.readFileSync(__dirname + "/fixtures/class-declaration.js", "utf8");
+  var source = fs.readFileSync(
+    __dirname + "/fixtures/class-declaration.js",
+    "utf8"
+  );
 
   TestRun(test).test(source, {
     esnext: true,
-    undef: true
+    undef: true,
   });
 
   test.done();
 };
 
 exports["function declaration export"] = function (test) {
-  var source = fs.readFileSync(__dirname + "/fixtures/function-declaration.js", "utf8");
+  var source = fs.readFileSync(
+    __dirname + "/fixtures/function-declaration.js",
+    "utf8"
+  );
 
   TestRun(test).test(source, {
     esnext: true,
-    undef: true
+    undef: true,
   });
 
   test.done();
@@ -1183,20 +1328,27 @@ exports.classIsBlockScoped = function (test) {
     "class B extends C {}", // use in TDZ
     "class C {}",
     "new D();", // not defined
-    "let E = class D {" +
-    "  constructor() { D.static(); }",
+    "let E = class D {" + "  constructor() { D.static(); }",
     "  myfunc() { return D; }",
     "};",
     "new D();", // not defined
     "if (true) {",
     "  class F {}",
     "}",
-    "new F();" // not defined
+    "new F();", // not defined
   ];
 
   TestRun(test)
-    .addError(2, 7, "'A' was used before it was declared, which is illegal for 'class' variables.")
-    .addError(4, 7, "'C' was used before it was declared, which is illegal for 'class' variables.")
+    .addError(
+      2,
+      7,
+      "'A' was used before it was declared, which is illegal for 'class' variables."
+    )
+    .addError(
+      4,
+      7,
+      "'C' was used before it was declared, which is illegal for 'class' variables."
+    )
     .addError(5, 5, "'D' is not defined.")
     .addError(9, 5, "'D' is not defined.")
     .addError(13, 5, "'F' is not defined.")
@@ -1213,16 +1365,12 @@ exports.testES6ModulesNamedExportsAffectUndef = function (test) {
   //     exports.foo = foo;
   //
   // Thus, the "foo" identifier should be seen as undefined.
-  var src1 = [
-    "export { foo };"
-  ];
+  var src1 = ["export { foo };"];
 
-  TestRun(test)
-    .addError(1, 10, "'foo' is not defined.")
-    .test(src1, {
-      esnext: true,
-      undef: true
-    });
+  TestRun(test).addError(1, 10, "'foo' is not defined.").test(src1, {
+    esnext: true,
+    undef: true,
+  });
 
   test.done();
 };
@@ -1236,17 +1384,12 @@ exports.testES6ModulesThroughExportDoNotAffectUnused = function (test) {
   //     exports.foo = require('source').foo;
   //
   // Thus, the "foo" identifier should be seen as unused.
-  var src1 = [
-    "var foo;",
-    "export { foo } from \"source\";"
-  ];
+  var src1 = ["var foo;", 'export { foo } from "source";'];
 
-  TestRun(test)
-    .addError(1, 5, "'foo' is defined but never used.")
-    .test(src1, {
-      esnext: true,
-      unused: true
-    });
+  TestRun(test).addError(1, 5, "'foo' is defined but never used.").test(src1, {
+    esnext: true,
+    unused: true,
+  });
 
   test.done();
 };
@@ -1260,17 +1403,12 @@ exports.testES6ModulesThroughExportDoNotAffectUndef = function (test) {
   //     var bar = foo;
   //
   // Thus, the "foo" identifier should be seen as undefined.
-  var src1 = [
-    "export { foo } from \"source\";",
-    "var bar = foo;"
-  ];
+  var src1 = ['export { foo } from "source";', "var bar = foo;"];
 
-  TestRun(test)
-    .addError(2, 11, "'foo' is not defined.")
-    .test(src1, {
-      esnext: true,
-      undef: true
-    });
+  TestRun(test).addError(2, 11, "'foo' is not defined.").test(src1, {
+    esnext: true,
+    undef: true,
+  });
 
   test.done();
 };
@@ -1286,14 +1424,13 @@ exports.testES6ModulesDefaultExportsAffectUnused = function (test) {
     "var z = 42;",
     "export default { a: a, x: x };",
     "export default function boo() { return x + z; }",
-    "export default class MyClass { }"
+    "export default class MyClass { }",
   ];
 
-  TestRun(test)
-    .test(src1, {
-      esnext: true,
-      unused: true
-    });
+  TestRun(test).test(src1, {
+    esnext: true,
+    unused: true,
+  });
 
   test.done();
 };
@@ -1301,34 +1438,31 @@ exports.testES6ModulesDefaultExportsAffectUnused = function (test) {
 exports.testES6ModulesDefaultExportAssignmentExpr = function (test) {
   // The identifier in the exported AssignmentExpression should not be
   // interpreted as a declaration.
-  var src = [
-    "let x = 1;",
-    "export default -x;"
-  ];
+  var src = ["let x = 1;", "export default -x;"];
 
-  TestRun(test)
-    .test(src, { unused: true, esnext: true });
+  TestRun(test).test(src, { unused: true, esnext: true });
 
   test.done();
 };
 
 exports.testES6ModulesNameSpaceImportsAffectUnused = function (test) {
-  var src = [
-    "import * as angular from 'angular';"
-  ];
+  var src = ["import * as angular from 'angular';"];
 
   TestRun(test)
     .addError(1, 13, "'angular' is defined but never used.")
     .test(src, {
       esnext: true,
-      unused: true
+      unused: true,
     });
 
   test.done();
 };
 
 exports.testES6TemplateLiterals = function (test) {
-  var src = fs.readFileSync(__dirname + "/fixtures/es6-template-literal.js", "utf8");
+  var src = fs.readFileSync(
+    __dirname + "/fixtures/es6-template-literal.js",
+    "utf8"
+  );
   var run = TestRun(test)
     .addError(14, 16, "Octal literals are not allowed in strict mode.")
     .addError(21, 20, "Unclosed template literal.");
@@ -1339,7 +1473,10 @@ exports.testES6TemplateLiterals = function (test) {
 };
 
 exports.testES6TaggedTemplateLiterals = function (test) {
-  var src = fs.readFileSync(__dirname + "/fixtures/es6-template-literal-tagged.js", "utf8");
+  var src = fs.readFileSync(
+    __dirname + "/fixtures/es6-template-literal-tagged.js",
+    "utf8"
+  );
   TestRun(test)
     .addError(16, 19, "Octal literals are not allowed in strict mode.")
     .addError(23, 23, "Unclosed template literal.")
@@ -1348,12 +1485,8 @@ exports.testES6TaggedTemplateLiterals = function (test) {
 };
 
 exports.testES6TemplateLiteralsUnused = function (test) {
-  var src = [
-    "var a = 'hello';",
-    "alert(`${a} world`);"
-  ];
-  TestRun(test)
-    .test(src, { esnext: true, unused: true });
+  var src = ["var a = 'hello';", "alert(`${a} world`);"];
+  TestRun(test).test(src, { esnext: true, unused: true });
 
   test.done();
 };
@@ -1362,20 +1495,15 @@ exports.testES6TaggedTemplateLiteralsUnused = function (test) {
   var src = [
     "function tag() {}",
     "var a = 'hello';",
-    "alert(tag`${a} world`);"
+    "alert(tag`${a} world`);",
   ];
-  TestRun(test)
-    .test(src, { esnext: true, unused: true });
+  TestRun(test).test(src, { esnext: true, unused: true });
 
   test.done();
 };
 
-
 exports.testES6TemplateLiteralsUndef = function (test) {
-  var src = [
-    "/* global alert */",
-    "alert(`${a} world`);"
-  ];
+  var src = ["/* global alert */", "alert(`${a} world`);"];
   TestRun(test)
     .addError(2, 10, "'a' is not defined.")
     .test(src, { esnext: true, undef: true });
@@ -1383,12 +1511,8 @@ exports.testES6TemplateLiteralsUndef = function (test) {
   test.done();
 };
 
-
 exports.testES6TaggedTemplateLiteralsUndef = function (test) {
-  var src = [
-    "/* global alert */",
-    "alert(tag`${a} world`);"
-  ];
+  var src = ["/* global alert */", "alert(tag`${a} world`);"];
   TestRun(test)
     .addError(2, 7, "'tag' is not defined.")
     .addError(2, 13, "'a' is not defined.")
@@ -1397,14 +1521,8 @@ exports.testES6TaggedTemplateLiteralsUndef = function (test) {
   test.done();
 };
 
-
 exports.testES6TemplateLiteralMultiline = function (test) {
-  var src = [
-    'let multiline = `',
-    'this string spans',
-    'multiple lines',
-    '`;'
-  ];
+  var src = ["let multiline = `", "this string spans", "multiple lines", "`;"];
 
   TestRun(test).test(src, { esnext: true });
 
@@ -1412,26 +1530,24 @@ exports.testES6TemplateLiteralMultiline = function (test) {
 };
 
 exports.testES6TemplateLiteralsAreNotDirectives = function (test) {
-  var src = [
-    "function fn() {",
-    "`use strict`;",
-    "return \"\\077\";",
-    "}"
-  ];
+  var src = ["function fn() {", "`use strict`;", 'return "\\077";', "}"];
 
   TestRun(test)
-    .addError(2, 1, "Expected an assignment or function call and instead saw an expression.")
+    .addError(
+      2,
+      1,
+      "Expected an assignment or function call and instead saw an expression."
+    )
     .test(src, { esnext: true });
 
-  var src2 = [
-    "function fn() {",
-    "`${\"use strict\"}`;",
-    "return \"\\077\";",
-    "}"
-  ];
+  var src2 = ["function fn() {", '`${"use strict"}`;', 'return "\\077";', "}"];
 
   TestRun(test)
-    .addError(2, 16, "Expected an assignment or function call and instead saw an expression.")
+    .addError(
+      2,
+      16,
+      "Expected an assignment or function call and instead saw an expression."
+    )
     .test(src2, { esnext: true });
 
   test.done();
@@ -1439,19 +1555,19 @@ exports.testES6TemplateLiteralsAreNotDirectives = function (test) {
 
 exports.testES6TemplateLiteralReturnValue = function (test) {
   var src = [
-    'function sayHello(to) {',
-    '  return `Hello, ${to}!`;',
-    '}',
-    'print(sayHello("George"));'
+    "function sayHello(to) {",
+    "  return `Hello, ${to}!`;",
+    "}",
+    'print(sayHello("George"));',
   ];
 
   TestRun(test).test(src, { esnext: true });
 
   var src = [
-    'function* sayHello(to) {',
-    '  yield `Hello, ${to}!`;',
-    '}',
-    'print(sayHello("George"));'
+    "function* sayHello(to) {",
+    "  yield `Hello, ${to}!`;",
+    "}",
+    'print(sayHello("George"));',
   ];
 
   TestRun(test).test(src, { esnext: true });
@@ -1461,48 +1577,47 @@ exports.testES6TemplateLiteralReturnValue = function (test) {
 
 exports.testES6TemplateLiteralMultilineReturnValue = function (test) {
   var src = [
-    'function sayHello(to) {',
-    '  return `Hello, ',
-    '    ${to}!`;',
-    '}',
-    'print(sayHello("George"));'
+    "function sayHello(to) {",
+    "  return `Hello, ",
+    "    ${to}!`;",
+    "}",
+    'print(sayHello("George"));',
   ];
 
   TestRun(test).test(src, { esnext: true });
 
   var src = [
-    'function* sayHello(to) {',
-    '  yield `Hello, ',
-    '    ${to}!`;',
-    '}',
-    'print(sayHello("George"));'
+    "function* sayHello(to) {",
+    "  yield `Hello, ",
+    "    ${to}!`;",
+    "}",
+    'print(sayHello("George"));',
   ];
 
   TestRun(test).test(src, { esnext: true });
 
   test.done();
 };
-
 
 exports.testES6TaggedTemplateLiteralMultilineReturnValue = function (test) {
   var src = [
-    'function tag() {}',
-    'function sayHello(to) {',
-    '  return tag`Hello, ',
-    '    ${to}!`;',
-    '}',
-    'print(sayHello("George"));'
+    "function tag() {}",
+    "function sayHello(to) {",
+    "  return tag`Hello, ",
+    "    ${to}!`;",
+    "}",
+    'print(sayHello("George"));',
   ];
 
   TestRun(test).test(src, { esnext: true });
 
   var src = [
-    'function tag() {}',
-    'function* sayHello(to) {',
-    '  yield tag`Hello, ',
-    '    ${to}!`;',
-    '}',
-    'print(sayHello("George"));'
+    "function tag() {}",
+    "function* sayHello(to) {",
+    "  yield tag`Hello, ",
+    "    ${to}!`;",
+    "}",
+    'print(sayHello("George"));',
   ];
 
   TestRun(test).test(src, { esnext: true });
@@ -1510,15 +1625,16 @@ exports.testES6TaggedTemplateLiteralMultilineReturnValue = function (test) {
   test.done();
 };
 
-
-exports.testES6TemplateLiteralMultilineReturnValueWithFunctionCall = function (test) {
+exports.testES6TemplateLiteralMultilineReturnValueWithFunctionCall = function (
+  test
+) {
   var src = [
-    'function sayHello() {',
-    '  return `Helo',
-    '      monkey`',
-    '    .replace(\'l\', \'ll\');',
-    '}',
-    'print(sayHello());',
+    "function sayHello() {",
+    "  return `Helo",
+    "      monkey`",
+    "    .replace('l', 'll');",
+    "}",
+    "print(sayHello());",
   ];
 
   TestRun(test).test(src, { esnext: true });
@@ -1526,41 +1642,41 @@ exports.testES6TemplateLiteralMultilineReturnValueWithFunctionCall = function (t
   test.done();
 };
 
-
-exports.testES6TaggedTemplateLiteralMultilineReturnValueWithFunctionCall = function (test) {
+exports.testES6TaggedTemplateLiteralMultilineReturnValueWithFunctionCall = function (
+  test
+) {
   var src = [
-    'function tag() {}',
-    'function sayHello() {',
-    '  return tag`Helo',
-    '    monkey!!`',
-    '    .replace(\'l\', \'ll\');',
-    '}',
-    'print(sayHello());',
+    "function tag() {}",
+    "function sayHello() {",
+    "  return tag`Helo",
+    "    monkey!!`",
+    "    .replace('l', 'll');",
+    "}",
+    "print(sayHello());",
   ];
 
   TestRun(test).test(src, { esnext: true });
 
   test.done();
 };
-
 
 exports.testMultilineReturnValueStringLiteral = function (test) {
   var src = [
-    'function sayHello(to) {',
+    "function sayHello(to) {",
     '  return "Hello, \\',
     '    " + to;',
-    '}',
-    'print(sayHello("George"));'
+    "}",
+    'print(sayHello("George"));',
   ];
 
   TestRun(test).test(src, { multistr: true });
 
   var src = [
-    'function* sayHello(to) {',
+    "function* sayHello(to) {",
     '  yield "Hello, \\',
     '    " + to;',
-    '}',
-    'print(sayHello("George"));'
+    "}",
+    'print(sayHello("George"));',
   ];
 
   TestRun(test).test(src, { esnext: true, multistr: true });
@@ -1569,7 +1685,10 @@ exports.testMultilineReturnValueStringLiteral = function (test) {
 };
 
 exports.testES6ExportStarFrom = function (test) {
-  var src = fs.readFileSync(__dirname + "/fixtures/es6-export-star-from.js", "utf8");
+  var src = fs.readFileSync(
+    __dirname + "/fixtures/es6-export-star-from.js",
+    "utf8"
+  );
   TestRun(test)
     .addError(2, 10, "Expected 'from' and instead saw 'foo'.")
     .addError(2, 13, "Expected '(string)' and instead saw ';'.")
@@ -1591,83 +1710,185 @@ exports.testPotentialVariableLeak = function (test) {
     .test(a, { esnext: true });
 
   // False Positive
-  TestRun(test)
-    .test(b);
+  TestRun(test).test(b);
 
   test.done();
 };
 
 exports.testDefaultArguments = function (test) {
-  var src = fs.readFileSync(__dirname + "/fixtures/default-arguments.js", "utf8");
+  var src = fs.readFileSync(
+    __dirname + "/fixtures/default-arguments.js",
+    "utf8"
+  );
   TestRun(test)
     .addError(14, 39, "'bar' is not defined.")
-    .addError(14, 32, "'num3' was used before it was declared, which is illegal for 'param' variables.")
-    .addError(15, 32, "'num4' was used before it was declared, which is illegal for 'param' variables.")
-    .addError(18, 41, "Regular parameters should not come after default parameters.")
+    .addError(
+      14,
+      32,
+      "'num3' was used before it was declared, which is illegal for 'param' variables."
+    )
+    .addError(
+      15,
+      32,
+      "'num4' was used before it was declared, which is illegal for 'param' variables."
+    )
+    .addError(
+      18,
+      41,
+      "Regular parameters should not come after default parameters."
+    )
     .addError(27, 10, "'c' is not defined.")
     .addError(33, 4, "'d' was used before it was defined.")
-    .addError(36, 16, "'e' was used before it was declared, which is illegal for 'param' variables.")
+    .addError(
+      36,
+      16,
+      "'e' was used before it was declared, which is illegal for 'param' variables."
+    )
     .test(src, { esnext: true, undef: true, latedef: true });
 
   TestRun(test)
-    .addError(14, 32, "'num3' was used before it was declared, which is illegal for 'param' variables.")
-    .addError(15, 32, "'num4' was used before it was declared, which is illegal for 'param' variables.")
-    .addError(18, 41, "Regular parameters should not come after default parameters.")
-    .addError(36, 16, "'e' was used before it was declared, which is illegal for 'param' variables.")
+    .addError(
+      14,
+      32,
+      "'num3' was used before it was declared, which is illegal for 'param' variables."
+    )
+    .addError(
+      15,
+      32,
+      "'num4' was used before it was declared, which is illegal for 'param' variables."
+    )
+    .addError(
+      18,
+      41,
+      "Regular parameters should not come after default parameters."
+    )
+    .addError(
+      36,
+      16,
+      "'e' was used before it was declared, which is illegal for 'param' variables."
+    )
     .test(src, { moz: true });
 
   TestRun(test)
-    .addError(7, 27, "'default parameters' is only available in ES6 (use 'esversion: 6').")
-    .addError(7, 35, "'default parameters' is only available in ES6 (use 'esversion: 6').")
-    .addError(11, 36, "'default parameters' is only available in ES6 (use 'esversion: 6').")
-    .addError(12, 37, "'default parameters' is only available in ES6 (use 'esversion: 6').")
-    .addError(13, 37, "'default parameters' is only available in ES6 (use 'esversion: 6').")
-    .addError(14, 37, "'default parameters' is only available in ES6 (use 'esversion: 6').")
-    .addError(14, 32, "'num3' was used before it was declared, which is illegal for 'param' variables.")
-    .addError(15, 37, "'default parameters' is only available in ES6 (use 'esversion: 6').")
-    .addError(15, 32, "'num4' was used before it was declared, which is illegal for 'param' variables.")
-    .addError(18, 37, "'default parameters' is only available in ES6 (use 'esversion: 6').")
-    .addError(18, 41, "Regular parameters should not come after default parameters.")
-    .addError(26, 18, "'default parameters' is only available in ES6 (use 'esversion: 6').")
-    .addError(31, 18, "'default parameters' is only available in ES6 (use 'esversion: 6').")
-    .addError(33, 6, "'default parameters' is only available in ES6 (use 'esversion: 6').")
-    .addError(35, 18, "'default parameters' is only available in ES6 (use 'esversion: 6').")
-    .addError(36, 18, "'default parameters' is only available in ES6 (use 'esversion: 6').")
-    .addError(36, 16, "'e' was used before it was declared, which is illegal for 'param' variables.")
-    .test(src, {  });
+    .addError(
+      7,
+      27,
+      "'default parameters' is only available in ES6 (use 'esversion: 6')."
+    )
+    .addError(
+      7,
+      35,
+      "'default parameters' is only available in ES6 (use 'esversion: 6')."
+    )
+    .addError(
+      11,
+      36,
+      "'default parameters' is only available in ES6 (use 'esversion: 6')."
+    )
+    .addError(
+      12,
+      37,
+      "'default parameters' is only available in ES6 (use 'esversion: 6')."
+    )
+    .addError(
+      13,
+      37,
+      "'default parameters' is only available in ES6 (use 'esversion: 6')."
+    )
+    .addError(
+      14,
+      37,
+      "'default parameters' is only available in ES6 (use 'esversion: 6')."
+    )
+    .addError(
+      14,
+      32,
+      "'num3' was used before it was declared, which is illegal for 'param' variables."
+    )
+    .addError(
+      15,
+      37,
+      "'default parameters' is only available in ES6 (use 'esversion: 6')."
+    )
+    .addError(
+      15,
+      32,
+      "'num4' was used before it was declared, which is illegal for 'param' variables."
+    )
+    .addError(
+      18,
+      37,
+      "'default parameters' is only available in ES6 (use 'esversion: 6')."
+    )
+    .addError(
+      18,
+      41,
+      "Regular parameters should not come after default parameters."
+    )
+    .addError(
+      26,
+      18,
+      "'default parameters' is only available in ES6 (use 'esversion: 6')."
+    )
+    .addError(
+      31,
+      18,
+      "'default parameters' is only available in ES6 (use 'esversion: 6')."
+    )
+    .addError(
+      33,
+      6,
+      "'default parameters' is only available in ES6 (use 'esversion: 6')."
+    )
+    .addError(
+      35,
+      18,
+      "'default parameters' is only available in ES6 (use 'esversion: 6')."
+    )
+    .addError(
+      36,
+      18,
+      "'default parameters' is only available in ES6 (use 'esversion: 6')."
+    )
+    .addError(
+      36,
+      16,
+      "'e' was used before it was declared, which is illegal for 'param' variables."
+    )
+    .test(src, {});
 
   test.done();
 };
 
 exports.testDuplicateParamNames = function (test) {
   var src = [
-  "(function() {",
-  "  (function(a, a) { // warns only with shadow",
-  "  })();",
-  "})();",
-  "(function() {",
-  "  'use strict';",
-  "  (function(a, a) { // errors because of strict mode",
-  "  })();",
-  "})();",
-  "(function() {",
-  "  (function(a, a) { // errors because of strict mode",
-  "  'use strict';",
-  "  })();",
-  "})();",
-  "(function() {",
-  "  'use strict';",
-  "  (function(a, a) { // errors *once* because of strict mode",
-  "  'use strict';",
-  "  })();",
-  "})();"
+    "(function() {",
+    "  (function(a, a) { // warns only with shadow",
+    "  })();",
+    "})();",
+    "(function() {",
+    "  'use strict';",
+    "  (function(a, a) { // errors because of strict mode",
+    "  })();",
+    "})();",
+    "(function() {",
+    "  (function(a, a) { // errors because of strict mode",
+    "  'use strict';",
+    "  })();",
+    "})();",
+    "(function() {",
+    "  'use strict';",
+    "  (function(a, a) { // errors *once* because of strict mode",
+    "  'use strict';",
+    "  })();",
+    "})();",
   ];
 
   TestRun(test)
     .addError(7, 13, "'a' has already been declared.")
     .addError(11, 13, "'a' has already been declared.")
     .addError(17, 13, "'a' has already been declared.")
-    .addError(18, 3, "Unnecessary directive \"use strict\".")
+    .addError(18, 3, 'Unnecessary directive "use strict".')
     .test(src, { shadow: true });
 
   TestRun(test)
@@ -1675,7 +1896,7 @@ exports.testDuplicateParamNames = function (test) {
     .addError(7, 13, "'a' has already been declared.")
     .addError(11, 13, "'a' has already been declared.")
     .addError(17, 13, "'a' has already been declared.")
-    .addError(18, 3, "Unnecessary directive \"use strict\".")
+    .addError(18, 3, 'Unnecessary directive "use strict".')
     .test(src, { shadow: "inner" });
 
   TestRun(test)
@@ -1683,7 +1904,7 @@ exports.testDuplicateParamNames = function (test) {
     .addError(7, 13, "'a' has already been declared.")
     .addError(11, 13, "'a' has already been declared.")
     .addError(17, 13, "'a' has already been declared.")
-    .addError(18, 3, "Unnecessary directive \"use strict\".")
+    .addError(18, 3, 'Unnecessary directive "use strict".')
     .test(src, { shadow: "outer" });
 
   TestRun(test)
@@ -1691,7 +1912,7 @@ exports.testDuplicateParamNames = function (test) {
     .addError(7, 13, "'a' has already been declared.")
     .addError(11, 13, "'a' has already been declared.")
     .addError(17, 13, "'a' has already been declared.")
-    .addError(18, 3, "Unnecessary directive \"use strict\".")
+    .addError(18, 3, 'Unnecessary directive "use strict".')
     .test(src, { shadow: false });
 
   src = [
@@ -1703,7 +1924,7 @@ exports.testDuplicateParamNames = function (test) {
     "  void ((x, x) => null);",
     "  void ((x, x) => {});",
     "  void ((x, x) => { 'use strict'; });",
-    "}"
+    "}",
   ];
 
   TestRun(test, "Arrow functions - strict mode restriction")
@@ -1713,7 +1934,7 @@ exports.testDuplicateParamNames = function (test) {
     .addError(6, 10, "'x' has already been declared.")
     .addError(7, 10, "'x' has already been declared.")
     .addError(8, 10, "'x' has already been declared.")
-    .addError(8, 21, "Unnecessary directive \"use strict\".")
+    .addError(8, 21, 'Unnecessary directive "use strict".')
     .test(src, { esversion: 6 });
 
   test.done();
@@ -1734,19 +1955,19 @@ exports.testMagicProtoVariable = function (test) {
 
 // Issue #1371: column number at end of non-strict comparison (for usability reasons)
 exports.testColumnNumAfterNonStrictComparison = function (test) {
-  var src =  "if (1 == 1) {\n" +
-        "  var foo = 2;\n" +
-        "  if (1 != 1){\n" +
-        "    var bar = 3;\n" +
-        "  }\n"+
-        "}";
+  var src =
+    "if (1 == 1) {\n" +
+    "  var foo = 2;\n" +
+    "  if (1 != 1){\n" +
+    "    var bar = 3;\n" +
+    "  }\n" +
+    "}";
   TestRun(test)
     .addError(1, 9, "Expected '===' and instead saw '=='.")
     .addError(3, 11, "Expected '!==' and instead saw '!='.")
-    .test(src, {eqeqeq: true});
+    .test(src, { eqeqeq: true });
   test.done();
 };
-
 
 exports.testArrayPrototypeExtensions = function (test) {
   Array.prototype.undefinedPrototypeProperty = undefined;
@@ -1766,13 +1987,14 @@ exports.testIncorrectJsonDetection = function (test) {
 };
 
 exports.testEscapedReservedWords = function (test) {
-  var code = [
-    'var v\u0061r = 42;',
-    'alert(va\u0072);'
-  ];
+  var code = ["var v\u0061r = 42;", "alert(va\u0072);"];
 
   TestRun(test)
-    .addError(1, 5, "Expected an identifier and instead saw 'var' (a reserved word).")
+    .addError(
+      1,
+      5,
+      "Expected an identifier and instead saw 'var' (a reserved word)."
+    )
     .addError(2, 7, "Expected an identifier and instead saw 'var'.")
     .test(code);
 
@@ -1793,16 +2015,9 @@ exports.testUnnamedFuncStatement = function (test) {
 
 // GH-1976 "Fixed set property 'type' of undefined in `if` blockstmt"
 exports.testUnCleanedForinifcheckneeded = function (test) {
-  var forinCode = [
-    "for (var key in a) {",
-    "  console.log(key);",
-    "}"
-  ];
+  var forinCode = ["for (var key in a) {", "  console.log(key);", "}"];
 
-  var ifCode = [
-    "if(true) {",
-    "}"
-  ];
+  var ifCode = ["if(true) {", "}"];
 
   try {
     JSHINT(forinCode, { maxerr: 1, forin: true });
@@ -1810,7 +2025,7 @@ exports.testUnCleanedForinifcheckneeded = function (test) {
     // the internal `state.forinifcheckneeded` maintained its previous value
     // and triggered an error in subsequent invocations of JSHint.
     JSHINT(ifCode, { maxerr: 1, forin: true });
-  } catch(e) {
+  } catch (e) {
     test.ok(false, "Exception was thrown");
   }
 
@@ -1820,7 +2035,10 @@ exports.testUnCleanedForinifcheckneeded = function (test) {
 // gh-738 "eval" as an object key should not cause `W061` warnngs
 exports.testPermitEvalAsKey = function (test) {
   var srcNode = fs.readFileSync(__dirname + "/fixtures/gh-738-node.js", "utf8");
-  var srcBrowser = fs.readFileSync(__dirname + "/fixtures/gh-738-browser.js", "utf8");
+  var srcBrowser = fs.readFileSync(
+    __dirname + "/fixtures/gh-738-browser.js",
+    "utf8"
+  );
   // global calls to eval should still cause warning.
   // test a mixture of permitted and disallowed calls
   // `global#eval` in `node:true` should still cause warning
@@ -1828,35 +2046,32 @@ exports.testPermitEvalAsKey = function (test) {
 
   // browser globals
   TestRun(test)
-  .addError(17, 1, "eval can be harmful.")
-  .addError(19, 12, "eval can be harmful.")
-  .addError(20, 14, "eval can be harmful.")
-  .addError(22, 14, "eval can be harmful.")
-  .addError(23, 16, "eval can be harmful.")
-  .addError(25, 10, "eval can be harmful.")
-  .test(srcBrowser, { browser: true });
+    .addError(17, 1, "eval can be harmful.")
+    .addError(19, 12, "eval can be harmful.")
+    .addError(20, 14, "eval can be harmful.")
+    .addError(22, 14, "eval can be harmful.")
+    .addError(23, 16, "eval can be harmful.")
+    .addError(25, 10, "eval can be harmful.")
+    .test(srcBrowser, { browser: true });
 
   // node globals
   TestRun(test)
-  .addError(18, 14, "eval can be harmful.")
-  .addError(19, 12, "eval can be harmful.")
-  .addError(20, 1, "eval can be harmful.")
-  .addError(22, 10, "eval can be harmful.")
-  .test(srcNode, { node: true });
+    .addError(18, 14, "eval can be harmful.")
+    .addError(19, 12, "eval can be harmful.")
+    .addError(20, 1, "eval can be harmful.")
+    .addError(22, 10, "eval can be harmful.")
+    .test(srcNode, { node: true });
 
   test.done();
-
 };
 
 // gh-2194 jshint confusing arrays at beginning of file with JSON
 exports.beginningArraysAreNotJSON = function (test) {
   var src = fs.readFileSync(__dirname + "/fixtures/gh-2194.js", "utf8");
 
-  TestRun(test)
-  .test(src);
+  TestRun(test).test(src);
 
   test.done();
-
 };
 
 exports.labelsOutOfScope = function (test) {
@@ -1887,7 +2102,7 @@ exports.labelsOutOfScope = function (test) {
     "        break baz;",
     "    }",
     "  }",
-    "}"
+    "}",
   ];
 
   TestRun(test)
@@ -1901,10 +2116,7 @@ exports.labelsOutOfScope = function (test) {
   // See gh-3055 "Labels Break JSHint"
   TestRun(test, "following labeled block")
     .addError(2, 7, "'x' is not a statement label.")
-    .test([
-      "x: {}",
-      "break x;"
-    ]);
+    .test(["x: {}", "break x;"]);
 
   test.done();
 };
@@ -1926,22 +2138,16 @@ exports.labelThroughCatch = function (test) {
     "        continue example;",
     "      }",
     "    }",
-    "}"
+    "}",
   ];
 
-  TestRun(test)
-    .test(src);
+  TestRun(test).test(src);
 
   test.done();
 };
 
 exports.labelDoesNotExistInGlobalScope = function (test) {
-  var src = [
-    "switch(1) {",
-    "  case 1:",
-    "    break nonExistent;",
-    "}"
-  ];
+  var src = ["switch(1) {", "  case 1:", "    break nonExistent;", "}"];
 
   TestRun(test)
     .addError(3, 11, "'nonExistent' is not a statement label.")
@@ -1951,14 +2157,9 @@ exports.labelDoesNotExistInGlobalScope = function (test) {
 };
 
 exports.labeledBreakWithoutLoop = function (test) {
-  var src = [
-    "foo: {",
-    "  break foo;",
-    "}"
-  ];
+  var src = ["foo: {", "  break foo;", "}"];
 
-  TestRun(test)
-    .test(src);
+  TestRun(test).test(src);
 
   test.done();
 };
@@ -1967,41 +2168,28 @@ exports.labeledBreakWithoutLoop = function (test) {
 // IterationStatement, as opposed to labeled break which is only required to
 // refer to an enclosing Statement.
 exports.labeledContinueWithoutLoop = function (test) {
-  var src = [
-    "foo: switch (i) {",
-    "  case 1:",
-    "    continue foo;",
-    "}"
-  ];
+  var src = ["foo: switch (i) {", "  case 1:", "    continue foo;", "}"];
 
-  TestRun(test)
-    .addError(3, 14, "Unexpected 'continue'.")
-    .test(src);
+  TestRun(test).addError(3, 14, "Unexpected 'continue'.").test(src);
 
   test.done();
 };
 
-exports.unlabeledBreakWithoutLoop = function(test) {
-  var src = [
-    "if (1 == 1) {",
-    "  break;",
-    "}",
-  ];
+exports.unlabeledBreakWithoutLoop = function (test) {
+  var src = ["if (1 == 1) {", "  break;", "}"];
 
-  TestRun(test)
-    .addError(2, 8, "Unexpected 'break'.")
-    .test(src);
+  TestRun(test).addError(2, 8, "Unexpected 'break'.").test(src);
 
   test.done();
-}
+};
 
-exports.unlabeledContinueWithoutLoop = function(test) {
+exports.unlabeledContinueWithoutLoop = function (test) {
   var src = [
     "switch (i) {",
     "  case 1:",
     "    continue;", // breakage but not loopage
     "}",
-    "continue;"
+    "continue;",
   ];
 
   TestRun(test)
@@ -2010,7 +2198,7 @@ exports.unlabeledContinueWithoutLoop = function(test) {
     .test(src);
 
   test.done();
-}
+};
 
 exports.labelsContinue = function (test) {
   var src = [
@@ -2019,7 +2207,7 @@ exports.labelsContinue = function (test) {
     "    continue exists;",
     "  }",
     "  continue nonExistent;",
-    "}"
+    "}",
   ];
 
   TestRun(test)
@@ -2030,9 +2218,7 @@ exports.labelsContinue = function (test) {
 };
 
 exports.catchWithNoParam = function (test) {
-  var src = [
-    "try{}catch(){}"
-  ];
+  var src = ["try{}catch(){}"];
 
   TestRun(test)
     .addError(1, 12, "Expected an identifier and instead saw ')'.")
@@ -2042,18 +2228,13 @@ exports.catchWithNoParam = function (test) {
 };
 
 exports.tryWithoutCatch = function (test) {
-  var src = [
-    "try{}",
-    "if (true) { console.log(); }"
-  ];
+  var src = ["try{}", "if (true) { console.log(); }"];
 
   TestRun(test)
     .addError(2, 1, "Expected 'catch' and instead saw 'if'.")
     .test(src);
 
-  var src = [
-    "try{}"
-  ];
+  var src = ["try{}"];
 
   TestRun(test)
     .addError(1, 5, "Expected 'catch' and instead saw ''.")
@@ -2069,35 +2250,29 @@ exports["gh-1920"] = function (test) {
     "    switch (key) {",
     "    }",
     "  }",
-    "}"
+    "}",
   ];
 
   TestRun(test)
-    .addError(1, 1, "The body of a for in should be wrapped in an if statement to filter unwanted properties from the prototype.")
+    .addError(
+      1,
+      1,
+      "The body of a for in should be wrapped in an if statement to filter unwanted properties from the prototype."
+    )
     .test(src, { forin: true });
 
   test.done();
 };
 
 exports.duplicateProto = function (test) {
-  var src = [
-    "(function() {",
-    "  var __proto__;",
-    "  var __proto__;",
-    "}());"
-  ];
+  var src = ["(function() {", "  var __proto__;", "  var __proto__;", "}());"];
 
   // TODO: Enable this expected warning in the next major release
   TestRun(test, "Duplicate `var`s")
     //.addError(3, 23232323, "'__proto__' is already defined.")
     .test(src, { proto: true });
 
-  src = [
-    "(function() {",
-    "  let __proto__;",
-    "  let __proto__;",
-    "}());"
-  ];
+  src = ["(function() {", "  let __proto__;", "  let __proto__;", "}());"];
 
   TestRun(test, "Duplicate `let`s")
     .addError(3, 7, "'__proto__' has already been declared.")
@@ -2107,31 +2282,21 @@ exports.duplicateProto = function (test) {
     "(function() {",
     "  const __proto__ = null;",
     "  const __proto__ = null;",
-    "}());"
+    "}());",
   ];
 
   TestRun(test, "Duplicate `const`s")
     .addError(3, 9, "'__proto__' has already been declared.")
     .test(src, { proto: true, esnext: true });
 
-  src = [
-    "void {",
-    "  __proto__: null,",
-    "  __proto__: null",
-    "};"
-  ];
+  src = ["void {", "  __proto__: null,", "  __proto__: null", "};"];
 
   // TODO: Enable this expected warning in the next major release
   TestRun(test, "Duplicate keys (data)")
     //.addError(3, 23232323, "Duplicate key '__proto__'.")
     .test(src, { proto: true });
 
-  src = [
-    "void {",
-    "  __proto__: null,",
-    "  get __proto__() {}",
-    "};"
-  ];
+  src = ["void {", "  __proto__: null,", "  get __proto__() {}", "};"];
 
   // TODO: Enable this expected warning in the next major release
   TestRun(test, "Duplicate keys (data and accessor)")
@@ -2143,7 +2308,7 @@ exports.duplicateProto = function (test) {
     "  __proto__: while (true) {",
     "    break;",
     "  }",
-    "}"
+    "}",
   ];
 
   TestRun(test, "Duplicate labels")
@@ -2160,7 +2325,7 @@ exports["gh-2761"] = function (test) {
     "// jshint -W020",
     "foo = 3;",
     "// jshint +W020",
-    "foo = 4;"
+    "foo = 4;",
   ];
 
   TestRun(test, "W020")
@@ -2174,21 +2339,28 @@ exports["gh-2761"] = function (test) {
     "// jshint -W021",
     "a = 3;",
     "// jshint +W021",
-    "a = 4;"
+    "a = 4;",
   ];
 
   TestRun(test, "W021")
-    .addError(2, 1, "Reassignment of 'a', which is a function. " +
-              "Use 'var' or 'let' to declare bindings that may change.")
-    .addError(6, 1, "Reassignment of 'a', which is a function. " +
-              "Use 'var' or 'let' to declare bindings that may change.")
+    .addError(
+      2,
+      1,
+      "Reassignment of 'a', which is a function. " +
+        "Use 'var' or 'let' to declare bindings that may change."
+    )
+    .addError(
+      6,
+      1,
+      "Reassignment of 'a', which is a function. " +
+        "Use 'var' or 'let' to declare bindings that may change."
+    )
     .test(code);
 
   test.done();
 };
 
 exports["gh-2838"] = function (test) {
-
   var code = [
     "function foo() {",
     "  return a + b;",
@@ -2197,51 +2369,44 @@ exports["gh-2838"] = function (test) {
     "  return a + b;",
     "}",
     "let a = 1;",
-    "const b = 2;"
+    "const b = 2;",
   ];
 
   TestRun(test).test(code, { esversion: 6 });
 
-  code = [
-    "function x() {",
-    "  return c;",
-    "}",
-    "void c;",
-    "let c;"
-  ];
+  code = ["function x() {", "  return c;", "}", "void c;", "let c;"];
 
   TestRun(test, "Same-scope reference following sub-scope reference")
-    .addError(5, 5, "'c' was used before it was declared, which is illegal for 'let' variables.")
+    .addError(
+      5,
+      5,
+      "'c' was used before it was declared, which is illegal for 'let' variables."
+    )
     .test(code, { esversion: 6 });
 
-  code = [
-    "function x() {",
-    "  return d;",
-    "}",
-    "({ d } = {});",
-    "let d;"
-  ];
+  code = ["function x() {", "  return d;", "}", "({ d } = {});", "let d;"];
 
   TestRun(test, "Same-scope assignment following sub-scope reference")
-    .addError(5, 5, "'d' was used before it was declared, which is illegal for 'let' variables.")
+    .addError(
+      5,
+      5,
+      "'d' was used before it was declared, which is illegal for 'let' variables."
+    )
     .test(code, { esversion: 6 });
 
   test.done();
 };
 
 exports["destructuring in setter parameter"] = function (test) {
-
-  TestRun(test).test([
-    "var a = {",
-    "  get x() {},",
-    "  set x({ a, b }) {}",
-    "};"
-  ], { esversion: 6 });
+  TestRun(test).test(
+    ["var a = {", "  get x() {},", "  set x({ a, b }) {}", "};"],
+    { esversion: 6 }
+  );
 
   test.done();
 };
 
-exports["TDZ within initializer of lexical declarations"] = function(test) {
+exports["TDZ within initializer of lexical declarations"] = function (test) {
   var code = [
     "let a = a;",
     "const b = b;",
@@ -2263,24 +2428,56 @@ exports["TDZ within initializer of lexical declarations"] = function(test) {
     "const [ m, n ] = n;",
     // line 17
     "let o = (() => o) + o;",
-    "const p = (() => p) + p;"
+    "const p = (() => p) + p;",
   ];
 
   TestRun(test)
-    .addError(1, 9, "'a' was used before it was declared, which is illegal for 'let' variables.")
-    .addError(2, 11, "'b' was used before it was declared, which is illegal for 'const' variables.")
-    .addError(6, 6, "'e' was used before it was declared, which is illegal for 'let' variables.")
-    .addError(10, 6, "'f' was used before it was declared, which is illegal for 'const' variables.")
-    .addError(15, 16, "'l' was used before it was declared, which is illegal for 'let' variables.")
-    .addError(16, 18, "'n' was used before it was declared, which is illegal for 'const' variables.")
-    .addError(17, 21, "'o' was used before it was declared, which is illegal for 'let' variables.")
-    .addError(18, 23, "'p' was used before it was declared, which is illegal for 'const' variables.")
+    .addError(
+      1,
+      9,
+      "'a' was used before it was declared, which is illegal for 'let' variables."
+    )
+    .addError(
+      2,
+      11,
+      "'b' was used before it was declared, which is illegal for 'const' variables."
+    )
+    .addError(
+      6,
+      6,
+      "'e' was used before it was declared, which is illegal for 'let' variables."
+    )
+    .addError(
+      10,
+      6,
+      "'f' was used before it was declared, which is illegal for 'const' variables."
+    )
+    .addError(
+      15,
+      16,
+      "'l' was used before it was declared, which is illegal for 'let' variables."
+    )
+    .addError(
+      16,
+      18,
+      "'n' was used before it was declared, which is illegal for 'const' variables."
+    )
+    .addError(
+      17,
+      21,
+      "'o' was used before it was declared, which is illegal for 'let' variables."
+    )
+    .addError(
+      18,
+      23,
+      "'p' was used before it was declared, which is illegal for 'const' variables."
+    )
     .test(code, { esversion: 6 });
 
   test.done();
 };
 
-exports["TDZ within class heritage definition"] = function(test) {
+exports["TDZ within class heritage definition"] = function (test) {
   var code = [
     "let A = class extends A {};",
     "let B = class extends { B } {};",
@@ -2292,22 +2489,46 @@ exports["TDZ within class heritage definition"] = function(test) {
     // line 7
     "class G extends G {}",
     "class H extends { H } {}",
-    "class I extends { method() { return I; }} {}"
+    "class I extends { method() { return I; }} {}",
   ];
 
   TestRun(test)
-    .addError(1, 23, "'A' was used before it was declared, which is illegal for 'let' variables.")
-    .addError(2, 25, "'B' was used before it was declared, which is illegal for 'let' variables.")
-    .addError(4, 25, "'D' was used before it was declared, which is illegal for 'const' variables.")
-    .addError(5, 27, "'E' was used before it was declared, which is illegal for 'const' variables.")
-    .addError(7, 17, "'G' was used before it was declared, which is illegal for 'class' variables.")
-    .addError(8, 19, "'H' was used before it was declared, which is illegal for 'class' variables.")
+    .addError(
+      1,
+      23,
+      "'A' was used before it was declared, which is illegal for 'let' variables."
+    )
+    .addError(
+      2,
+      25,
+      "'B' was used before it was declared, which is illegal for 'let' variables."
+    )
+    .addError(
+      4,
+      25,
+      "'D' was used before it was declared, which is illegal for 'const' variables."
+    )
+    .addError(
+      5,
+      27,
+      "'E' was used before it was declared, which is illegal for 'const' variables."
+    )
+    .addError(
+      7,
+      17,
+      "'G' was used before it was declared, which is illegal for 'class' variables."
+    )
+    .addError(
+      8,
+      19,
+      "'H' was used before it was declared, which is illegal for 'class' variables."
+    )
     .test(code, { esversion: 6 });
 
   test.done();
 };
 
-exports["TDZ within for in/of head"] = function(test) {
+exports["TDZ within for in/of head"] = function (test) {
   var code = [
     "for (let a   in a);",
     "for (const b in b);",
@@ -2324,50 +2545,73 @@ exports["TDZ within for in/of head"] = function(test) {
     "for (let i   in { method() { return i; } });",
     "for (const j in { method() { return j; } });",
     "for (let k   of { method() { return k; } });",
-    "for (const l of { method() { return l; } });"
+    "for (const l of { method() { return l; } });",
   ];
 
   TestRun(test)
-    .addError(1, 17, "'a' was used before it was declared, which is illegal for 'let' variables.")
-    .addError(2, 17, "'b' was used before it was declared, which is illegal for 'const' variables.")
-    .addError(3, 17, "'c' was used before it was declared, which is illegal for 'let' variables.")
-    .addError(4, 17, "'d' was used before it was declared, which is illegal for 'const' variables.")
-    .addError(5, 19, "'e' was used before it was declared, which is illegal for 'let' variables.")
-    .addError(6, 19, "'f' was used before it was declared, which is illegal for 'const' variables.")
-    .addError(7, 19, "'g' was used before it was declared, which is illegal for 'let' variables.")
-    .addError(8, 19, "'h' was used before it was declared, which is illegal for 'const' variables.")
+    .addError(
+      1,
+      17,
+      "'a' was used before it was declared, which is illegal for 'let' variables."
+    )
+    .addError(
+      2,
+      17,
+      "'b' was used before it was declared, which is illegal for 'const' variables."
+    )
+    .addError(
+      3,
+      17,
+      "'c' was used before it was declared, which is illegal for 'let' variables."
+    )
+    .addError(
+      4,
+      17,
+      "'d' was used before it was declared, which is illegal for 'const' variables."
+    )
+    .addError(
+      5,
+      19,
+      "'e' was used before it was declared, which is illegal for 'let' variables."
+    )
+    .addError(
+      6,
+      19,
+      "'f' was used before it was declared, which is illegal for 'const' variables."
+    )
+    .addError(
+      7,
+      19,
+      "'g' was used before it was declared, which is illegal for 'let' variables."
+    )
+    .addError(
+      8,
+      19,
+      "'h' was used before it was declared, which is illegal for 'const' variables."
+    )
     .test(code, { esversion: 6 });
 
   test.done();
 };
 
 // regression test for gh-3370
-exports.initializeCStyle = function(test) {
-  TestRun(test)
-    .test([
-      "for (let x, y = x; ;) {}",
-      "for (const x = 0, y = x; ;) {}"
-    ], { esversion: 6 });
+exports.initializeCStyle = function (test) {
+  TestRun(test).test(
+    ["for (let x, y = x; ;) {}", "for (const x = 0, y = x; ;) {}"],
+    { esversion: 6 }
+  );
 
   test.done();
 };
 
-exports.constWithoutInit = function(test) {
+exports.constWithoutInit = function (test) {
   TestRun(test, "single binding")
     .addError(1, 6, "const 'x' is initialized to 'undefined'.")
-    .test([
-      "for (const x; ;) {",
-      "  void x;",
-      "}"
-    ], { esversion: 6 });
+    .test(["for (const x; ;) {", "  void x;", "}"], { esversion: 6 });
 
   TestRun(test, "multiple bindings")
     .addError(1, 6, "const 'y' is initialized to 'undefined'.")
-    .test([
-      "for (const y, z; ;) {",
-      "  void (y, z);",
-      "}"
-    ], { esversion: 6 });
+    .test(["for (const y, z; ;) {", "  void (y, z);", "}"], { esversion: 6 });
 
   test.done();
 };

@@ -1,13 +1,13 @@
 // object with "eval" key
 var obj = {
-	eval: function (str) {
-		return str;
-	},
-	wrapper: function (str) {
-		// method calling "eval" key from context
-		// permitted use
-		return this.eval(str);
-	}
+  eval: function (str) {
+    return str;
+  },
+  wrapper: function (str) {
+    // method calling "eval" key from context
+    // permitted use
+    return this.eval(str);
+  },
 };
 
 // object-key use, permitted

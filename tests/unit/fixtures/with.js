@@ -1,16 +1,16 @@
 var x = 0;
 var foo = {
-    x: 1
+  x: 1,
 };
-with( foo) {
-    x = 2;
+with (foo) {
+  x = 2;
 }
 
 function tt() {
-    "use strict";
+  "use strict";
 
-    var foo;
-    with (foo = 2 ){
-        x = 3;
-    }
+  var foo;
+  with ((foo = 2)) {
+    x = 3;
+  }
 }

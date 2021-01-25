@@ -44,5 +44,5 @@ module.exports = {
   /**
    * Enabled when parsing the body of a generator function.
    */
-  yield: 64
+  yield: 64,
 };

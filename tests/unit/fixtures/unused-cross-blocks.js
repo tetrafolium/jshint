@@ -1,4 +1,4 @@
-(function() {
+(function () {
   // Usage in same scope as declaration (function)
   var func1;
   void func1;

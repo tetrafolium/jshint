@@ -9,9 +9,13 @@ var state = {
    *
    * @returns {boolean}
    */
-  isStrict: function() {
-    return this.directive["use strict"] || this.inClassBody ||
-      this.option.module || this.option.strict === "implied";
+  isStrict: function () {
+    return (
+      this.directive["use strict"] ||
+      this.inClassBody ||
+      this.option.module ||
+      this.option.strict === "implied"
+    );
   },
 
   /**
@@ -28,7 +32,7 @@ var state = {
    * function interprets `strict` option values `true` and `undefined` as
    * equivalent.
    */
-  stmtMissingStrict: function() {
+  stmtMissingStrict: function () {
     if (this.option.strict === "global") {
       return true;
     }
@@ -44,9 +48,13 @@ var state = {
     return false;
   },
 
-  allowsGlobalUsd: function() {
-    return this.option.strict === "global" || this.option.globalstrict ||
-      this.option.module || this.impliedClosure();
+  allowsGlobalUsd: function () {
+    return (
+      this.option.strict === "global" ||
+      this.option.globalstrict ||
+      this.option.module ||
+      this.impliedClosure()
+    );
   },
 
   /**
@@ -55,13 +63,13 @@ var state = {
    *
    * @returns {boolean}
    */
-  impliedClosure: function() {
+  impliedClosure: function () {
     return this.option.node || this.option.phantom || this.option.browserify;
   },
 
   // Assumption: chronologically ES3 < ES5 < ES6 < Moz
 
-  inMoz: function() {
+  inMoz: function () {
     return this.option.moz;
   },
 
@@ -70,7 +78,7 @@ var state = {
    *
    * @returns {boolean}
    */
-  inES10: function() {
+  inES10: function () {
     return this.esVersion >= 10;
   },
 
@@ -79,7 +87,7 @@ var state = {
    *
    * @returns {boolean}
    */
-  inES9: function() {
+  inES9: function () {
     return this.esVersion >= 9;
   },
 
@@ -88,7 +96,7 @@ var state = {
    *
    * @returns {boolean}
    */
-  inES8: function() {
+  inES8: function () {
     return this.esVersion >= 8;
   },
 
@@ -97,7 +105,7 @@ var state = {
    *
    * @returns {boolean}
    */
-  inES7: function() {
+  inES7: function () {
     return this.esVersion >= 7;
   },
 
@@ -109,7 +117,7 @@ var state = {
    *
    * @returns {boolean}
    */
-  inES6: function(strict) {
+  inES6: function (strict) {
     if (!strict && this.option.moz) {
       return true;
     }
@@ -122,7 +130,7 @@ var state = {
    *
    * @returns {boolean}
    */
-  inES5: function() {
+  inES5: function () {
     return !this.esVersion || this.esVersion >= 5 || this.option.moz;
   },
 
@@ -136,7 +144,7 @@ var state = {
    * @returns {string|null} - the name of any incompatible option detected,
    *                          `null` otherwise
    */
-  inferEsVersion: function() {
+  inferEsVersion: function () {
     var badOpt = null;
 
     if (this.option.esversion) {
@@ -166,11 +174,11 @@ var state = {
     return null;
   },
 
-  reset: function() {
+  reset: function () {
     this.tokens = {
       prev: null,
       next: null,
-      curr: null
+      curr: null,
     };
 
     this.option = { unstable: {} };
@@ -186,7 +194,7 @@ var state = {
     this.forinifcheckneeded = false;
     this.nameStack = new NameStack();
     this.inClassBody = false;
-  }
+  },
 };
 
 exports.state = state;

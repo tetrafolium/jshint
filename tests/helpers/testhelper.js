@@ -29,7 +29,7 @@
 
 /*jshint node: true, eqnull: true*/
 
-'use strict';
+"use strict";
 
 var JSHINT = require("../..").JSHINT;
 
@@ -42,7 +42,7 @@ exports.setup.testRun = function (test, name) {
 
   var helperObj = {
     addError: function (line, character, message, extras) {
-      var alreadyDefined = definedErrors.some(function(err) {
+      var alreadyDefined = definedErrors.some(function (err) {
         if (err.message !== message) {
           return false;
         }
@@ -59,22 +59,25 @@ exports.setup.testRun = function (test, name) {
       });
 
       if (alreadyDefined) {
-        throw new Error("An expected error with the message '" + message +
-          "' and line number " + line +
-          " has already been defined for this test.");
+        throw new Error(
+          "An expected error with the message '" +
+            message +
+            "' and line number " +
+            line +
+            " has already been defined for this test."
+        );
       }
       definedErrors.push({
         line: line,
         character: character,
         message: message,
-        extras: extras
+        extras: extras,
       });
 
       return helperObj;
     },
 
     test: function (source, options, globals) {
-
       Object.prototype.pollution1 = {};
       Object.prototype.pollution2 = true;
       Object.prototype.pollution3 = false;
@@ -93,7 +96,8 @@ exports.setup.testRun = function (test, name) {
       // filter all thrown errors
       var undefinedErrors = errors.filter(function (er) {
         return !definedErrors.some(function (def) {
-          var result = def.line === er.line &&
+          var result =
+            def.line === er.line &&
             def.character === er.character &&
             def.message === er.reason;
 
@@ -103,9 +107,11 @@ exports.setup.testRun = function (test, name) {
 
           if (def.extras) {
             for (var extra in def.extras) {
-              if (def.extras.hasOwnProperty(extra) &&
-                  er.hasOwnProperty(extra)) {
-                result = (def.extras[extra] === er[extra]);
+              if (
+                def.extras.hasOwnProperty(extra) &&
+                er.hasOwnProperty(extra)
+              ) {
+                result = def.extras[extra] === er[extra];
                 if (!result) {
                   return result;
                 }
@@ -119,44 +125,55 @@ exports.setup.testRun = function (test, name) {
       // filter all defined errors
       var unthrownErrors = definedErrors.filter(function (def) {
         return !errors.some(function (er) {
-          return def.line === er.line &&
+          return (
+            def.line === er.line &&
             def.character === er.character &&
-            def.message === er.reason;
+            def.message === er.reason
+          );
         });
       });
 
       // elements that only differ in location
-      var wrongLocations = undefinedErrors.map(function (er) {
-        var locations = unthrownErrors.filter(function (def) {
-          if (def.message !== er.reason) {
-            return false;
+      var wrongLocations = undefinedErrors
+        .map(function (er) {
+          var locations = unthrownErrors
+            .filter(function (def) {
+              if (def.message !== er.reason) {
+                return false;
+              }
+
+              return def.line !== er.line || def.character !== er.character;
+            })
+            .map(function (def) {
+              return {
+                line: def.line,
+                character: def.character,
+              };
+            });
+
+          if (locations.length) {
+            return {
+              line: er.line,
+              character: er.character,
+              message: er.reason,
+              definedIn: locations,
+            };
           }
-
-          return def.line !== er.line || def.character !== er.character;
-        }).map(function (def) {
-          return {
-            line: def.line,
-            character: def.character
-          };
+          return null;
+        })
+        .filter(function (er) {
+          return !!er;
         });
-
-        if (locations.length) {
-          return {
-            line: er.line,
-            character: er.character,
-            message: er.reason,
-            definedIn: locations
-          };
-        }
-        return null;
-      }).filter(function (er) {
-        return !!er;
-      });
       var duplicateErrors = errors.filter(function (er) {
-        return errors.filter(function (other) {
-          return er.line === other.line && er.character === other.character &&
-            er.reason === other.reason;
-        }).length > 1;
+        return (
+          errors.filter(function (other) {
+            return (
+              er.line === other.line &&
+              er.character === other.character &&
+              er.reason === other.reason
+            );
+          }).length > 1
+        );
       });
 
       // remove undefined errors, if there is a definition with wrong line number
@@ -174,41 +191,89 @@ exports.setup.testRun = function (test, name) {
       var errorDetails = "";
 
       if (unthrownErrors.length > 0) {
-        errorDetails += "\n  Errors defined, but not thrown by JSHint:\n" +
-          unthrownErrors.map(function (el) {
-            return "    {Line " + el.line + ", Char " + el.character + "} " + el.message;
-          }).join("\n");
+        errorDetails +=
+          "\n  Errors defined, but not thrown by JSHint:\n" +
+          unthrownErrors
+            .map(function (el) {
+              return (
+                "    {Line " +
+                el.line +
+                ", Char " +
+                el.character +
+                "} " +
+                el.message
+              );
+            })
+            .join("\n");
       }
 
       if (undefinedErrors.length > 0) {
-        errorDetails += "\n  Errors thrown by JSHint, but not defined in test run:\n" +
-          undefinedErrors.map(function (el) {
-            return "    {Line " + el.line + ", Char " + el.character + "} " + el.reason;
-          }).join("\n");
+        errorDetails +=
+          "\n  Errors thrown by JSHint, but not defined in test run:\n" +
+          undefinedErrors
+            .map(function (el) {
+              return (
+                "    {Line " +
+                el.line +
+                ", Char " +
+                el.character +
+                "} " +
+                el.reason
+              );
+            })
+            .join("\n");
       }
 
       if (wrongLocations.length > 0) {
-        errorDetails += "\n  Errors with wrong location:\n" +
-          wrongLocations.map(function (el) {
-            var locations = el.definedIn.map(function(location) {
-              return "{Line " + location.line + ", Char " + location.character + "}";
-            });
-            return "    {Line " + el.line + ", Char " + el.character + "} " + el.message + " - Not in line(s) " + locations.join(", ");
-          }).join("\n");
+        errorDetails +=
+          "\n  Errors with wrong location:\n" +
+          wrongLocations
+            .map(function (el) {
+              var locations = el.definedIn.map(function (location) {
+                return (
+                  "{Line " +
+                  location.line +
+                  ", Char " +
+                  location.character +
+                  "}"
+                );
+              });
+              return (
+                "    {Line " +
+                el.line +
+                ", Char " +
+                el.character +
+                "} " +
+                el.message +
+                " - Not in line(s) " +
+                locations.join(", ")
+              );
+            })
+            .join("\n");
       }
 
       if (duplicateErrors.length > 0) {
-        errorDetails += "\n  Duplicated errors:\n" +
-          duplicateErrors.map(function (el) {
-            return "    {Line " + el.line + ", Char " + el.character + "} " + el.reason;
-          }).join("\n");
+        errorDetails +=
+          "\n  Duplicated errors:\n" +
+          duplicateErrors
+            .map(function (el) {
+              return (
+                "    {Line " +
+                el.line +
+                ", Char " +
+                el.character +
+                "} " +
+                el.reason
+              );
+            })
+            .join("\n");
       }
 
       test.ok(
         errorDetails === "",
         (name ? "\n  TestRun: '" + name + "'" : "") + errorDetails
       );
-    }
+    },
   };
 
   return helperObj;

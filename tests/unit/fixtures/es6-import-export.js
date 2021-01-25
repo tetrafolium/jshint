@@ -23,7 +23,7 @@ export default foobar;
 
 // at some point doing a double export default should error, but for now,
 // makes testing a hell of a lot easier
-export default function() {
+export default function () {
   return "foobar";
 }
 
@@ -37,7 +37,7 @@ export function a() {
   return "a";
 }
 
-export var b = function() {
+export var b = function () {
   return "b";
 };
 
@@ -62,13 +62,15 @@ import * as ember2 from "ember";
 if (newImport) {
   $();
 }
-import newImport from 'newImport';
+import newImport from "newImport";
 
-export function* gen() { yield 1; }
+export function* gen() {
+  yield 1;
+}
 
 // Trailing comma
-export { a, };
-import { x, } from "source";
+export { a };
+import { x } from "source";
 
 // Empty
 export {};

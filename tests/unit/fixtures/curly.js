@@ -1,12 +1,8 @@
-if (cond)
-    return true;
+if (cond) return true;
 
-for (;;)
-    doSomething();
+for (;;) doSomething();
 
-while (true)
-    doSomething();
+while (true) doSomething();
 
-do
-    doSomething();
+do doSomething();
 while (true);

@@ -1,7 +1,5 @@
 class Section {
-  constructor() {
-
-  }
+  constructor() {}
 }
 
 export default class Header extends Section {
@@ -11,7 +9,7 @@ export default class Header extends Section {
 }
 
 Object.defineProperty(Header, "CONST", {
-  value: 1
+  value: 1,
 });
 
 export class NotDefault extends Header {}

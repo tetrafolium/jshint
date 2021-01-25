@@ -1,13 +1,13 @@
 //jshint -W008
 
-var a = .12;
-var b = 12.;
+var a = 0.12;
+var b = 12;
 
 function test() {
   //jshint -W033
-  return a
+  return a;
 }
 
 function test2() {
-  return a
+  return a;
 }

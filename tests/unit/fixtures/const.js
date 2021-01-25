@@ -6,10 +6,10 @@
  * can ran by using the test runner.
  */
 
-function assert (a, b) {
-    if (a !== b) {
-        console.log("fail:", a, b);
-    }
+function assert(a, b) {
+  if (a !== b) {
+    console.log("fail:", a, b);
+  }
 }
 
 // Setting up the tests.
@@ -35,7 +35,8 @@ const immutable7 = ["foo"];
 immutable7.pop();
 
 // Comma separated is ok.
-const immutable8 = "testing", immutable9 = true;
+const immutable8 = "testing",
+  immutable9 = true;
 
 // immutable9 has block scope.
 for (var i = 0; i < 1; i += 1) {
@@ -48,7 +49,8 @@ for (var i = 0; i < 1; i += 1) {
   const immutable4 = "foobar"; // immutable4 is in it's own scope so it can be redeclared.
   const immutable5 = "w00t";
 
-  const immutable6 = true, immutable7 = ["bar"];
+  const immutable6 = true,
+    immutable7 = ["bar"];
 
   // Tests
   assert(immutable3, false);
@@ -57,7 +59,7 @@ for (var i = 0; i < 1; i += 1) {
   assert(immutable6, true);
   assert(immutable7.shift(), "bar");
   assert(immutable7.length, 0);
-}());
+})();
 
 // Tests
 assert(immutable, "foo");

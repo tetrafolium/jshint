@@ -31,22 +31,25 @@ var incorrectSeverity = {
   W130: true,
   W131: true,
   W133: true,
-  W136: true
+  W136: true,
 };
 
 function isFailure(errors) {
-  return errors && !!find(errors, function(msg) {
-    if (msg.code[0] === "W") {
-      return msg.code in incorrectSeverity;
-    } else if (msg.code[0] === "I") {
-      return false;
-    }
+  return (
+    errors &&
+    !!find(errors, function (msg) {
+      if (msg.code[0] === "W") {
+        return msg.code in incorrectSeverity;
+      } else if (msg.code[0] === "I") {
+        return false;
+      }
 
-    return !(msg.code in incorrectSeverity);
-  });
+      return !(msg.code in incorrectSeverity);
+    })
+  );
 }
 
-module.exports = function(test) {
+module.exports = function (test) {
   var isModule = !!test.attrs.flags.module;
 
   try {
@@ -55,8 +58,8 @@ module.exports = function(test) {
       maxerr: Infinity,
       module: isModule,
       unstable: {
-        bigint: true
-      }
+        bigint: true,
+      },
     });
   } catch (e) {
     return false;

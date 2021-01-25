@@ -4,17 +4,17 @@ var b = 2;
 b += 1;
 
 function main(e, f) {
-    var c = 3;
-    var d = 4;
+  var c = 3;
+  var d = 4;
 
-    return d - e;
+  return d - e;
 }
 
 main(b);
 
 function foo(err, cb) {
-    main();
-    cb();
+  main();
+  cb();
 }
 
 function bar(g, h) {
@@ -54,71 +54,77 @@ function hoistedDelete() {}
 function hoistedTypeof() {}
 
 const constUsed = "this is used";
-while(constUsed) {
-    const constUsed = "unused";
+while (constUsed) {
+  const constUsed = "unused";
 }
 let letUsed = "this is used";
 if (letUsed) {
-    let letUsed = "unused",
-        anotherUnused;
+  let letUsed = "unused",
+    anotherUnused;
 }
 
 // GH-2345 - Unused arrow-function parameters should be ignored if "unused" is set to "vars"
-let x = y => y;
-x = y => {};
+let x = (y) => y;
+x = (y) => {};
 x = (y) => {};
 x = (y, z) => y;
 x = (y, z) => z;
 
-function throwAwayFuncA() { if (testLateDef) {} }
+function throwAwayFuncA() {
+  if (testLateDef) {
+  }
+}
 let testLateDef = true;
-function throwAwayFuncB() { if (testLateDefConst) {} }
+function throwAwayFuncB() {
+  if (testLateDefConst) {
+  }
+}
 const testLateDefConst = true;
 throwAwayFuncA();
 try {
-    var inTry = true;
-} catch(e){
-    var inCatch = true;
+  var inTry = true;
+} catch (e) {
+  var inCatch = true;
 }
 if (inTry) {
-    throwAwayFuncA();
+  throwAwayFuncA();
 }
 if (inCatch) {
-    throwAwayFuncB();
+  throwAwayFuncB();
 }
-(function() {
-    var inTry5 = 1;
+(function () {
+  var inTry5 = 1;
+  var inTry6 = 1;
+  let inTry7 = 1;
+  const inTry8 = 1;
+  let inTry9 = 1;
+  const inTry10 = 1;
+  try {
+    var inTry2 = 1;
+    var inTry3 = 1;
+    var inTry4 = 1;
+  } catch (e) {}
+  inTry2++;
+  (function () {
+    inTry3++;
+    inTry5++;
+    if (inTry8) {
+      inTry7++;
+    }
+  })();
+  (function () {
+    inTry4++;
+    var inTry4 = 1;
+    inTry6++;
     var inTry6 = 1;
-    let inTry7 = 1;
-    const inTry8 = 1;
+    if (inTry10) {
+      inTry9++;
+    }
     let inTry9 = 1;
     const inTry10 = 1;
-    try {
-        var inTry2 = 1;
-        var inTry3 = 1;
-        var inTry4 = 1;
-    } catch(e){}
-    inTry2++;
-    (function() {
-        inTry3++;
-        inTry5++;
-        if (inTry8) {
-            inTry7++;
-        }
-    })();
-    (function() {
-        inTry4++;
-        var inTry4 = 1;
-        inTry6++;
-        var inTry6 = 1;
-        if (inTry10) {
-            inTry9++;
-        }
-        let inTry9 = 1;
-        const inTry10 = 1;
-    })();
-}());
+  })();
+})();
 
 function unusedRecurringFunc() {
-    unusedRecurringFunc();
+  unusedRecurringFunc();
 }

@@ -1,6 +1,6 @@
 function b() {
-    "use strict";
-    a();
+  "use strict";
+  a();
 }
 
-function a() { }
+function a() {}

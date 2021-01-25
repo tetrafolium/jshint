@@ -1,62 +1,50 @@
-if (e = 1)
-    doSomething();
+if ((e = 1)) doSomething();
 
-while (obj = arr.next())
-    doSomething();
+while ((obj = arr.next())) doSomething();
 
-for (var b; b = arr.next();)
-    doSomething();
+for (var b; (b = arr.next()); ) doSomething();
 
 do {
-    doSomething();
-} while (b = arr.next());
-
-if (e /= 1)
   doSomething();
+} while ((b = arr.next()));
 
-while (obj /= arr.next())
-    doSomething();
+if ((e /= 1)) doSomething();
 
-for (var b; b /= arr.next();)
-    doSomething();
+while ((obj /= arr.next())) doSomething();
+
+for (var b; (b /= arr.next()); ) doSomething();
 
 do {
-    doSomething();
-} while (b /= arr.next());
+  doSomething();
+} while ((b /= arr.next()));
 
 function foo(a) {
-  return a = 1;
+  return (a = 1);
 }
 
 function bar(a) {
-  return b.a = 1;
+  return (b.a = 1);
 }
 
 // these fixtures should never trigger warnings
-if ((e = 1))
-    doSomething();
+if ((e = 1)) doSomething();
 
-while ((obj = arr.next()))
-    doSomething();
+while ((obj = arr.next())) doSomething();
 
-for (var b; (b = arr.next());)
-    doSomething();
+for (var b; (b = arr.next()); ) doSomething();
 
 do {
-    doSomething();
+  doSomething();
 } while ((b = arr.next()));
 
-if ((e /= 1))
-  doSomething();
+if ((e /= 1)) doSomething();
 
-while ((obj /= arr.next()))
-    doSomething();
+while ((obj /= arr.next())) doSomething();
 
-for (var b; (b /= arr.next());)
-    doSomething();
+for (var b; (b /= arr.next()); ) doSomething();
 
 do {
-    doSomething();
+  doSomething();
 } while ((b /= arr.next()));
 
 function foo(a) {

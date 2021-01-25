@@ -1,18 +1,18 @@
 function a() {
-    //      jshint unused: true     
-    var x;
+  //      jshint unused: true
+  var x;
 }
 
 function b() {
-    /*      jshint  
+  /*      jshint  
     unused: true
     */
-    var y;
+  var y;
 }
 
 function c() {
-    /*      jshint      
+  /*      jshint      
         unused: true
     */
-    var z;
+  var z;
 }

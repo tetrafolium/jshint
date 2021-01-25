@@ -8,8 +8,8 @@ var let = 1;
   "use strict";
 
   var let = 2;
-}());
+})();
 
-var obj = { class: 'foo' };
+var obj = { class: "foo" };
 obj.else = 1;
 obj.protected = 4;

@@ -4,12 +4,12 @@
 
 "use strict";
 
-var JSHINT  = require("../..").JSHINT;
-var fs      = require('fs');
+var JSHINT = require("../..").JSHINT;
+var fs = require("fs");
 var TestRun = require("../helpers/testhelper").setup.testRun;
 
 function wrap(globals) {
-  return 'void [ ' + globals.join(',') + ' ];';
+  return "void [ " + globals.join(",") + " ];";
 }
 
 function globalsKnown(test, globals, options) {
@@ -19,11 +19,9 @@ function globalsKnown(test, globals, options) {
   test.ok(report.implieds === undefined);
   test.equal(report.globals.length, globals.length);
 
-  for (var i = 0, g; g = report.globals[i]; i += 1)
-    globals[g] = true;
+  for (var i = 0, g; (g = report.globals[i]); i += 1) globals[g] = true;
 
-  for (i = 0, g = null; g = globals[i]; i += 1)
-    test.ok(g in globals);
+  for (i = 0, g = null; (g = globals[i]); i += 1) test.ok(g in globals);
 }
 
 function globalsImplied(test, globals, options) {
@@ -34,7 +32,7 @@ function globalsImplied(test, globals, options) {
   test.ok(report.globals === undefined);
 
   var implieds = [];
-  for (var i = 0, warn; warn = report.implieds[i]; i += 1)
+  for (var i = 0, warn; (warn = report.implieds[i]); i += 1)
     implieds.push(warn.name);
 
   test.equal(implieds.length, globals.length);
@@ -48,34 +46,36 @@ function globalsImplied(test, globals, options) {
  */
 exports.node = function (test) {
   // Node environment assumes `globalstrict`
-  var globalStrict = [
-    '"use strict";',
-    "function test() { return; }",
-  ].join('\n');
+  var globalStrict = ['"use strict";', "function test() { return; }"].join(
+    "\n"
+  );
 
   TestRun(test)
     .addError(1, 1, 'Use the function form of "use strict".')
     .test(globalStrict, { es3: true, strict: true });
 
-  TestRun(test)
-    .test(globalStrict, { es3: true, node: true, strict: true });
+  TestRun(test).test(globalStrict, { es3: true, node: true, strict: true });
 
-  TestRun(test)
-    .test(globalStrict, { es3: true, browserify: true, strict: true });
+  TestRun(test).test(globalStrict, {
+    es3: true,
+    browserify: true,
+    strict: true,
+  });
 
   // Don't assume strict:true for Node environments. See bug GH-721.
-  TestRun(test)
-    .test("function test() { return; }", { es3: true, node: true });
+  TestRun(test).test("function test() { return; }", { es3: true, node: true });
 
-  TestRun(test)
-    .test("function test() { return; }", { es3: true, browserify: true });
+  TestRun(test).test("function test() { return; }", {
+    es3: true,
+    browserify: true,
+  });
 
   // Make sure that we can do fancy Node export
 
   var overwrites = [
     "global = {};",
     "Buffer = {};",
-    "exports = module.exports = {};"
+    "exports = module.exports = {};",
   ];
 
   TestRun(test)
@@ -86,11 +86,12 @@ exports.node = function (test) {
     .addError(1, 1, "Read only.")
     .test(overwrites, { es3: true, browserify: true });
 
-  TestRun(test, "gh-2657")
-    .test("'use strict';var a;", { node: true });
+  TestRun(test, "gh-2657").test("'use strict';var a;", { node: true });
 
-  TestRun(test, "`arguments` binding")
-    .test("void arguments;", { node: true, undef: true });
+  TestRun(test, "`arguments` binding").test("void arguments;", {
+    node: true,
+    undef: true,
+  });
 
   test.done();
 };
@@ -108,7 +109,7 @@ exports.typed = function (test) {
     "Uint16Array",
     "Uint32Array",
     "Uint8Array",
-    "Uint8ClampedArray"
+    "Uint8ClampedArray",
   ];
 
   globalsImplied(test, globals);
@@ -174,7 +175,7 @@ exports.es5 = function (test) {
     .addError(68, 13, "Missing property name.")
     .addError(69, 13, "Missing property name.")
     .addError(80, 13, "Setter is defined without getter.")
-    .test(src, {  }); // es5
+    .test(src, {}); // es5
 
   // JSHint should not throw "Missing property name" error on nameless getters/setters
   // using Method Definition Shorthand if esnext flag is enabled.
@@ -193,116 +194,96 @@ exports.es5 = function (test) {
   // Make sure that JSHint parses getters/setters as function expressions
   // (https://github.com/jshint/jshint/issues/96)
   src = fs.readFileSync(__dirname + "/fixtures/es5.funcexpr.js", "utf8");
-  TestRun(test).test(src, {  }); // es5
+  TestRun(test).test(src, {}); // es5
 
   test.done();
 };
 
 exports.phantom = function (test) {
   // Phantom environment assumes `globalstrict`
-  var globalStrict = [
-    '"use strict";',
-    "function test() { return; }",
-  ].join('\n');
+  var globalStrict = ['"use strict";', "function test() { return; }"].join(
+    "\n"
+  );
 
   TestRun(test)
     .addError(1, 1, 'Use the function form of "use strict".')
     .test(globalStrict, { es3: true, strict: true });
 
-  TestRun(test)
-    .test(globalStrict, { es3: true, phantom: true, strict: true });
-
+  TestRun(test).test(globalStrict, { es3: true, phantom: true, strict: true });
 
   test.done();
 };
 
 exports.globals = function (test) {
-  var src = [
+  var src = ["/* global first */", "var first;"];
+
+  TestRun(test).addError(2, 5, "Redefinition of 'first'.").test(src);
+  TestRun(test).test(src, { browserify: true });
+  TestRun(test).test(src, { node: true });
+  TestRun(test).test(src, { phantom: true });
+
+  TestRun(test, "Late configuration of `browserify`").test([
     "/* global first */",
-    "var first;"
-  ];
+    "void 0;",
+    "// jshint browserify: true",
+    "var first;",
+  ]);
 
-  TestRun(test)
-    .addError(2, 5, "Redefinition of 'first'.")
-    .test(src);
-  TestRun(test)
-    .test(src, { browserify: true });
-  TestRun(test)
-    .test(src, { node: true });
-  TestRun(test)
-    .test(src, { phantom: true });
+  TestRun(test).test([
+    "// jshint browserify: true",
+    "/* global first */",
+    "var first;",
+  ]);
 
-  TestRun(test, "Late configuration of `browserify`")
-    .test([
-      "/* global first */",
-      "void 0;",
-      "// jshint browserify: true",
-      "var first;"
-    ]);
+  TestRun(test).test([
+    "/* global first */",
+    "// jshint browserify: true",
+    "var first;",
+  ]);
 
-  TestRun(test)
-    .test([
-      "// jshint browserify: true",
-      "/* global first */",
-      "var first;"
-    ]);
+  TestRun(test, "Late configuration of `node`").test([
+    "/* global first */",
+    "void 0;",
+    "// jshint node: true",
+    "var first;",
+  ]);
 
-  TestRun(test)
-    .test([
-      "/* global first */",
-      "// jshint browserify: true",
-      "var first;"
-    ]);
+  TestRun(test).test([
+    "// jshint node: true",
+    "/* global first */",
+    "var first;",
+  ]);
 
-  TestRun(test, "Late configuration of `node`")
-    .test([
-      "/* global first */",
-      "void 0;",
-      "// jshint node: true",
-      "var first;"
-    ]);
+  TestRun(test).test([
+    "/* global first */",
+    "// jshint node: true",
+    "var first;",
+  ]);
 
-  TestRun(test)
-    .test([
-      "// jshint node: true",
-      "/* global first */",
-      "var first;"
-    ]);
+  TestRun(test, "Late configuration of `phantom`").test([
+    "/* global first */",
+    "void 0;",
+    "// jshint phantom: true",
+    "var first;",
+  ]);
 
-  TestRun(test)
-    .test([
-      "/* global first */",
-      "// jshint node: true",
-      "var first;"
-    ]);
+  TestRun(test).test([
+    "// jshint phantom: true",
+    "/* global first */",
+    "var first;",
+  ]);
 
-  TestRun(test, "Late configuration of `phantom`")
-    .test([
-      "/* global first */",
-      "void 0;",
-      "// jshint phantom: true",
-      "var first;"
-    ]);
-
-  TestRun(test)
-    .test([
-      "// jshint phantom: true",
-      "/* global first */",
-      "var first;"
-    ]);
-
-  TestRun(test)
-    .test([
-      "/* global first */",
-      "// jshint phantom: true",
-      "var first;"
-    ]);
+  TestRun(test).test([
+    "/* global first */",
+    "// jshint phantom: true",
+    "var first;",
+  ]);
 
   test.done();
 };
 
 exports.shelljs = function (test) {
-  var src = fs.readFileSync(__dirname + '/fixtures/shelljs.js', 'utf8');
+  var src = fs.readFileSync(__dirname + "/fixtures/shelljs.js", "utf8");
 
   TestRun(test, 1)
     .addError(1, 1, "'target' is not defined.")
@@ -335,14 +316,13 @@ exports.shelljs = function (test) {
     .addError(31, 1, "'process' is not defined.")
     .test(src, { undef: true });
 
-  TestRun(test, 2)
-    .test(src, { undef: true, shelljs: true });
+  TestRun(test, 2).test(src, { undef: true, shelljs: true });
 
   test.done();
 };
 
 exports.browser = function (test) {
-  var src = fs.readFileSync(__dirname + '/fixtures/browser.js', 'utf8');
+  var src = fs.readFileSync(__dirname + "/fixtures/browser.js", "utf8");
 
   TestRun(test)
     .addError(2, 9, "'atob' is not defined.")
@@ -360,15 +340,14 @@ exports.browser = function (test) {
     .addError(31, 15, "'document' is not defined.")
     .addError(32, 1, "'fetch' is not defined.")
     .addError(35, 19, "'URL' is not defined.")
-    .test(src, {es3: true, undef: true });
+    .test(src, { es3: true, undef: true });
 
-  TestRun(test).test(src, {es3: true, browser: true, undef: true });
+  TestRun(test).test(src, { es3: true, browser: true, undef: true });
 
   test.done();
 };
 
 exports.couch = function (test) {
-
   var globals = [
     "require",
     "respond",
@@ -380,7 +359,7 @@ exports.couch = function (test) {
     "log",
     "exports",
     "module",
-    "provides"
+    "provides",
   ];
 
   globalsImplied(test, globals);
@@ -390,7 +369,6 @@ exports.couch = function (test) {
 };
 
 exports.qunit = function (test) {
-
   var globals = [
     "asyncTest",
     "deepEqual",
@@ -409,7 +387,7 @@ exports.qunit = function (test) {
     "stop",
     "strictEqual",
     "test",
-    "throws"
+    "throws",
   ];
 
   globalsImplied(test, globals);
@@ -419,7 +397,6 @@ exports.qunit = function (test) {
 };
 
 exports.rhino = function (test) {
-
   var globals = [
     "arguments",
     "defineClass",
@@ -442,7 +419,7 @@ exports.rhino = function (test) {
     "spawn",
     "sync",
     "toint32",
-    "version"
+    "version",
   ];
 
   globalsImplied(test, globals);
@@ -452,7 +429,6 @@ exports.rhino = function (test) {
 };
 
 exports.prototypejs = function (test) {
-
   var globals = [
     "$",
     "$$",
@@ -491,7 +467,7 @@ exports.prototypejs = function (test) {
     "Sortable",
     "SortableObserver",
     "Sound",
-    "Scriptaculous"
+    "Scriptaculous",
   ];
 
   globalsImplied(test, globals);
@@ -501,14 +477,7 @@ exports.prototypejs = function (test) {
 };
 
 exports.dojo = function (test) {
-
-  var globals = [
-    "dojo",
-    "dijit",
-    "dojox",
-    "define",
-    "require"
-  ];
+  var globals = ["dojo", "dijit", "dojox", "define", "require"];
 
   globalsImplied(test, globals);
   globalsKnown(test, globals, { dojo: true });
@@ -517,11 +486,7 @@ exports.dojo = function (test) {
 };
 
 exports.nonstandard = function (test) {
-
-  var globals = [
-    "escape",
-    "unescape"
-  ];
+  var globals = ["escape", "unescape"];
 
   globalsImplied(test, globals);
   globalsKnown(test, globals, { nonstandard: true });
@@ -530,7 +495,6 @@ exports.nonstandard = function (test) {
 };
 
 exports.jasmine = function (test) {
-
   var globals = [
     "jasmine",
     "describe",
@@ -551,7 +515,7 @@ exports.jasmine = function (test) {
     "afterAll",
     "fail",
     "fdescribe",
-    "fit"
+    "fit",
   ];
 
   globalsImplied(test, globals);
@@ -561,7 +525,6 @@ exports.jasmine = function (test) {
 };
 
 exports.mootools = function (test) {
-
   var globals = [
     "$",
     "$$",
@@ -607,7 +570,7 @@ exports.mootools = function (test) {
     "Type",
     "typeOf",
     "URI",
-    "Window"
+    "Window",
   ];
 
   globalsImplied(test, globals);
@@ -617,13 +580,7 @@ exports.mootools = function (test) {
 };
 
 exports.worker = function (test) {
-
-  var globals = [
-    "importScripts",
-    "postMessage",
-    "self",
-    "FileReaderSync"
-  ];
+  var globals = ["importScripts", "postMessage", "self", "FileReaderSync"];
 
   globalsImplied(test, globals);
   globalsKnown(test, globals, { worker: true });
@@ -632,7 +589,6 @@ exports.worker = function (test) {
 };
 
 exports.wsh = function (test) {
-
   var globals = [
     "ActiveXObject",
     "Enumerator",
@@ -644,7 +600,7 @@ exports.wsh = function (test) {
     "VBArray",
     "WSH",
     "WScript",
-    "XDomainRequest"
+    "XDomainRequest",
   ];
 
   globalsImplied(test, globals);
@@ -654,12 +610,7 @@ exports.wsh = function (test) {
 };
 
 exports.yui = function (test) {
-
-  var globals = [
-    "YUI",
-    "Y",
-    "YUI_config"
-  ];
+  var globals = ["YUI", "Y", "YUI_config"];
 
   globalsImplied(test, globals);
   globalsKnown(test, globals, { yui: true });
@@ -668,7 +619,6 @@ exports.yui = function (test) {
 };
 
 exports.mocha = function (test) {
-
   var globals = [
     "mocha",
     "describe",
@@ -686,7 +636,7 @@ exports.mocha = function (test) {
     "setup",
     "teardown",
     "suiteSetup",
-    "suiteTeardown"
+    "suiteTeardown",
   ];
 
   globalsImplied(test, globals);
